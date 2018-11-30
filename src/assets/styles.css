@@ -1,0 +1,47 @@
+body {
+  background-color: #86ca97;
+  margin: 0;
+  padding: 0;
+}
+
+#outer {
+  width: 100vw;
+  height: 100vh;
+}
+
+#svg,
+#scrollInner,
+#scrollOuter {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#title {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 100px;
+}
+
+#scrollOuter {
+  width: 100vw;
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#scrollInner {
+  width: 100%;
+}
+
+.content,
+.content-r {
+  width: 400px;
+  height: 250px;
+  border: 5px solid rgba(0, 0, 0, 0.7);
+  margin: 100px;
+  background-color: rgba(0, 0 , 0, 0.2);
+}
+
+.content-r {
+  margin-left: 465px;
+}
