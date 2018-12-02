@@ -1,12 +1,16 @@
 body {
-  background-color: #86ca97;
   margin: 0;
   padding: 0;
+  background-color: #888;
 }
 
 #outer {
   width: 100vw;
   height: 100vh;
+}
+
+#scrollOuter {
+  /* background: linear-gradient (rgba(0, 0, 0, 0.2), rgba(255,255,255, 0.2)); */
 }
 
 #svg,
@@ -26,7 +30,6 @@ body {
   width: 100vw;
   height: 100vh;
   overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 #scrollInner {
@@ -40,6 +43,7 @@ body {
   border: 5px solid rgba(0, 0, 0, 0.7);
   margin: 100px;
   background-color: rgba(0, 0 , 0, 0.2);
+  opacity: 0;
 }
 
 .content-r {

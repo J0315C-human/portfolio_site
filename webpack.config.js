@@ -20,7 +20,7 @@ module.exports = {
   output: {
     path: outPath,
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: ''
   },
   target: 'web',
   resolve: {
