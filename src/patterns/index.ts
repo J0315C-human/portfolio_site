@@ -59,8 +59,8 @@ const updateTimelineGlobals = () => {
   g.tl.time(g.config.tlMargin * totalDur);
 }
 
-export const initializePatternAnimations = () => {
-  patterns.forEach(({ getColor, wait, getDuration, getOffset }, n) => {
+export const initializePatternAnimations = (patternData: PatternData[]) => {
+  patternData.forEach(({ getColor, wait, getDuration, getOffset }, n) => {
     const animStart = g.tl.duration() + wait;
     g.triangles.forEach((row, j) => {
       row.forEach((triangle, i) => {

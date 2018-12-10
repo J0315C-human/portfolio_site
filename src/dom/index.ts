@@ -14,6 +14,7 @@ export const setInitialSizing = () => {
 
 const getTriangle = (path, config) => (x, y) => {
   const el = document.createElementNS(svgNS, "path");
+  el.classList.add('triangle');
   el.setAttribute("d", path);
   el.setAttribute("fill", initialColor);
   el.setAttribute("strokeWidth", '0');
@@ -27,6 +28,8 @@ const getRightTriangle = getTriangle(rPath, rTriConfig);
 
 export const createTriangles = () => {
   const group = document.getElementById("rootGroup");
+  while (group.firstChild) { group.removeChild(group.firstChild); };
+  g.triangles = [];
   for (let j = 0; j < nRows; j++) {
     const row = [];
     for (let i = 0; i < nCols; i++) {

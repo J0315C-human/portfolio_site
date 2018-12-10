@@ -53,7 +53,7 @@ const lTriConfig = {
 };
 
 const throttleScrollUpdates = 23;
-const tlMargin = 0.05;
+const tlMargin = 0.001;
 const tlActiveArea = 1 - 2 * tlMargin;
 
 

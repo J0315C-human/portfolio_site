@@ -1,10 +1,17 @@
 import './assets/styles.css';
 import { setScrollAndResizeHandlers } from './dom/handlers';
 import { createTriangles, setInitialSizing } from './dom';
-import { initializePatternAnimations } from './patterns';
+import { initializePatternAnimations, patterns } from './patterns';
+import editor from './editor';
 
+const runEditor = true;
 setInitialSizing();
 
 createTriangles();
-initializePatternAnimations();
-setScrollAndResizeHandlers();
+if (!runEditor) {
+
+  initializePatternAnimations(patterns);
+  setScrollAndResizeHandlers();
+} else {
+  editor.initialize();
+}

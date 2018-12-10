@@ -1,0 +1,76 @@
+
+.triangle:hover {
+  opacity: 0.9;
+}
+
+#editor-outer {
+  position: fixed;
+  top: 10vh;
+  left: 10vw;
+  padding: 13px;
+  max-width: 165px;
+  background-color: #8f8f8f;
+  opacity: 0.15;
+  font-family: sans-serif;
+  border-radius: 10px;
+  border: 1px solid #666;
+}
+
+#editor-outer:hover {
+  opacity: 1;
+}
+
+#editor-colors, #editor-options  {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.editor-color {
+  margin: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border-width: 0;
+  border: 1px solid #333;
+}
+
+.editor-color:hover {
+  cursor: pointer;
+  transform: scale(2);
+}
+
+.editor-color-selected {
+  border: 1px solid #FFF;
+}
+
+.editor-color:focus {
+  outline: none;
+}
+.editor-option, .editor-option-input {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  background-color: #AAA;
+  padding: 3px 7px;
+  margin: 7px 2px;
+  border-radius: 5px;
+  border: 1px solid #444;
+}
+.editor-option-input {
+  background-color: rgb(218, 218, 218);
+  width: 50px;
+}
+.editor-option:hover {
+  background-color: #CCC;
+  cursor: pointer;
+}
+
+.editor-option:active {
+  color: #AAA;
+}
+
+.editor-label {
+  display: flex;
+  align-items: center;
+  margin: -9px 0px;
+}

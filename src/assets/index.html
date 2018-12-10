@@ -3,6 +3,7 @@
 
 <head>
 </head>
+
 <body>
 	<div id="outer">
 		<svg id="svg" transform-origin="0 0" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -32,7 +33,19 @@
 				<div class="content"></div>
 				<div class="content-r"></div>
 		</div>
-	</div>
+		<div id="editor-outer">
+			<div id="editor-colors"></div>
+			<div id="editor-options">
+				<btn class="editor-option" id="editor-option-log">log</btn>
+				<btn class="editor-option" id="editor-option-undo">undo</btn>
+				<btn class="editor-option" id="editor-option-frame">frame</btn>
+				<label class="editor-label">w:<input class="editor-option-input" id="editor-option-wait" value="0.01" /></label>
+				<label class="editor-label">f:<input class="editor-option-input" id="editor-option-fade" value="0.1" /></label>
+				<btn class="editor-option" id="editor-option-play">play</btn>
+				<btn class="editor-option" id="editor-option-save">save</btn>
+				<btn class="editor-option" id="editor-option-load">load</btn>
+			</div>
+		</div>
 	</div>
 </body>
 
