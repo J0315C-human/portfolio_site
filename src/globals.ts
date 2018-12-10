@@ -4,6 +4,15 @@ import { CoordFit } from './typings';
 const outer = document.getElementById("outer");
 const initialColor = "#888";
 
+const colors = [
+  initialColor,
+  "#4b4e97",
+  "#CCC",
+  "#54374a",
+  "#333",
+  "#2c8bee",
+]
+
 const pageWidth = outer.clientWidth;
 const pageHeight = outer.clientHeight;
 
@@ -78,9 +87,9 @@ const g = {
     rTriConfig,
     throttleScrollUpdates,
     initialColor,
+    colors,
     tlMargin,
     tlActiveArea,
-
   }
 };
 

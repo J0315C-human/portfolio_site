@@ -1,37 +1,17 @@
 import '../assets/editor.css';
 import g from '../globals';
-import { PatternData } from '../typings';
 import { initializePatternAnimations } from '../patterns';
 import { createTriangles } from '../dom';
-import { retileGrid } from '../utils';
+import { TriangleChange, Frame } from './typings';
+import serializer from './serializer';
+import deserializer from './deserializer';
 
-interface TriangleChange {
-  i: number;
-  j: number;
-  oldColor: number;
-}
+const colors = g.config.colors;
 
-interface Frame {
-  grid: number[][];
-  wait: number;
-  fade: number;
-}
-
-const colors = [
-  g.config.initialColor,
-  "#4b4e97",
-  "#CCC",
-  "#54374a",
-  "#333",
-  "#2c8bee",
-]
-
-// <button id="editor-color0" class="editor-color"></button>
 const outerEditor = document.getElementById('editor-outer');
 const outerColors = document.getElementById('editor-colors');
 const inputWait = document.getElementById('editor-option-wait') as HTMLInputElement;
 const inputFade = document.getElementById('editor-option-fade') as HTMLInputElement;
-
 
 class Editor {
   colorBtns: HTMLElement[];
@@ -112,11 +92,11 @@ class Editor {
     }
     const save = document.getElementById('editor-option-save');
     if (save) {
-      save.onclick = this.saveToLocalStorage;
+      save.onclick = this.save;
     }
     const load = document.getElementById('editor-option-load');
     if (load) {
-      load.onclick = this.loadFromLocalStorage;
+      load.onclick = this.load;
     }
     inputFade.onfocus = () => this.inputFocused = true;
     inputFade.onblur = () => this.inputFocused = false;
@@ -133,12 +113,12 @@ class Editor {
       else if (e.key.toLowerCase() === 'p') { this.play(); }
       else if (e.key.toLowerCase() === 'c') { this.clear(); }
       else if (e.key.toLowerCase() === 't') { this.switchToolboxLocation(); }
-      else if (e.key.toLowerCase() === 'l') { this.loadFromLocalStorage(); }
-      else if (e.key.toLowerCase() === 'k') { this.saveToLocalStorage(); }
+      else if (e.key.toLowerCase() === 'l') { this.load(); }
+      else if (e.key.toLowerCase() === 'k') { this.save(); }
       else if (e.key === '0') { return; }
       else if (!isNaN(parseInt(e.key))) {
         const idx = parseInt(e.key);
-        if (idx < colors.length && idx > 0) {
+        if (idx <= colors.length && idx > 0) {
           this.setColorActive(idx - 1);
         }
       }
@@ -226,22 +206,7 @@ class Editor {
   }
 
   play = () => {
-    const patterns: PatternData[] = [];
-    const getZeroOffset = () => 0;
-    this.frames.forEach((frame, n) => {
-      const lastGrid = n > 0 ? this.frames[n - 1].grid : undefined;
-      const pattern: PatternData = {
-        getColor: (col, row) => {
-          const colorIdx = frame.grid[row][col];
-          if (lastGrid && lastGrid[row][col] === colorIdx) { return undefined; }
-          else { return colors[colorIdx]; }
-        },
-        getDuration: () => frame.fade,
-        getOffset: getZeroOffset,
-        wait: frame.wait,
-      }
-      patterns.push(pattern);
-    })
+    const patterns = deserializer.getPatternsFromFrames(this.frames);
     g.tl.clear();
     initializePatternAnimations(patterns);
     g.tl.play();
@@ -282,19 +247,10 @@ class Editor {
     })
   }
 
-  saveToLocalStorage = () => {
-    window.localStorage.setItem('animation', JSON.stringify(this.frames));
-  }
+  save = () => serializer.saveToLocalStorage(this.frames);
 
-  loadFromLocalStorage = () => {
-    const json = window.localStorage.getItem('animation');
-    const parsed = JSON.parse(json) as Frame[];
-
-    const retiled = parsed.map(frame => ({
-      wait: frame.wait,
-      fade: frame.fade,
-      grid: retileGrid(frame.grid, g.nRows, g.nCols),
-    }));
+  load = () => {
+    const retiled = deserializer.loadFromLocalStorage();
     this.frames = retiled;
     this.triColors = this.gridCopy(retiled[retiled.length - 1].grid);
   }
