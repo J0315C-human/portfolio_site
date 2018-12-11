@@ -12,3 +12,5 @@ export const retileGrid = (grid: any[][], rows: number, cols: number) => {
   }
   return newGrid;
 }
+
+export const gridCopy = (grid: any[][]) => grid.map((row) => [...row])

@@ -5,6 +5,7 @@ import { createTriangles } from '../dom';
 import { TriangleChange, Frame } from './typings';
 import serializer from './serializer';
 import deserializer from './deserializer';
+import { gridCopy } from '../utils';
 
 const colors = g.config.colors;
 
@@ -199,7 +200,7 @@ class Editor {
 
   saveFrame = (instant?: boolean) => {
     this.frames.push({
-      grid: this.gridCopy(this.triColors),
+      grid: gridCopy(this.triColors),
       wait: instant ? 0 : parseFloat(inputWait.value),
       fade: instant ? 0 : parseFloat(inputFade.value),
     });
@@ -252,12 +253,10 @@ class Editor {
   load = () => {
     const retiled = deserializer.loadFromLocalStorage();
     this.frames = retiled;
-    this.triColors = this.gridCopy(retiled[retiled.length - 1].grid);
+    this.triColors = gridCopy(retiled[retiled.length - 1].grid);
   }
 
-  gridCopy = (grid: any[][]) => {
-    return grid.map((row) => [...row]);
-  }
+  
 }
 
 const editor = new Editor();
