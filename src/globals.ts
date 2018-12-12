@@ -19,8 +19,9 @@ const pageHeight = outer.clientHeight;
 const TRI_WIDTH = 101.8;
 const TRI_HEIGHT = 58.3;
 const IDEAL_NUM_TRIANGLES = (pageWidth * pageHeight) / 3000;
-const MIN_COLS = 10;
-const MAX_COLS = 50;
+const MIN_COLS = 1;
+const MAX_COLS = 30;
+const MAX_ROWS = 50;
 
 // get a relatively equal number of triangles for any aspect ratio
 const getBestFit = (): CoordFit => {
@@ -35,11 +36,11 @@ const getBestFit = (): CoordFit => {
     scale: firstScale,
     distFromIdeal: Math.abs(MIN_COLS * firstRows - IDEAL_NUM_TRIANGLES)
   };
-  for (let cols = MIN_COLS + 1; cols < MAX_COLS; cols++) {
+  for (let cols = MIN_COLS + 1; cols <= MAX_COLS; cols++) {
     const scale = getScaleForXCols(cols);
     const rows = nRowsForXCols(cols, scale);
     const distFromIdeal = Math.abs(cols * rows - IDEAL_NUM_TRIANGLES);
-    if (!bestFit || distFromIdeal < bestFit.distFromIdeal) {
+    if (!bestFit || ((distFromIdeal < bestFit.distFromIdeal) && (rows <= MAX_ROWS))) {
       bestFit = { cols, rows, distFromIdeal, scale };
     }
   }
