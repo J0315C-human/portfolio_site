@@ -1,10 +1,10 @@
-import { Frame, FrameCompressed, TriangleDelta } from "./typings";
+import { Frame, FrameCompressed, TriangleDelta, FrameCompressedWithDeltaList, FrameCompressedWithDeltaListSameColor, FrameCompressedWithStringGrid } from "./typings";
 
 const compressToStringGrids = (frames: Frame[]) => {
   // get starting colors
-  const compressed: FrameCompressed[] = [];
+  const compressed: FrameCompressedWithStringGrid[] = [];
   frames.forEach((frame) => {
-    const stringGrid = frame.grid.map(row => row.map(val => `${val}`).join(''));
+    const stringGrid = frame.grid.map(row => row.map(val => `${val}`).join());
     compressed.push({ t: 'c', g: stringGrid, w: frame.wait, f: frame.fade })
   })
   return compressed;
@@ -13,7 +13,7 @@ const compressToStringGrids = (frames: Frame[]) => {
 const compressToDeltas = (frames: Frame[]) => {
   // get starting colors
   const grid = frames[0].grid.map(row => row.map(r => -1));
-  const compressed: FrameCompressed[] = [];
+  const compressed: (FrameCompressedWithDeltaList | FrameCompressedWithDeltaListSameColor)[] = [];
   frames.forEach((frame) => {
     const changes: TriangleDelta[] = [];
     let sameColor = true;
@@ -52,19 +52,43 @@ export const compressFrames = (frames: Frame[]) => {
   for (let i = 0; i < frames.length; i++) {
     const deltLength = JSON.stringify(compDeltas[i]).length;
     const strLength = JSON.stringify(compString[i]).length;
-    console.log('    delt: ', compDeltas[i], deltLength);
-    console.log(' str: ', compString[i], strLength);
     if (deltLength < strLength) { best.push(compDeltas[i]); }
     else { best.push(compString[i]); }
   }
-  console.log(compDeltas.length, compString.length);
-  console.log({ delt: JSON.stringify(compDeltas).length, str: JSON.stringify(compString).length, best: JSON.stringify(best).length });
+  return best;
+}
+export const encodeFramesCompressed = (frames: FrameCompressed[]) => {
+  return frames.map(frame => {
+    if (frame.t === 'a') { return encodeFrameCompressedWithDeltaList(frame); }
+    else if (frame.t === 'b') { return encodeFrameCompressedWithDeltaListSameColor(frame); }
+    else if (frame.t === 'c') { return encodeFrameCompressedWithStringGrid(frame); }
+    else return 'ERROR';
+  }).join(';');
+}
+export const encodeFrameCompressedWithDeltaList = (frame: FrameCompressedWithDeltaList) => {
+  const { f, w, d } = frame;
+  return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
+}
+export const encodeFrameCompressedWithDeltaListSameColor = (frame: FrameCompressedWithDeltaListSameColor) => {
+  const { f, w, c, d } = frame;
+  return `${f},${w},${c}&${d.map(delta => `${delta.j},${delta.i}`).join(':')}`;
+
+}
+export const encodeFrameCompressedWithStringGrid = (frame: FrameCompressedWithStringGrid) => {
+  const { f, w, g } = frame;
+  return `${f},${w}^${g.join(':')}`;
 }
 
 const saveToLocalStorage = (frames: Frame[]) => {
-
-  window.localStorage.setItem('animation', JSON.stringify(frames));
-  window.localStorage.setItem('animationCompressed', JSON.stringify(compressToDeltas(frames)));
+  const compressed = compressFrames(frames);
+  const encoded = encodeFramesCompressed(compressed);
+  const s1 = JSON.stringify(frames).length;
+  const s2 = JSON.stringify(compressed).length;
+  const s3 = encoded.length;
+  console.log(`uncompressed: ${s1} chars / ${Math.ceil(s1 / 1024)} KB`);
+  console.log(`--compressed: ${s2} chars / ${Math.ceil(s2 / 1024)} KB`);
+  console.log(`-----encoded: ${s3} chars / ${Math.ceil(s3 / 1024)} KB`);
+  window.localStorage.setItem('animation', encoded);
 }
 
 

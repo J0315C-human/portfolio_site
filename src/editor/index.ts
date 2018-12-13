@@ -306,7 +306,6 @@ class Editor {
     })
   }
 
-  getCurrent
   save = () => serializer.saveToLocalStorage(this.frames);
 
   load = () => {

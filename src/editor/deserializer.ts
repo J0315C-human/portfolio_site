@@ -1,9 +1,114 @@
 import { PatternData } from "../typings";
-import { Frame } from "./typings";
+import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithDeltaListSameColor, FrameCompressedWithStringGrid, FrameCompressed } from "./typings";
 import g from "../globals";
-import { retileGrid } from "../utils";
+import { retileGrid, gridCopy } from "../utils";
 
 const colors = g.config.colors;
+
+const decodeFrame = (compressed: string): FrameCompressed => {
+  if (compressed.includes('$')) { return decodeFrameCompressedWithDeltaList(compressed); }
+  else if (compressed.includes('&')) { return decodeFrameCompressedWithDeltaListSameColor(compressed); }
+  else { return decodeFrameCompressedWithStringGrid(compressed); }
+}
+const decodeFrameCompressedWithDeltaList = (frame: string): FrameCompressedWithDeltaList => {
+  // 10.2,3.005$1,1,1:1,2,5
+  const [params, deltas] = frame.split('$');
+  const [f, w] = params.split(',');
+  const d = deltas.split(':');
+  return {
+    t: 'a',
+    f: parseFloat(f),
+    w: parseFloat(w),
+    d: d.map(change => {
+      const [j, i, c] = change.split(',');
+      return {
+        j: parseInt(j),
+        i: parseInt(i),
+        c: parseInt(c)
+      }
+    })
+  }
+}
+
+const decodeFrameCompressedWithDeltaListSameColor = (frame: string): FrameCompressedWithDeltaListSameColor => {
+  // 10.2,3.005,4&1,1:1,2
+  const [params, deltas] = frame.split('&');
+  const [f, w, c] = params.split(',');
+  const d = deltas.split(':');
+  return {
+    t: 'b',
+    f: parseFloat(f),
+    w: parseFloat(w),
+    c: parseInt(c),
+    d: d.map(change => {
+      const [j, i] = change.split(',');
+      return {
+        j: parseInt(j),
+        i: parseInt(i),
+      }
+    })
+  }
+}
+const decodeFrameCompressedWithStringGrid = (frame: string): FrameCompressedWithStringGrid => {
+  // 10.2,3.005^14325:00324:10101
+  const [params, rows] = frame.split('^');
+  const [f, w] = params.split(',');
+  return {
+    t: 'c',
+    f: parseFloat(f),
+    w: parseFloat(w),
+    g: rows.split(':'),
+  }
+}
+
+const getFrameFromFrameCompressedWithDeltaList = (frame: FrameCompressedWithDeltaList, lastGrid: number[][]) => {
+  const f: Frame = {
+    wait: frame.w,
+    fade: frame.f,
+    grid: lastGrid.map((row, j) => row.map((col, i) => {
+      const delta = frame.d.find(d => d.i === i && d.j === j);
+      if (!delta) { return lastGrid[j][i]; }
+      else { return delta.c; }
+    })),
+  }
+  return f;
+}
+const getFrameFromFrameCompressedWithDeltaListSameColor = (frame: FrameCompressedWithDeltaListSameColor, lastGrid: number[][]) => {
+  const f: Frame = {
+    wait: frame.w,
+    fade: frame.f,
+    grid: lastGrid.map((row, j) => row.map((col, i) => {
+      const delta = frame.d.find(d => d.i === i && d.j === j);
+      if (!delta) { return lastGrid[j][i]; }
+      else { return frame.c; }
+    })),
+  }
+  return f;
+}
+const getFrameFromFrameCompressedWithStringGrid = (frame: FrameCompressedWithStringGrid) => {
+  const f: Frame = {
+    wait: frame.w,
+    fade: frame.f,
+    grid: frame.g.map(row => row.split('').map(n => parseInt(n, 10))),
+  }
+  return f;
+}
+
+export const getFramesFromEncodedFrames = (encoded: string) => {
+  let grid = new Array(g.nRows).fill(0).map(() => new Array(g.nCols).fill(0));
+  const decodedFrames: Frame[] = [];
+  encoded.split(';')
+    .forEach(encodedFrame => {
+      const decodedCompressed = decodeFrame(encodedFrame);
+      const frame = decodedCompressed.t === 'a' ? getFrameFromFrameCompressedWithDeltaList(decodedCompressed, grid)
+        : decodedCompressed.t === 'b' ? getFrameFromFrameCompressedWithDeltaListSameColor(decodedCompressed, grid)
+          : getFrameFromFrameCompressedWithStringGrid(decodedCompressed);
+      grid = gridCopy(frame.grid);
+      decodedFrames.push(frame);
+    })
+  return decodedFrames;
+}
+
 export const getPatternsFromFrames = (frames: Frame[]) => {
   const patterns: PatternData[] = [];
   const getZeroOffset = () => 0;
@@ -25,18 +130,16 @@ export const getPatternsFromFrames = (frames: Frame[]) => {
   return patterns;
 }
 
-
 export const loadFromLocalStorage = () => {
-  const json = window.localStorage.getItem('animation');
-  const parsed = JSON.parse(json) as Frame[];
+  const encoded = window.localStorage.getItem('animation');
+  const frames = getFramesFromEncodedFrames(encoded);
 
-  const retiled = parsed.map(frame => ({
+  const retiled = frames.map(frame => ({
     wait: frame.wait,
     fade: frame.fade,
     grid: retileGrid(frame.grid, g.nRows, g.nCols),
   }));
   return retiled;
-
 }
 
 const deserializer = {
@@ -44,3 +147,27 @@ const deserializer = {
   loadFromLocalStorage,
 }
 export default deserializer;
+
+// const FC: FrameCompressedWithDeltaList = {
+//   f: 0, w: 0.01, t: 'a',
+//   d: [
+//     { i: 0, j: 0, c: 3 },
+//     { i: 0, j: 1, c: 0 },
+//     { i: 1, j: 1, c: 4 },
+//   ]
+// }
+
+// const FC2: FrameCompressedWithDeltaListSameColor = {
+//   f: 3.1, w: 1, t: 'b', c: 4,
+//   d: [{ i: 1, j: 1 }, { i: 0, j: 1 }]
+// }
+// const FC3: FrameCompressedWithStringGrid = {
+//   f: 10.2, w: 3.005, t: 'c',
+//   g: ['12', 'x3']
+// }
+
+// const encoded = encodeFramesCompressed([FC, FC2, FC3]);
+// console.log(encoded);
+// const decoded = encoded.split(';').map(decodeFrame);
+// console.log(decoded);
+// console.log(getFramesFromEncodedFrames(encoded))
