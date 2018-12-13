@@ -16,6 +16,7 @@ const resizeHandler = () => {
 
 
 const scrollHandler = () => {
+  g.tl.time(0);
   g.tl.time((g.config.tlMargin + g.scrollPos * g.config.tlActiveArea) * g.tl.duration());
 };
 

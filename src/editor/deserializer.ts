@@ -4,7 +4,6 @@ import g from "../globals";
 import { retileGrid } from "../utils";
 
 const colors = g.config.colors;
-
 export const getPatternsFromFrames = (frames: Frame[]) => {
   const patterns: PatternData[] = [];
   const getZeroOffset = () => 0;
@@ -12,6 +11,7 @@ export const getPatternsFromFrames = (frames: Frame[]) => {
     const lastGrid = n > 0 ? frames[n - 1].grid : undefined;
     const pattern: PatternData = {
       getColor: (col, row) => {
+        if (!frame.grid[row]) { return colors[0]; }
         const colorIdx = frame.grid[row][col];
         if (lastGrid && lastGrid[row][col] === colorIdx) { return undefined; }
         else { return colors[colorIdx]; }

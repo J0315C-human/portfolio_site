@@ -45,7 +45,7 @@ const compressToDeltas = (frames: Frame[]) => {
   return compressed;
 }
 
-const saveToLocalStorage = (frames: Frame[]) => {
+export const compressFrames = (frames: Frame[]) => {
   const compDeltas = compressToDeltas(frames);
   const compString = compressToStringGrids(frames);
   const best: FrameCompressed[] = [];
@@ -59,8 +59,12 @@ const saveToLocalStorage = (frames: Frame[]) => {
   }
   console.log(compDeltas.length, compString.length);
   console.log({ delt: JSON.stringify(compDeltas).length, str: JSON.stringify(compString).length, best: JSON.stringify(best).length });
-  // window.localStorage.setItem('animation', JSON.stringify(frames));
-  // window.localStorage.setItem('animationCompressed', JSON.stringify(compressToDeltas(frames)));
+}
+
+const saveToLocalStorage = (frames: Frame[]) => {
+
+  window.localStorage.setItem('animation', JSON.stringify(frames));
+  window.localStorage.setItem('animationCompressed', JSON.stringify(compressToDeltas(frames)));
 }
 
 

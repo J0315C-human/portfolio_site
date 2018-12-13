@@ -2,7 +2,7 @@ import '../assets/editor.css';
 import g from '../globals';
 import { initializePatternAnimations } from '../patterns';
 import { createTriangles } from '../dom';
-import { TriangleChange, Frame } from './typings';
+import { TriangleChange, Frame, TweenBlock } from './typings';
 import serializer from './serializer';
 import deserializer from './deserializer';
 import { gridCopy } from '../utils';
@@ -13,6 +13,9 @@ const outerEditor = document.getElementById('editor-outer');
 const outerColors = document.getElementById('editor-colors');
 const inputWait = document.getElementById('editor-option-wait') as HTMLInputElement;
 const inputFade = document.getElementById('editor-option-fade') as HTMLInputElement;
+const inputSpeed = document.getElementById('editor-option-speed') as HTMLInputElement;
+const inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
+const inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
 
 class Editor {
   colorBtns: HTMLElement[];
@@ -20,6 +23,9 @@ class Editor {
   triColors: number[][];
   changes: TriangleChange[];
   frames: Frame[];
+  prevTweenBlocks: TweenBlock[][]; // a list of tweenBlocks for each position 
+  newTweenBlocks: { j: number, i: number, tweenBlock: TweenBlock }[];
+  elapsed: number;
   inputFocused: boolean;
   toolboxLocation: 'left' | 'right';
   MAX_CHANGES = 50;
@@ -31,6 +37,8 @@ class Editor {
     this.frames = [];
     this.inputFocused = false;
     this.toolboxLocation = 'left';
+    this.elapsed = 0;
+    this.newTweenBlocks = [];
   }
 
   initialize = () => {
@@ -40,7 +48,7 @@ class Editor {
     }
     this.setupPalette();
     this.setBtnHandlers();
-    this.initializeTriangles();
+    this.setInitialState();
     this.setTriangleHandlers();
     this.setKeyHandlers();
   }
@@ -99,6 +107,10 @@ class Editor {
     if (load) {
       load.onclick = this.load;
     }
+    const recolor = document.getElementById('editor-option-recolor');
+    if (recolor) {
+      recolor.onclick = this.recolor;
+    }
     inputFade.onfocus = () => this.inputFocused = true;
     inputFade.onblur = () => this.inputFocused = false;
     inputWait.onfocus = () => this.inputFocused = true;
@@ -126,15 +138,19 @@ class Editor {
     }
   }
 
-  initializeTriangles = () => {
+  setInitialState = () => {
     document.body.style.backgroundColor = "#FFF";
     this.triColors = [];
+    this.prevTweenBlocks = [];
     g.triangles.forEach((row) => {
       const newRow = [] as number[];
+      const newRow2 = [] as TweenBlock[];
       row.forEach(() => {
         newRow.push(0);
+        newRow2.push({ start: 0, end: 0 }); // initial 'blocks' just to start
       })
       this.triColors.push(newRow);
+      this.prevTweenBlocks.push(newRow2);
     });
     this.saveFrame(true);
   }
@@ -142,20 +158,40 @@ class Editor {
   setTriangleHandlers = () => {
     g.triangles.forEach((row, j) => {
       row.forEach((tri, i) => {
-        tri.onpointerdown = this.setTriangleColor(tri, j, i, false);
-        tri.onpointerenter = this.setTriangleColor(tri, j, i, true);
+        tri.onpointerdown = this.setTriangleColorClickHandler(tri, j, i, false);
+        tri.onpointerenter = this.setTriangleColorClickHandler(tri, j, i, true);
       })
     });
   }
 
-  setTriangleColor = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
+  setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) { return; }
     const color = colors[this.curColorIdx];
+    this.setTriangleColor(el, j, i, color);
+  }
+
+  setTriangleColor = (el: SVGElement, j: number, i: number, color: string) => {
+    const startPos = this.elapsed + parseFloat(inputWait.value);
+    if (this.checkForActiveTweens(startPos, j, i)) {
+      return;
+    } else {
+      this.newTweenBlocks.push({
+        i, j, tweenBlock: {
+          start: startPos,
+          end: startPos + parseFloat(inputFade.value),
+        }
+      })
+    }
     const oldColor = this.triColors[j][i];
     if (oldColor === this.curColorIdx) { return; }
     el.setAttribute('fill', color);
     this.triColors[j][i] = this.curColorIdx;
     this.logChange(oldColor, j, i);
+  }
+
+  checkForActiveTweens = (t: number, j: number, i: number) => {
+    const tweenBlock = this.prevTweenBlocks[j][i];
+    return (tweenBlock.start < t) && (tweenBlock.end > t);
   }
 
   switchToolboxLocation = () => {
@@ -199,17 +235,39 @@ class Editor {
   }
 
   saveFrame = (instant?: boolean) => {
+    const wait = instant ? 0 : parseFloat(inputWait.value);
+    const fade = instant ? 0 : parseFloat(inputFade.value);
+    this.elapsed += wait + fade;
     this.frames.push({
       grid: gridCopy(this.triColors),
-      wait: instant ? 0 : parseFloat(inputWait.value),
-      fade: instant ? 0 : parseFloat(inputFade.value),
+      wait,
+      fade,
     });
+    this.newTweenBlocks.forEach(ntb => {
+      this.prevTweenBlocks[ntb.j][ntb.i] = ntb.tweenBlock;
+    })
+    this.newTweenBlocks = [];
+  }
+
+  recolor = () => {
+    const from = parseInt(inputRecolorFrom.value, 10);
+    const to = parseInt(inputRecolorTo.value, 10);
+    const color = colors[to - 1];
+    if (!color) { return; }
+    for (let j = 0; j < g.nRows; j++) {
+      for (let i = 0; i < g.nCols; i++) {
+        if (this.triColors[j][i] + 1 === from) {
+          this.setTriangleColor(g.triangles[j][i], j, i, color);
+        }
+      }
+    }
   }
 
   play = () => {
     const patterns = deserializer.getPatternsFromFrames(this.frames);
     g.tl.clear();
     initializePatternAnimations(patterns);
+    g.tl.timeScale(parseFloat(inputSpeed.value));
     g.tl.play();
     g.tl.eventCallback("onComplete", () => {
       setTimeout(this.cleanupAfterPlay, 100);
@@ -248,6 +306,7 @@ class Editor {
     })
   }
 
+  getCurrent
   save = () => serializer.saveToLocalStorage(this.frames);
 
   load = () => {
@@ -256,7 +315,7 @@ class Editor {
     this.triColors = gridCopy(retiled[retiled.length - 1].grid);
   }
 
-  
+
 }
 
 const editor = new Editor();

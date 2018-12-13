@@ -18,14 +18,14 @@ const pageHeight = outer.clientHeight;
 
 const TRI_WIDTH = 101.8;
 const TRI_HEIGHT = 58.3;
-const IDEAL_NUM_TRIANGLES = (pageWidth * pageHeight) / 3000;
+const IDEAL_NUM_TRIANGLES = ((500 * 0.4) + ((pageWidth * pageHeight) / 3000) * 0.6);
 const MIN_COLS = 1;
 const MAX_COLS = 30;
 const MAX_ROWS = 50;
 
+const getScaleForXCols = (cols: number) => pageWidth / (TRI_WIDTH * cols);
 // get a relatively equal number of triangles for any aspect ratio
 const getBestFit = (): CoordFit => {
-  const getScaleForXCols = (cols: number) => pageWidth / (TRI_WIDTH * cols);
   const nRowsForXCols = (cols: number, scale: number) => Math.ceil(pageHeight / (TRI_HEIGHT * scale)) + 1;
 
   const firstScale = getScaleForXCols(MIN_COLS);
@@ -47,10 +47,12 @@ const getBestFit = (): CoordFit => {
   return bestFit;
 }
 
-const bestFit = getBestFit();
-const scaleAll = bestFit.scale;
-const nRows = bestFit.rows;
-const nCols = bestFit.cols;
+
+// start everything at maximums
+const initialFit = { cols: MAX_COLS, rows: MAX_ROWS, scale: getScaleForXCols(MAX_COLS) };
+const scaleAll = initialFit.scale;
+const nRows = initialFit.rows;
+const nCols = initialFit.cols;
 
 // position tweaks for triangles
 const rTriConfig = {
@@ -61,6 +63,8 @@ const lTriConfig = {
   startX: -17.7 * scaleAll,
   startY: -66.2 * scaleAll
 };
+
+
 
 const throttleScrollUpdates = 23;
 const tlMargin = 0.001;
@@ -94,5 +98,24 @@ const g = {
   }
 };
 
+
+export const fitToWindow = () => {
+  const bestFit = getBestFit();
+  const scaleAll = bestFit.scale;
+  g.nRows = bestFit.rows;
+  g.nCols = bestFit.cols;
+  g.scaleAll = scaleAll;
+  // position tweaks for triangles
+  g.config.rTriConfig = {
+    startX: -122 * scaleAll,
+    startY: -69.2 * scaleAll
+  };
+  g.config.lTriConfig = {
+    startX: -17.7 * scaleAll,
+    startY: -66.2 * scaleAll
+  };
+  g.triWidth = TRI_WIDTH * scaleAll;
+  g.triHeight = TRI_HEIGHT * scaleAll;
+}
 
 export default g;

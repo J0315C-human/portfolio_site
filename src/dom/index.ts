@@ -1,18 +1,22 @@
 import g from '../globals';
 
-const { scaleAll, triWidth, triHeight, nRows, nCols, pageWidth, pageHeight } = g;
-const { initialColor, lTriConfig, rTriConfig, } = g.config;
+
 const svgNS = "http://www.w3.org/2000/svg";
 const lPath = "M119.486 125.534L17.052 66.368l102.495-58.89-.06 118.056z";
 const rPath = "M121.361 10.228l102.434 59.166-102.494 58.89.06-118.056z";
 
 export const setInitialSizing = () => {
+  const { pageHeight, pageWidth } = g;
+
   const svgOuter = document.getElementById("svg");
   svgOuter.style.width = `${pageWidth}px`;
   svgOuter.style.height = `${pageHeight}px`;
 }
 
 const getTriangle = (path, config) => (x, y) => {
+  const { scaleAll, triWidth, triHeight } = g;
+  const { initialColor } = g.config;
+
   const el = document.createElementNS(svgNS, "path");
   el.classList.add('triangle');
   el.setAttribute("d", path);
@@ -23,10 +27,12 @@ const getTriangle = (path, config) => (x, y) => {
   return el;
 };
 
-const getLeftTriangle = getTriangle(lPath, lTriConfig);
-const getRightTriangle = getTriangle(rPath, rTriConfig);
+const getLeftTriangle = (x, y) => { return getTriangle(lPath, g.config.lTriConfig)(x, y); }
+const getRightTriangle = (x, y) => { return getTriangle(rPath, g.config.rTriConfig)(x, y); }
 
 export const createTriangles = () => {
+
+  const { nRows, nCols } = g;
   const group = document.getElementById("rootGroup");
   while (group.firstChild) { group.removeChild(group.firstChild); };
   g.triangles = [];

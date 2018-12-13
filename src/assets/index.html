@@ -33,7 +33,7 @@
 				<div class="content"></div>
 				<div class="content-r"></div>
 		</div>
-		<div id="editor-outer">
+		<div id="editor-outer" style="display:none">
 			<div id="editor-colors"></div>
 			<div id="editor-options">
 				<btn class="editor-option" id="editor-option-log">log</btn>
@@ -44,6 +44,10 @@
 				<btn class="editor-option" id="editor-option-play">play</btn>
 				<btn class="editor-option" id="editor-option-save">save</btn>
 				<btn class="editor-option" id="editor-option-load">load</btn>
+				<label class="editor-label">rate:<input class="editor-option-input" id="editor-option-speed" value="1" /></label>
+				<label class="editor-label">recolor:<input class="editor-option-input" id="editor-option-colorfrom" value="1" /></label>
+				<label class="editor-label">to:<input class="editor-option-input" id="editor-option-colorto" value="2" /></label>
+				<btn class="editor-option" id="editor-option-recolor">go</btn>
 			</div>
 		</div>
 	</div>

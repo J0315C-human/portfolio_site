@@ -40,3 +40,9 @@ export interface FrameCompressedWithStringGrid {
 }
 
 export type FrameCompressed = FrameCompressedWithDeltaList | FrameCompressedWithDeltaListSameColor | FrameCompressedWithStringGrid;
+
+// represents a 'blocked off' interval of time
+export interface TweenBlock {
+  start: number;
+  end: number;
+}
