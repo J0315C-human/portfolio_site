@@ -83,10 +83,6 @@ class Editor {
   }
 
   setBtnHandlers = () => {
-    const log = document.getElementById('editor-option-log');
-    if (log) {
-      log.onclick = this.logPattern;
-    }
     const undo = document.getElementById('editor-option-undo');
     if (undo) {
       undo.onclick = this.undoDraw;
@@ -111,17 +107,34 @@ class Editor {
     if (recolor) {
       recolor.onclick = this.recolor;
     }
+    const random = document.getElementById('editor-option-random');
+    if (random) {
+      random.onclick = this.random;
+    }
     inputFade.onfocus = () => this.inputFocused = true;
     inputFade.onblur = () => this.inputFocused = false;
     inputWait.onfocus = () => this.inputFocused = true;
     inputWait.onblur = () => this.inputFocused = false;
+    inputWait.onchange = this.updateNewTweenBlocks;
+    inputFade.onchange = this.updateNewTweenBlocks;
+  }
+
+  updateNewTweenBlocks = () => {
+    const w = parseFloat(inputWait.value);
+    const f = parseFloat(inputFade.value);
+    const startPos = this.elapsed + w;
+    this.newTweenBlocks.forEach(tb => {
+      tb.tweenBlock = {
+        start: startPos,
+        end: startPos + f,
+      }
+    })
   }
 
   setKeyHandlers = () => {
     document.onkeypress = (e) => {
       if (this.inputFocused) { return; }
-      if (e.key.toLowerCase() === 'a') { this.logPattern(); }
-      else if (e.key.toLowerCase() === 's') { this.undoDraw(); }
+      if (e.key.toLowerCase() === 's') { this.undoDraw(); }
       else if (e.key.toLowerCase() === 'f') { this.saveFrame(); }
       else if (e.key.toLowerCase() === 'p') { this.play(); }
       else if (e.key.toLowerCase() === 'c') { this.clear(); }
@@ -166,11 +179,10 @@ class Editor {
 
   setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) { return; }
-    const color = colors[this.curColorIdx];
-    this.setTriangleColor(el, j, i, color);
+    this.setTriangleColor(el, j, i, this.curColorIdx);
   }
 
-  setTriangleColor = (el: SVGElement, j: number, i: number, color: string) => {
+  setTriangleColor = (el: SVGElement, j: number, i: number, colorIdx: number) => {
     const startPos = this.elapsed + parseFloat(inputWait.value);
     if (this.checkForActiveTweens(startPos, j, i)) {
       return;
@@ -183,9 +195,9 @@ class Editor {
       })
     }
     const oldColor = this.triColors[j][i];
-    if (oldColor === this.curColorIdx) { return; }
-    el.setAttribute('fill', color);
-    this.triColors[j][i] = this.curColorIdx;
+    if (oldColor === colorIdx) { return; }
+    el.setAttribute('fill', colors[colorIdx]);
+    this.triColors[j][i] = colorIdx;
     this.logChange(oldColor, j, i);
   }
 
@@ -252,12 +264,24 @@ class Editor {
   recolor = () => {
     const from = parseInt(inputRecolorFrom.value, 10);
     const to = parseInt(inputRecolorTo.value, 10);
-    const color = colors[to - 1];
-    if (!color) { return; }
+
+    if (!colors[to - 1]) { return; }
     for (let j = 0; j < g.nRows; j++) {
       for (let i = 0; i < g.nCols; i++) {
         if (this.triColors[j][i] + 1 === from) {
-          this.setTriangleColor(g.triangles[j][i], j, i, color);
+          this.setTriangleColor(g.triangles[j][i], j, i, (to - 1));
+        }
+      }
+    }
+  }
+
+  random = () => {
+    const percent = 0.7;
+    for (let j = 0; j < g.nRows; j++) {
+      for (let i = 0; i < g.nCols; i++) {
+        if (Math.random() < percent) {
+          const colorIdx = Math.floor(Math.random() * colors.length);
+          this.setTriangleColor(g.triangles[j][i], j, i, colorIdx);
         }
       }
     }

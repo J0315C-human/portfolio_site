@@ -2,6 +2,7 @@ import { PatternData } from "../typings";
 import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithDeltaListSameColor, FrameCompressedWithStringGrid, FrameCompressed } from "./typings";
 import g from "../globals";
 import { retileGrid, gridCopy } from "../utils";
+import { removeEncodings } from "./encodings";
 
 const colors = g.config.colors;
 
@@ -131,7 +132,7 @@ export const getPatternsFromFrames = (frames: Frame[]) => {
 }
 
 export const loadFromLocalStorage = () => {
-  const encoded = window.localStorage.getItem('animation');
+  const encoded = removeEncodings(window.localStorage.getItem('animation'));
   const frames = getFramesFromEncodedFrames(encoded);
 
   const retiled = frames.map(frame => ({
@@ -147,27 +148,3 @@ const deserializer = {
   loadFromLocalStorage,
 }
 export default deserializer;
-
-// const FC: FrameCompressedWithDeltaList = {
-//   f: 0, w: 0.01, t: 'a',
-//   d: [
-//     { i: 0, j: 0, c: 3 },
-//     { i: 0, j: 1, c: 0 },
-//     { i: 1, j: 1, c: 4 },
-//   ]
-// }
-
-// const FC2: FrameCompressedWithDeltaListSameColor = {
-//   f: 3.1, w: 1, t: 'b', c: 4,
-//   d: [{ i: 1, j: 1 }, { i: 0, j: 1 }]
-// }
-// const FC3: FrameCompressedWithStringGrid = {
-//   f: 10.2, w: 3.005, t: 'c',
-//   g: ['12', 'x3']
-// }
-
-// const encoded = encodeFramesCompressed([FC, FC2, FC3]);
-// console.log(encoded);
-// const decoded = encoded.split(';').map(decodeFrame);
-// console.log(decoded);
-// console.log(getFramesFromEncodedFrames(encoded))

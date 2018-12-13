@@ -23,6 +23,7 @@
 #editor-colors, #editor-options  {
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-around;
 }
 
 .editor-color {
