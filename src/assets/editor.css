@@ -28,9 +28,9 @@
 
 .editor-color {
   margin: 2px;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 10px;
   border-width: 0;
   border: 1px solid #333;
 }
@@ -41,7 +41,10 @@
 }
 
 .editor-color-selected {
-  border: 1px solid #FFF;
+  border: 3px solid #FFF;
+}
+.editor-color-selected-alt {
+  border: 3px dotted #FFF;
 }
 
 .editor-color:focus {

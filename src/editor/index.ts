@@ -20,6 +20,7 @@ const inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLI
 class Editor {
   colorBtns: HTMLElement[];
   curColorIdx: number;
+  curAltColorIdx: number;
   triColors: number[][];
   changes: TriangleChange[];
   frames: Frame[];
@@ -28,10 +29,12 @@ class Editor {
   elapsed: number;
   inputFocused: boolean;
   toolboxLocation: 'left' | 'right';
+  shiftDown: boolean;
   MAX_CHANGES = 50;
   constructor() {
     this.colorBtns = [];
     this.curColorIdx = 1;
+    this.curAltColorIdx = 0;
     this.triColors = [];
     this.changes = [];
     this.frames = [];
@@ -39,6 +42,7 @@ class Editor {
     this.toolboxLocation = 'left';
     this.elapsed = 0;
     this.newTweenBlocks = [];
+    this.shiftDown = false;
   }
 
   initialize = () => {
@@ -58,9 +62,7 @@ class Editor {
       colors.forEach((color, n) => {
         const btn = document.createElement('button');
         btn.className = 'editor-color';
-        btn.onclick = () => {
-          this.setColorActive(n);
-        }
+        btn.onclick = this.colorClickHandler(n);
         btn.style.backgroundColor = color;
         outerColors.appendChild(btn);
         this.colorBtns.push(btn);
@@ -71,13 +73,33 @@ class Editor {
     }
   }
 
+  colorClickHandler = (n: number) => () => {
+    if (this.shiftDown) {
+      this.setColorActiveAlt(n);
+    } else {
+      this.setColorActive(n);
+    }
+  }
   setColorActive = (idx: number) => {
     this.curColorIdx = idx;
     this.colorBtns.forEach((btn, n) => {
       if (n === idx) {
         btn.classList.add('editor-color-selected');
+        btn.classList.remove('editor-color-selected-alt');
       } else {
         btn.classList.remove('editor-color-selected');
+      }
+    })
+  }
+
+  setColorActiveAlt = (idx: number) => {
+    this.curAltColorIdx = idx;
+    this.colorBtns.forEach((btn, n) => {
+      if (n === idx) {
+        btn.classList.add('editor-color-selected-alt');
+        btn.classList.remove('editor-color-selected');
+      } else {
+        btn.classList.remove('editor-color-selected-alt');
       }
     })
   }
@@ -145,8 +167,19 @@ class Editor {
       else if (!isNaN(parseInt(e.key))) {
         const idx = parseInt(e.key);
         if (idx <= colors.length && idx > 0) {
-          this.setColorActive(idx - 1);
+          this.colorClickHandler(idx - 1)();
         }
+      }
+    }
+
+    document.onkeydown = (e) => {
+      if (e.key.toLowerCase() === 'shift') {
+        this.shiftDown = true;
+      }
+    }
+    document.onkeyup = (e) => {
+      if (e.key.toLowerCase() === 'shift') {
+        this.shiftDown = false;
       }
     }
   }
@@ -179,7 +212,7 @@ class Editor {
 
   setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) { return; }
-    this.setTriangleColor(el, j, i, this.curColorIdx);
+    this.setTriangleColor(el, j, i, this.shiftDown ? this.curAltColorIdx : this.curColorIdx);
   }
 
   setTriangleColor = (el: SVGElement, j: number, i: number, colorIdx: number) => {
