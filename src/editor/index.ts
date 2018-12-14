@@ -259,6 +259,7 @@ class Editor {
     const tri = g.triangles[chg.j][chg.i];
     tri.setAttribute('fill', colors[chg.oldColor]);
     this.triColors[chg.j][chg.i] = chg.oldColor;
+    this.newTweenBlocks = this.newTweenBlocks.filter(tb => !(tb.i === chg.i && tb.j === chg.j));
   }
 
   logChange = (oldColorIdx: number, j: number, i: number) => {
