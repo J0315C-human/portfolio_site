@@ -11,30 +11,27 @@ export interface TriangleDelta {
   c: number; // new color
 }
 
-export interface Frame {
+export interface FrameWithGrid {
+  type: 'grid',
   grid: number[][];
   wait: number;
   fade: number;
 }
 
-export interface FrameCompressedWithDeltaList {
-  t: 'deltaList';
-  d: TriangleDelta[];
-  w: number; // wait
-  f: number; // fade
+export interface FrameWithDeltas {
+  type: 'deltas',
+  deltas: TriangleDelta[];
+  wait: number;
+  fade: number;
 }
 
-export interface FrameCompressedWithGrid {
-  t: 'grid';
-  g: number[][]; // full grid
-  w: number; // wait
-  f: number; // fade
-}
-
-export type FrameCompressed = FrameCompressedWithDeltaList | FrameCompressedWithGrid;
+export type FrameType = FrameWithGrid | FrameWithDeltas;
 
 // represents a 'blocked off' interval of time
 export interface TweenBlock {
   start: number;
   end: number;
 }
+
+export type AnimationSlug = string;
+export type AnimationSlugEncoded = string;

@@ -2,7 +2,7 @@ import '../assets/editor.css';
 import g from '../globals';
 import { initializePatternAnimations } from '../patterns';
 import { createTriangles } from '../dom';
-import { TriangleChange, Frame, TweenBlock } from './typings';
+import { TriangleChange, FrameWithGrid, TweenBlock } from './typings';
 import serializer from './serializer';
 import deserializer from './deserializer';
 import { gridCopy } from '../utils';
@@ -23,7 +23,7 @@ class Editor {
   curAltColorIdx: number;
   triColors: number[][];
   changes: TriangleChange[];
-  frames: Frame[];
+  frames: FrameWithGrid[];
   prevTweenBlocks: TweenBlock[][]; // a list of tweenBlocks for each position 
   newTweenBlocks: { j: number, i: number, tweenBlock: TweenBlock }[];
   elapsed: number;
@@ -285,6 +285,7 @@ class Editor {
     const fade = instant ? 0 : parseFloat(inputFade.value);
     this.elapsed += wait + fade;
     this.frames.push({
+      type: 'grid',
       grid: gridCopy(this.triColors),
       wait,
       fade,

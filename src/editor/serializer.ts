@@ -1,19 +1,10 @@
-import { Frame, FrameCompressed, TriangleDelta, FrameCompressedWithDeltaList, FrameCompressedWithGrid } from "./typings";
+import { FrameType, TriangleDelta, FrameWithDeltas, FrameWithGrid, AnimationSlug, AnimationSlugEncoded } from "./typings";
 import { addEncodings } from "./encodings";
 
-const compressFramesToGrids = (frames: Frame[]) => {
-  // get starting colors
-  const compressed: FrameCompressedWithGrid[] = [];
-  frames.forEach((frame) => {
-    compressed.push({ t: 'grid', g: frame.grid, w: frame.wait, f: frame.fade })
-  })
-  return compressed;
-}
-
-const compressFramesToDeltas = (frames: Frame[]) => {
+const convertFrameGridsToDeltas = (frames: FrameWithGrid[]): FrameWithDeltas[] => {
   // get starting colors
   const grid = frames[0].grid.map(row => row.map(r => -1));
-  const compressed: FrameCompressedWithDeltaList[] = [];
+  const compressed: FrameWithDeltas[] = [];
   frames.forEach((frame) => {
     const changes: TriangleDelta[] = [];
     frame.grid.forEach((row, j) => {
@@ -25,30 +16,37 @@ const compressFramesToDeltas = (frames: Frame[]) => {
         }
       })
     });
-    compressed.push({ t: 'deltaList', d: changes, w: frame.wait, f: frame.fade });
+    compressed.push({
+      type: 'deltas',
+      deltas: changes,
+      wait: frame.wait,
+      fade: frame.fade
+    });
   })
   return compressed;
 }
 
-const encodeFramesCompressed = (frames: FrameCompressed[]) => {
+const slugifyFrames = (frames: FrameType[]): AnimationSlug[] => {
+
+  const slugifyFrameWithDeltas = (frame: FrameWithDeltas) => {
+    const { fade: f, wait: w, deltas: d } = frame;
+    return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
+  }
+
+  const slugifyFrameWithGrid = (frame: FrameWithGrid) => {
+    const { fade: f, wait: w, grid: g } = frame;
+    const rowStrings = g.map(row => row.join(''));
+    return `${f},${w}^${rowStrings.join(':')}`;
+  }
+
   return frames.map(frame => {
-    if (frame.t === 'deltaList') { return encodeFrameCompressedWithDeltaList(frame); }
-    else if (frame.t === 'grid') { return encodeFrameCompressedWithGrid(frame); }
+    if (frame.type === 'deltas') { return slugifyFrameWithDeltas(frame); }
+    else if (frame.type === 'grid') { return slugifyFrameWithGrid(frame); }
     else return 'ERROR';
   });
 }
-const encodeFrameCompressedWithDeltaList = (frame: FrameCompressedWithDeltaList) => {
-  const { f, w, d } = frame;
-  return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
-}
 
-const encodeFrameCompressedWithGrid = (frame: FrameCompressedWithGrid) => {
-  const { f, w, g } = frame;
-  const rowStrings = g.map(row => row.join(''));
-  return `${f},${w}^${rowStrings.join(':')}`;
-}
-
-const mergeCompressionResults = (a: string[], b: string[]) => {
+const mergeCompressionResults = (a: AnimationSlugEncoded[], b: AnimationSlugEncoded[]): AnimationSlugEncoded[] => {
   const best = [];
   a.forEach((str, i) => {
     if (str.length <= b[i].length) {
@@ -62,26 +60,27 @@ const mergeCompressionResults = (a: string[], b: string[]) => {
 
 const stats = (x: number) => `${x} chars / ${(x / 1024).toFixed(2)} KB`;
 
-const compressAndEncodeFrames = (frames: Frame[]) => {
-  const compDeltas = compressFramesToDeltas(frames);
-  const compString = compressFramesToGrids(frames);
+const compressAndEncodeFrames = (frames: FrameWithGrid[]) => {
+  const deltas = convertFrameGridsToDeltas(frames);
+  const grids = frames;
 
-  const encDeltas = encodeFramesCompressed(compDeltas);
-  const encString = encodeFramesCompressed(compString);
+  const deltaSlugs = slugifyFrames(deltas);
+  const gridSlugs = slugifyFrames(grids);
 
-  const shortDeltas = encDeltas.map(addEncodings);
-  const shortString = encString.map(addEncodings);
+  const encDeltaSlugs = deltaSlugs.map(addEncodings);
+  const encGridSlugs = gridSlugs.map(addEncodings);
 
+  const best = mergeCompressionResults(encDeltaSlugs, encGridSlugs).join(';');
+
+  // get sizes
   const start = JSON.stringify(frames).length;
-  const d1 = JSON.stringify(compDeltas).length;
-  const d2 = JSON.stringify(encDeltas).length;
-  const d3 = JSON.stringify(shortDeltas).length;
+  const d1 = JSON.stringify(deltas).length;
+  const d2 = JSON.stringify(deltaSlugs).length;
+  const d3 = JSON.stringify(encDeltaSlugs).length;
 
-  const s1 = JSON.stringify(compString).length;
-  const s2 = JSON.stringify(encString).length;
-  const s3 = JSON.stringify(shortString).length;
-
-  const best = mergeCompressionResults(shortDeltas, shortString).join(';');
+  const s1 = JSON.stringify(grids).length;
+  const s2 = JSON.stringify(gridSlugs).length;
+  const s3 = JSON.stringify(encGridSlugs).length;
   console.log(`uncompressed: ${stats(start)}`);
 
   console.log('Deltas:');
@@ -98,7 +97,7 @@ const compressAndEncodeFrames = (frames: Frame[]) => {
   return best;
 }
 
-const saveToLocalStorage = (frames: Frame[]) => window.localStorage.setItem('animation', compressAndEncodeFrames(frames));
+const saveToLocalStorage = (frames: FrameWithGrid[]) => window.localStorage.setItem('animation', compressAndEncodeFrames(frames));
 const serializer = {
   saveToLocalStorage,
 }
