@@ -24,14 +24,14 @@ export interface FrameCompressedWithDeltaList {
   f: number; // fade
 }
 
-export interface FrameCompressedWithStringGrid {
-  t: 'stringGrid';
-  g: string[];
+export interface FrameCompressedWithGrid {
+  t: 'grid';
+  g: number[][]; // full grid
   w: number; // wait
   f: number; // fade
 }
 
-export type FrameCompressed = FrameCompressedWithDeltaList | FrameCompressedWithStringGrid;
+export type FrameCompressed = FrameCompressedWithDeltaList | FrameCompressedWithGrid;
 
 // represents a 'blocked off' interval of time
 export interface TweenBlock {

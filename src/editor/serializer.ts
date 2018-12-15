@@ -1,12 +1,11 @@
-import { Frame, FrameCompressed, TriangleDelta, FrameCompressedWithDeltaList, FrameCompressedWithStringGrid } from "./typings";
+import { Frame, FrameCompressed, TriangleDelta, FrameCompressedWithDeltaList, FrameCompressedWithGrid } from "./typings";
 import { addEncodings } from "./encodings";
 
-const compressFramesToStringGrids = (frames: Frame[]) => {
+const compressFramesToGrids = (frames: Frame[]) => {
   // get starting colors
-  const compressed: FrameCompressedWithStringGrid[] = [];
+  const compressed: FrameCompressedWithGrid[] = [];
   frames.forEach((frame) => {
-    const stringGrid = frame.grid.map(row => row.map(val => `${val}`).join(''));
-    compressed.push({ t: 'stringGrid', g: stringGrid, w: frame.wait, f: frame.fade })
+    compressed.push({ t: 'grid', g: frame.grid, w: frame.wait, f: frame.fade })
   })
   return compressed;
 }
@@ -34,7 +33,7 @@ const compressFramesToDeltas = (frames: Frame[]) => {
 const encodeFramesCompressed = (frames: FrameCompressed[]) => {
   return frames.map(frame => {
     if (frame.t === 'deltaList') { return encodeFrameCompressedWithDeltaList(frame); }
-    else if (frame.t === 'stringGrid') { return encodeFrameCompressedWithStringGrid(frame); }
+    else if (frame.t === 'grid') { return encodeFrameCompressedWithGrid(frame); }
     else return 'ERROR';
   });
 }
@@ -43,9 +42,10 @@ const encodeFrameCompressedWithDeltaList = (frame: FrameCompressedWithDeltaList)
   return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
 }
 
-const encodeFrameCompressedWithStringGrid = (frame: FrameCompressedWithStringGrid) => {
+const encodeFrameCompressedWithGrid = (frame: FrameCompressedWithGrid) => {
   const { f, w, g } = frame;
-  return `${f},${w}^${g.join(':')}`;
+  const rowStrings = g.map(row => row.join(''));
+  return `${f},${w}^${rowStrings.join(':')}`;
 }
 
 const mergeCompressionResults = (a: string[], b: string[]) => {
@@ -64,7 +64,7 @@ const stats = (x: number) => `${x} chars / ${(x / 1024).toFixed(2)} KB`;
 
 const compressAndEncodeFrames = (frames: Frame[]) => {
   const compDeltas = compressFramesToDeltas(frames);
-  const compString = compressFramesToStringGrids(frames);
+  const compString = compressFramesToGrids(frames);
 
   const encDeltas = encodeFramesCompressed(compDeltas);
   const encString = encodeFramesCompressed(compString);

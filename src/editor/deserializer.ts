@@ -1,5 +1,5 @@
 import { PatternData } from "../typings";
-import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithStringGrid, FrameCompressed } from "./typings";
+import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithGrid, FrameCompressed } from "./typings";
 import g from "../globals";
 import { retileGrid, gridCopy } from "../utils";
 import { removeEncodings } from "./encodings";
@@ -8,7 +8,7 @@ const colors = g.config.colors;
 
 const decodeFrame = (compressed: string): FrameCompressed => {
   if (compressed.includes('$')) { return decodeFrameCompressedWithDeltaList(compressed); }
-  else { return decodeFrameCompressedWithStringGrid(compressed); }
+  else { return decodeFrameCompressedWithGrid(compressed); }
 }
 const decodeFrameCompressedWithDeltaList = (frame: string): FrameCompressedWithDeltaList => {
   // 10.2,3.005$1,1,1:1,2,5
@@ -30,15 +30,15 @@ const decodeFrameCompressedWithDeltaList = (frame: string): FrameCompressedWithD
   }
 }
 
-const decodeFrameCompressedWithStringGrid = (frame: string): FrameCompressedWithStringGrid => {
+const decodeFrameCompressedWithGrid = (frame: string): FrameCompressedWithGrid => {
   // 10.2,3.005^14325:00324:10101
   const [params, rows] = frame.split('^');
   const [f, w] = params.split(',');
   return {
-    t: 'stringGrid',
+    t: 'grid',
     f: parseFloat(f),
     w: parseFloat(w),
-    g: rows.split(':'),
+    g: rows.split(':').map(rowString => rowString.split('').map(digit => parseInt(digit))),
   }
 }
 
@@ -55,11 +55,11 @@ const getFrameFromFrameCompressedWithDeltaList = (frame: FrameCompressedWithDelt
   return f;
 }
 
-const getFrameFromFrameCompressedWithStringGrid = (frame: FrameCompressedWithStringGrid) => {
+const getFrameFromFrameCompressedWithGrid = (frame: FrameCompressedWithGrid) => {
   const f: Frame = {
     wait: frame.w,
     fade: frame.f,
-    grid: frame.g.map(row => row.split('').map(n => parseInt(n, 10))),
+    grid: frame.g,
   }
   return f;
 }
@@ -71,7 +71,7 @@ export const getFramesFromEncodedFrames = (encoded: string) => {
     .forEach(encodedFrame => {
       const decodedCompressed = decodeFrame(encodedFrame);
       const frame = decodedCompressed.t === 'deltaList' ? getFrameFromFrameCompressedWithDeltaList(decodedCompressed, grid)
-        : getFrameFromFrameCompressedWithStringGrid(decodedCompressed);
+        : getFrameFromFrameCompressedWithGrid(decodedCompressed);
       grid = gridCopy(frame.grid);
       decodedFrames.push(frame);
     })
