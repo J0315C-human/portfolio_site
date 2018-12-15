@@ -39,6 +39,7 @@ export interface FrameWithCompressedGrid {
   grid: number[][];
   wait: number;
   fade: number;
+  flipped?: boolean;
 }
 
 export interface FrameWithCompressedDeltas {
@@ -46,6 +47,7 @@ export interface FrameWithCompressedDeltas {
   deltas: number[][];
   wait: number;
   fade: number;
+  flipped?: boolean;
 }
 export type AnimationSlug = string;
 export type AnimationSlugEncoded = string;

@@ -7,20 +7,22 @@ import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
 
 const colors = g.config.colors;
 
-const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('$')
-  ? unslugFrameWithDeltas(slug)
-  : unslugFrameWithGrid(slug);
+const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^')
+  ? unslugFrameWithGrid(slug)
+  : unslugFrameWithDeltas(slug);
 
 const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithCompressedDeltas => {
-  // 10.2,3.005$1,1,1:1,2,5
-  const [params, deltas] = slug.split('$');
+  // 10.2,3.005$1,1,1:1,2,5 or 10.2,3.005&1,1,1:1,2,5
+  const IFirst = slug.includes('&');
+  const [params, deltas] = IFirst ? slug.split('&') : slug.split('$');
   const [f, w] = params.split(',');
   const compressedDeltas = deltas.split(':');
   return {
     type: 'cdeltas',
     fade: parseFloat(f),
     wait: parseFloat(w),
-    deltas: compressedDeltas.map(change => change.split(',').map(digit => parseInt(digit, 10)))
+    deltas: compressedDeltas.map(change => change.split(',').map(digit => parseInt(digit, 10))),
+    flipped: IFirst,
   }
 }
 
@@ -49,14 +51,16 @@ const decompressFrameWithGrid = (frame: FrameWithCompressedGrid): FrameWithGrid 
   grid: decompressDeltasToArrayArrayFromLeft(frame.grid),
 })
 
-const decompressFrameWithDeltas = (frame: FrameWithCompressedDeltas): FrameWithDeltas => ({
-  fade: frame.fade,
-  wait: frame.wait,
-  type: 'deltas',
-  deltas: decompressDeltasToArrayArrayFromLeft(frame.deltas).map(d => {
-    return { j: d[0], i: d[1], c: d[2] };
-  }),
-})
+const decompressFrameWithDeltas = (frame: FrameWithCompressedDeltas): FrameWithDeltas => {
+  return {
+    fade: frame.fade,
+    wait: frame.wait,
+    type: 'deltas',
+    deltas: decompressDeltasToArrayArrayFromLeft(frame.deltas).map(d => {
+      return frame.flipped ? { j: d[1], i: d[0], c: d[2] } : { j: d[0], i: d[1], c: d[2] };
+    }),
+  }
+}
 
 const getFrameWithGridFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: number[][]): FrameWithGrid => {
   const f: FrameWithGrid = {

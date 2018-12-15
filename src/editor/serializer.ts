@@ -34,19 +34,27 @@ const compressFrameWithGrid = (frame: FrameWithGrid): FrameWithCompressedGrid =>
 })
 
 const compressFrameWithDeltas = (frame: FrameWithDeltas): FrameWithCompressedDeltas => {
-  const arrayed = frame.deltas.map(d => [d.j, d.i, d.c]);
-  const comp = compressArrayArrayToDeltasFromLeft(arrayed);
+  const arrayedJFirst = frame.deltas.map(d => [d.j, d.i, d.c]);
+  const arrayedIFirst = frame.deltas.map(d => [d.i, d.j, d.c]);
+  const compJFirst = compressArrayArrayToDeltasFromLeft(arrayedJFirst);
+  const compIFirst = compressArrayArrayToDeltasFromLeft(arrayedIFirst);
+  const IFirst = (JSON.stringify(compIFirst).length <= JSON.stringify(compJFirst).length);
   return {
-  ...frame,
-  type: 'cdeltas',
-  deltas: comp,
-}}
+    ...frame,
+    flipped: IFirst,
+    type: 'cdeltas',
+    deltas: IFirst ? compIFirst : compJFirst,
+  }
+}
 
 const slugifyFrames = (frames: CompressedFrameType[]): AnimationSlug[] => {
 
   const slugifyFrameWithDeltas = (frame: FrameWithCompressedDeltas) => {
-    const { fade: f, wait: w, deltas: d } = frame;
-    return `${f},${w}$${d.map(delta => delta.join(',')).join(':')}`;
+    const { fade: f, wait: w, deltas: d, flipped } = frame;
+
+    return flipped
+      ? `${f},${w}&${d.map(delta => delta.join(',')).join(':')}`
+      : `${f},${w}$${d.map(delta => delta.join(',')).join(':')}`;
     // return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
   }
 
