@@ -33,16 +33,21 @@ const compressFrameWithGrid = (frame: FrameWithGrid): FrameWithCompressedGrid =>
   type: 'cgrid'
 })
 
-const compressFrameWithDeltas = (frame: FrameWithDeltas): FrameWithCompressedDeltas => ({
+const compressFrameWithDeltas = (frame: FrameWithDeltas): FrameWithCompressedDeltas => {
+  const arrayed = frame.deltas.map(d => [d.j, d.i, d.c]);
+  const comp = compressArrayArrayToDeltasFromLeft(arrayed);
+  return {
   ...frame,
-  type: 'cdeltas'
-})
+  type: 'cdeltas',
+  deltas: comp,
+}}
 
 const slugifyFrames = (frames: CompressedFrameType[]): AnimationSlug[] => {
 
   const slugifyFrameWithDeltas = (frame: FrameWithCompressedDeltas) => {
     const { fade: f, wait: w, deltas: d } = frame;
-    return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
+    return `${f},${w}$${d.map(delta => delta.join(',')).join(':')}`;
+    // return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
   }
 
   const slugifyFrameWithGrid = (frame: FrameWithCompressedGrid) => {
@@ -84,6 +89,14 @@ const serializeFrames = (frames: FrameWithGrid[]) => {
 
   const encDeltaSlugs = deltaSlugs.map(addEncodings);
   const encGridSlugs = gridSlugs.map(addEncodings);
+
+  // for (let i = 0; i< deltas.length; i++) {
+  //   console.log({delta: deltas[i]});
+  //   console.log({deltaComp: deltasCompressed[i]});
+  //   console.log({deltaSlug: deltaSlugs[i]});
+  //   console.log({encoded: encDeltaSlugs[i]});
+  //   console.log('');
+  // }
 
   const best = mergeCompressionResults(encDeltaSlugs, encGridSlugs).join(';');
 

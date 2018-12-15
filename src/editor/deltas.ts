@@ -16,6 +16,7 @@ const getArrayDeltaFromLeft = (prev: string[], cur: string[]) => {
 
 // consider lists as 'sequential' states, and remove deltas. (with padded values from left, because we need a fixed point of reference.)
 export const compressArrayArrayToDeltasFromLeft = (lists: any[][]) => {
+  if (lists.length === 0) { return lists; }
   const compressed = [[...lists[0]]];
   lists.slice(1).reduce((prev, cur) => {
     compressed.push(getArrayDeltaFromLeft(prev, cur));
@@ -25,6 +26,7 @@ export const compressArrayArrayToDeltasFromLeft = (lists: any[][]) => {
 }
 
 export const decompressDeltasToArrayArrayFromLeft = (lists: any[][]) => {
+  if (lists.length === 0) { return lists; }
   const uncompressed = [lists[0]];
   const state = Array.from(lists[0])
   lists.slice(1).forEach(s => {

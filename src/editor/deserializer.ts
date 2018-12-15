@@ -15,19 +15,12 @@ const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithCompressedDeltas =
   // 10.2,3.005$1,1,1:1,2,5
   const [params, deltas] = slug.split('$');
   const [f, w] = params.split(',');
-  const d = deltas.split(':');
+  const compressedDeltas = deltas.split(':');
   return {
     type: 'cdeltas',
     fade: parseFloat(f),
     wait: parseFloat(w),
-    deltas: d.map(change => {
-      const [j, i, c] = change.split(',');
-      return {
-        j: parseInt(j),
-        i: parseInt(i),
-        c: parseInt(c)
-      }
-    })
+    deltas: compressedDeltas.map(change => change.split(',').map(digit => parseInt(digit, 10)))
   }
 }
 
@@ -39,7 +32,9 @@ const unslugFrameWithGrid = (slug: AnimationSlug): FrameWithCompressedGrid => {
     type: 'cgrid',
     fade: parseFloat(f),
     wait: parseFloat(w),
-    grid: rows.split(':').map(rowString => rowString.split('').map(digit => parseInt(digit))),
+    grid: rows.split(':')
+      .map(rowString => rowString.split('')
+        .map(digit => parseInt(digit, 10))),
   }
 }
 
@@ -53,11 +48,14 @@ const decompressFrameWithGrid = (frame: FrameWithCompressedGrid): FrameWithGrid 
   type: 'grid',
   grid: decompressDeltasToArrayArrayFromLeft(frame.grid),
 })
+
 const decompressFrameWithDeltas = (frame: FrameWithCompressedDeltas): FrameWithDeltas => ({
   fade: frame.fade,
   wait: frame.wait,
   type: 'deltas',
-  deltas: frame.deltas,
+  deltas: decompressDeltasToArrayArrayFromLeft(frame.deltas).map(d => {
+    return { j: d[0], i: d[1], c: d[2] };
+  }),
 })
 
 const getFrameWithGridFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: number[][]): FrameWithGrid => {

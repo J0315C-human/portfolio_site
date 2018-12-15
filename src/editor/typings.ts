@@ -43,7 +43,7 @@ export interface FrameWithCompressedGrid {
 
 export interface FrameWithCompressedDeltas {
   type: 'cdeltas',
-  deltas: TriangleDelta[];
+  deltas: number[][];
   wait: number;
   fade: number;
 }
