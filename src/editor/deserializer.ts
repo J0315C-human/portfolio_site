@@ -1,5 +1,5 @@
 import { PatternData } from "../typings";
-import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithDeltaListSameColor, FrameCompressedWithStringGrid, FrameCompressed } from "./typings";
+import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithStringGrid, FrameCompressed, FrameCompressedWithDeltaListSameColor } from "./typings";
 import g from "../globals";
 import { retileGrid, gridCopy } from "../utils";
 import { removeEncodings } from "./encodings";
@@ -17,7 +17,7 @@ const decodeFrameCompressedWithDeltaList = (frame: string): FrameCompressedWithD
   const [f, w] = params.split(',');
   const d = deltas.split(':');
   return {
-    t: 'a',
+    t: 'deltaList',
     f: parseFloat(f),
     w: parseFloat(w),
     d: d.map(change => {
@@ -37,7 +37,7 @@ const decodeFrameCompressedWithDeltaListSameColor = (frame: string): FrameCompre
   const [f, w, c] = params.split(',');
   const d = deltas.split(':');
   return {
-    t: 'b',
+    t: 'deltaListSameColor',
     f: parseFloat(f),
     w: parseFloat(w),
     c: parseInt(c),
@@ -55,7 +55,7 @@ const decodeFrameCompressedWithStringGrid = (frame: string): FrameCompressedWith
   const [params, rows] = frame.split('^');
   const [f, w] = params.split(',');
   return {
-    t: 'c',
+    t: 'stringGrid',
     f: parseFloat(f),
     w: parseFloat(w),
     g: rows.split(':'),
@@ -101,8 +101,8 @@ export const getFramesFromEncodedFrames = (encoded: string) => {
   encoded.split(';')
     .forEach(encodedFrame => {
       const decodedCompressed = decodeFrame(encodedFrame);
-      const frame = decodedCompressed.t === 'a' ? getFrameFromFrameCompressedWithDeltaList(decodedCompressed, grid)
-        : decodedCompressed.t === 'b' ? getFrameFromFrameCompressedWithDeltaListSameColor(decodedCompressed, grid)
+      const frame = decodedCompressed.t === 'deltaList' ? getFrameFromFrameCompressedWithDeltaList(decodedCompressed, grid)
+        : decodedCompressed.t === 'deltaListSameColor' ? getFrameFromFrameCompressedWithDeltaListSameColor(decodedCompressed, grid)
           : getFrameFromFrameCompressedWithStringGrid(decodedCompressed);
       grid = gridCopy(frame.grid);
       decodedFrames.push(frame);

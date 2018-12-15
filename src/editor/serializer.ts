@@ -1,4 +1,4 @@
-import { Frame, FrameCompressed, TriangleDelta, FrameCompressedWithDeltaList, FrameCompressedWithDeltaListSameColor, FrameCompressedWithStringGrid } from "./typings";
+import { Frame, FrameCompressed, TriangleDelta, FrameCompressedWithDeltaList, FrameCompressedWithStringGrid } from "./typings";
 import { addEncodings } from "./encodings";
 
 const compressFramesToStringGrids = (frames: Frame[]) => {
@@ -6,7 +6,7 @@ const compressFramesToStringGrids = (frames: Frame[]) => {
   const compressed: FrameCompressedWithStringGrid[] = [];
   frames.forEach((frame) => {
     const stringGrid = frame.grid.map(row => row.map(val => `${val}`).join(''));
-    compressed.push({ t: 'c', g: stringGrid, w: frame.wait, f: frame.fade })
+    compressed.push({ t: 'stringGrid', g: stringGrid, w: frame.wait, f: frame.fade })
   })
   return compressed;
 }
@@ -14,43 +14,27 @@ const compressFramesToStringGrids = (frames: Frame[]) => {
 const compressFramesToDeltas = (frames: Frame[]) => {
   // get starting colors
   const grid = frames[0].grid.map(row => row.map(r => -1));
-  const compressed: (FrameCompressedWithDeltaList | FrameCompressedWithDeltaListSameColor)[] = [];
+  const compressed: FrameCompressedWithDeltaList[] = [];
   frames.forEach((frame) => {
     const changes: TriangleDelta[] = [];
-    let sameColor = true;
-    let lastColor = undefined;
     frame.grid.forEach((row, j) => {
       row.forEach((colorIdx, i) => {
         if (grid[j][i] === colorIdx) { return; }
         else {
-          if (lastColor !== undefined && colorIdx !== lastColor) {
-            sameColor = false;
-          }
-          lastColor = colorIdx;
           grid[j][i] = colorIdx;
           changes.push({ j, i, c: colorIdx });
         }
       })
     });
-    if (sameColor && lastColor !== undefined) {
-      compressed.push({
-        t: 'b',
-        d: changes.map(chg => ({ i: chg.i, j: chg.j })),
-        c: lastColor,
-        w: frame.wait, f: frame.fade
-      });
-    } else {
-      compressed.push({ t: 'a', d: changes, w: frame.wait, f: frame.fade });
-    }
+    compressed.push({ t: 'deltaList', d: changes, w: frame.wait, f: frame.fade });
   })
   return compressed;
 }
 
 const encodeFramesCompressed = (frames: FrameCompressed[]) => {
   return frames.map(frame => {
-    if (frame.t === 'a') { return encodeFrameCompressedWithDeltaList(frame); }
-    else if (frame.t === 'b') { return encodeFrameCompressedWithDeltaListSameColor(frame); }
-    else if (frame.t === 'c') { return encodeFrameCompressedWithStringGrid(frame); }
+    if (frame.t === 'deltaList') { return encodeFrameCompressedWithDeltaList(frame); }
+    else if (frame.t === 'stringGrid') { return encodeFrameCompressedWithStringGrid(frame); }
     else return 'ERROR';
   });
 }
@@ -58,11 +42,7 @@ const encodeFrameCompressedWithDeltaList = (frame: FrameCompressedWithDeltaList)
   const { f, w, d } = frame;
   return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
 }
-const encodeFrameCompressedWithDeltaListSameColor = (frame: FrameCompressedWithDeltaListSameColor) => {
-  const { f, w, c, d } = frame;
-  return `${f},${w},${c}&${d.map(delta => `${delta.j},${delta.i}`).join(':')}`;
 
-}
 const encodeFrameCompressedWithStringGrid = (frame: FrameCompressedWithStringGrid) => {
   const { f, w, g } = frame;
   return `${f},${w}^${g.join(':')}`;

@@ -18,14 +18,14 @@ export interface Frame {
 }
 
 export interface FrameCompressedWithDeltaList {
-  t: 'a';
+  t: 'deltaList';
   d: TriangleDelta[];
   w: number; // wait
   f: number; // fade
 }
 
 export interface FrameCompressedWithDeltaListSameColor {
-  t: 'b';
+  t: 'deltaListSameColor';
   d: Array<{ i: number, j: number }>;
   c: number; // homogeneous new color
   w: number; // wait
@@ -33,7 +33,7 @@ export interface FrameCompressedWithDeltaListSameColor {
 }
 
 export interface FrameCompressedWithStringGrid {
-  t: 'c';
+  t: 'stringGrid';
   g: string[];
   w: number; // wait
   f: number; // fade
