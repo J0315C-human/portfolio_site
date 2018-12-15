@@ -24,14 +24,6 @@ export interface FrameCompressedWithDeltaList {
   f: number; // fade
 }
 
-export interface FrameCompressedWithDeltaListSameColor {
-  t: 'deltaListSameColor';
-  d: Array<{ i: number, j: number }>;
-  c: number; // homogeneous new color
-  w: number; // wait
-  f: number; // fade
-}
-
 export interface FrameCompressedWithStringGrid {
   t: 'stringGrid';
   g: string[];
@@ -39,7 +31,7 @@ export interface FrameCompressedWithStringGrid {
   f: number; // fade
 }
 
-export type FrameCompressed = FrameCompressedWithDeltaList | FrameCompressedWithDeltaListSameColor | FrameCompressedWithStringGrid;
+export type FrameCompressed = FrameCompressedWithDeltaList | FrameCompressedWithStringGrid;
 
 // represents a 'blocked off' interval of time
 export interface TweenBlock {

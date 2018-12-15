@@ -1,5 +1,5 @@
 import { PatternData } from "../typings";
-import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithStringGrid, FrameCompressed, FrameCompressedWithDeltaListSameColor } from "./typings";
+import { Frame, FrameCompressedWithDeltaList, FrameCompressedWithStringGrid, FrameCompressed } from "./typings";
 import g from "../globals";
 import { retileGrid, gridCopy } from "../utils";
 import { removeEncodings } from "./encodings";
@@ -8,7 +8,6 @@ const colors = g.config.colors;
 
 const decodeFrame = (compressed: string): FrameCompressed => {
   if (compressed.includes('$')) { return decodeFrameCompressedWithDeltaList(compressed); }
-  else if (compressed.includes('&')) { return decodeFrameCompressedWithDeltaListSameColor(compressed); }
   else { return decodeFrameCompressedWithStringGrid(compressed); }
 }
 const decodeFrameCompressedWithDeltaList = (frame: string): FrameCompressedWithDeltaList => {
@@ -31,25 +30,6 @@ const decodeFrameCompressedWithDeltaList = (frame: string): FrameCompressedWithD
   }
 }
 
-const decodeFrameCompressedWithDeltaListSameColor = (frame: string): FrameCompressedWithDeltaListSameColor => {
-  // 10.2,3.005,4&1,1:1,2
-  const [params, deltas] = frame.split('&');
-  const [f, w, c] = params.split(',');
-  const d = deltas.split(':');
-  return {
-    t: 'deltaListSameColor',
-    f: parseFloat(f),
-    w: parseFloat(w),
-    c: parseInt(c),
-    d: d.map(change => {
-      const [j, i] = change.split(',');
-      return {
-        j: parseInt(j),
-        i: parseInt(i),
-      }
-    })
-  }
-}
 const decodeFrameCompressedWithStringGrid = (frame: string): FrameCompressedWithStringGrid => {
   // 10.2,3.005^14325:00324:10101
   const [params, rows] = frame.split('^');
@@ -74,18 +54,7 @@ const getFrameFromFrameCompressedWithDeltaList = (frame: FrameCompressedWithDelt
   }
   return f;
 }
-const getFrameFromFrameCompressedWithDeltaListSameColor = (frame: FrameCompressedWithDeltaListSameColor, lastGrid: number[][]) => {
-  const f: Frame = {
-    wait: frame.w,
-    fade: frame.f,
-    grid: lastGrid.map((row, j) => row.map((col, i) => {
-      const delta = frame.d.find(d => d.i === i && d.j === j);
-      if (!delta) { return lastGrid[j][i]; }
-      else { return frame.c; }
-    })),
-  }
-  return f;
-}
+
 const getFrameFromFrameCompressedWithStringGrid = (frame: FrameCompressedWithStringGrid) => {
   const f: Frame = {
     wait: frame.w,
@@ -102,8 +71,7 @@ export const getFramesFromEncodedFrames = (encoded: string) => {
     .forEach(encodedFrame => {
       const decodedCompressed = decodeFrame(encodedFrame);
       const frame = decodedCompressed.t === 'deltaList' ? getFrameFromFrameCompressedWithDeltaList(decodedCompressed, grid)
-        : decodedCompressed.t === 'deltaListSameColor' ? getFrameFromFrameCompressedWithDeltaListSameColor(decodedCompressed, grid)
-          : getFrameFromFrameCompressedWithStringGrid(decodedCompressed);
+        : getFrameFromFrameCompressedWithStringGrid(decodedCompressed);
       grid = gridCopy(frame.grid);
       decodedFrames.push(frame);
     })
