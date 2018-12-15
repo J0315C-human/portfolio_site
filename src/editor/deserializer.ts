@@ -1,22 +1,23 @@
 import { PatternData } from "../typings";
-import { FrameWithDeltas, FrameWithGrid, FrameType, AnimationSlug, AnimationSlugEncoded } from "./typings";
+import { FrameWithDeltas, FrameWithGrid, AnimationSlug, AnimationSlugEncoded, FrameWithCompressedGrid, FrameWithCompressedDeltas, CompressedFrameType } from "./typings";
 import g from "../globals";
 import { retileGrid, gridCopy } from "../utils";
 import { removeEncodings } from "./encodings";
+import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
 
 const colors = g.config.colors;
 
-const unslugFrame = (slug: AnimationSlug): FrameType => slug.includes('$')
+const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('$')
   ? unslugFrameWithDeltas(slug)
   : unslugFrameWithGrid(slug);
 
-const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithDeltas => {
+const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithCompressedDeltas => {
   // 10.2,3.005$1,1,1:1,2,5
   const [params, deltas] = slug.split('$');
   const [f, w] = params.split(',');
   const d = deltas.split(':');
   return {
-    type: 'deltas',
+    type: 'cdeltas',
     fade: parseFloat(f),
     wait: parseFloat(w),
     deltas: d.map(change => {
@@ -30,19 +31,36 @@ const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithDeltas => {
   }
 }
 
-const unslugFrameWithGrid = (slug: AnimationSlug): FrameWithGrid => {
+const unslugFrameWithGrid = (slug: AnimationSlug): FrameWithCompressedGrid => {
   // 10.2,3.005^14325:00324:10101
   const [params, rows] = slug.split('^');
   const [f, w] = params.split(',');
   return {
-    type: 'grid',
+    type: 'cgrid',
     fade: parseFloat(f),
     wait: parseFloat(w),
     grid: rows.split(':').map(rowString => rowString.split('').map(digit => parseInt(digit))),
   }
 }
 
-const getFrameFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: number[][]): FrameWithGrid => {
+const decompressFrame = (frame: CompressedFrameType) => frame.type === 'cgrid'
+  ? decompressFrameWithGrid(frame)
+  : decompressFrameWithDeltas(frame);
+
+const decompressFrameWithGrid = (frame: FrameWithCompressedGrid): FrameWithGrid => ({
+  fade: frame.fade,
+  wait: frame.wait,
+  type: 'grid',
+  grid: decompressDeltasToArrayArrayFromLeft(frame.grid),
+})
+const decompressFrameWithDeltas = (frame: FrameWithCompressedDeltas): FrameWithDeltas => ({
+  fade: frame.fade,
+  wait: frame.wait,
+  type: 'deltas',
+  deltas: frame.deltas,
+})
+
+const getFrameWithGridFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: number[][]): FrameWithGrid => {
   const f: FrameWithGrid = {
     type: 'grid',
     wait: frame.wait,
@@ -56,15 +74,16 @@ const getFrameFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: number[][
   return f;
 }
 
-const getFramesFromSlugs = (allSlugsEncoded: AnimationSlugEncoded): FrameWithGrid[] => {
+const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded): FrameWithGrid[] => {
   const allSlugs = removeEncodings(allSlugsEncoded);
   let grid = new Array(g.nRows).fill(0).map(() => new Array(g.nCols).fill(0));
   const frames: FrameWithGrid[] = [];
   allSlugs.split(';')
     .forEach(slug => {
       const unsluggedFrame = unslugFrame(slug);
-      const frame = unsluggedFrame.type === 'grid' ? unsluggedFrame
-        : getFrameFromFrameWithDeltas(unsluggedFrame, grid);
+      const decompressedFrame = decompressFrame(unsluggedFrame);
+      const frame = decompressedFrame.type === 'grid' ? decompressedFrame
+        : getFrameWithGridFromFrameWithDeltas(decompressedFrame, grid);
       grid = gridCopy(frame.grid);
       frames.push(frame);
     })
@@ -94,7 +113,7 @@ const getPatternsFromFrames = (frames: FrameWithGrid[]) => {
 
 const loadFromLocalStorage = (retileRows = g.nRows, retileCols = g.nCols): FrameWithGrid[] => {
   const encodedSlug = window.localStorage.getItem('animation')
-  const frames = getFramesFromSlugs(encodedSlug);
+  const frames = getFramesWithGridsFromSlugs(encodedSlug);
 
   const retiled = frames.map(frame => ({
     ...frame,

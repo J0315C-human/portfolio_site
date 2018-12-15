@@ -24,7 +24,7 @@ export const compressArrayArrayToDeltasFromLeft = (lists: any[][]) => {
   return compressed;
 }
 
-export const uncompressDeltasToArrayArrayFromLeft = (lists: any[][]) => {
+export const decompressDeltasToArrayArrayFromLeft = (lists: any[][]) => {
   const uncompressed = [lists[0]];
   const state = Array.from(lists[0])
   lists.slice(1).forEach(s => {

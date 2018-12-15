@@ -26,6 +26,7 @@ export interface FrameWithDeltas {
 }
 
 export type FrameType = FrameWithGrid | FrameWithDeltas;
+export type CompressedFrameType = FrameWithCompressedGrid | FrameWithCompressedDeltas;
 
 // represents a 'blocked off' interval of time
 export interface TweenBlock {
@@ -33,5 +34,18 @@ export interface TweenBlock {
   end: number;
 }
 
+export interface FrameWithCompressedGrid {
+  type: 'cgrid',
+  grid: number[][];
+  wait: number;
+  fade: number;
+}
+
+export interface FrameWithCompressedDeltas {
+  type: 'cdeltas',
+  deltas: TriangleDelta[];
+  wait: number;
+  fade: number;
+}
 export type AnimationSlug = string;
 export type AnimationSlugEncoded = string;
