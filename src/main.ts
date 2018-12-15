@@ -3,10 +3,8 @@ import { setScrollAndResizeHandlers } from './dom/handlers';
 import { createTriangles, setInitialSizing } from './dom';
 import { initializePatternAnimations } from './patterns';
 import editor from './editor';
-import g, { fitToWindow } from './globals';
-import { pattern0 } from './patterns/pattern0';
+import { fitToWindow } from './globals';
 import deserializer from './editor/deserializer';
-import { retileGrid } from './utils';
 
 const toggle = window.localStorage.getItem("editor");
 
@@ -16,13 +14,10 @@ if (!runEditor) {
   setInitialSizing();
   fitToWindow();
   createTriangles();
-  const retiled = pattern0.map(frame => ({
-    wait: frame.wait,
-    fade: frame.fade,
-    grid: retileGrid(frame.grid, g.nRows, g.nCols),
-  }));
-  const frames = deserializer.getPatternsFromFrames(retiled);
-  initializePatternAnimations(frames);
+
+  const decoded = deserializer.loadFromLocalStorage();
+  const patterns = deserializer.getPatternsFromFrames(decoded);
+  initializePatternAnimations(patterns);
   setScrollAndResizeHandlers();
 } else {
   document.getElementById('editor-outer').style.display = 'block';

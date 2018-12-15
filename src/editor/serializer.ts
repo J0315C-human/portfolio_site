@@ -102,7 +102,7 @@ const compressAndEncodeFrames = (frames: Frame[]) => {
   const s3 = JSON.stringify(shortString).length;
 
   const best = mergeCompressionResults(shortDeltas, shortString).join(';');
-  console.log(`uncompressed: ${start}`);
+  console.log(`uncompressed: ${stats(start)}`);
 
   console.log('Deltas:');
   console.log(`--compressed: ${stats(d2)}, ` + (100 * d1 / start).toFixed(2) + ' %');

@@ -131,14 +131,14 @@ export const getPatternsFromFrames = (frames: Frame[]) => {
   return patterns;
 }
 
-export const loadFromLocalStorage = () => {
+export const loadFromLocalStorage = (retileRows = g.nRows, retileCols = g.nCols) => {
   const encoded = removeEncodings(window.localStorage.getItem('animation'));
   const frames = getFramesFromEncodedFrames(encoded);
 
   const retiled = frames.map(frame => ({
     wait: frame.wait,
     fade: frame.fade,
-    grid: retileGrid(frame.grid, g.nRows, g.nCols),
+    grid: retileGrid(frame.grid, retileRows, retileCols),
   }));
   return retiled;
 }
