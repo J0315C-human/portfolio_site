@@ -15,7 +15,7 @@ if (!runEditor) {
   fitToWindow();
   createTriangles();
 
-  const decoded = deserializer.loadFromLocalStorage();
+  const decoded = deserializer.loadFromLocalStorage('animation');
   const patterns = deserializer.getPatternsFromFrames(decoded);
   initializePatternAnimations(patterns);
   setScrollAndResizeHandlers();

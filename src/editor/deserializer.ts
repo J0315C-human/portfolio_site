@@ -1,13 +1,13 @@
 import { PatternData } from "../typings";
 import { FrameWithDeltas, FrameWithGrid, AnimationSlug, AnimationSlugEncoded, FrameWithCompressedGrid, FrameWithCompressedDeltas, CompressedFrameType } from "./typings";
 import g from "../globals";
-import { retileGrid, gridCopy } from "../utils";
+import { retileGrid, gridCopy, gridFlippedDiag } from "../utils";
 import { removeEncodings } from "./encodings";
 import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
 
 const colors = g.config.colors;
 
-const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^')
+const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^') || slug.includes('<')
   ? unslugFrameWithGrid(slug)
   : unslugFrameWithDeltas(slug);
 
@@ -28,10 +28,12 @@ const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithCompressedDeltas =
 
 const unslugFrameWithGrid = (slug: AnimationSlug): FrameWithCompressedGrid => {
   // 10.2,3.005^14325:00324:10101
-  const [params, rows] = slug.split('^');
+  const flipped = slug.includes('<');
+  const [params, rows] = flipped ? slug.split('<') : slug.split('^');
   const [f, w] = params.split(',');
   return {
     type: 'cgrid',
+    flipped,
     fade: parseFloat(f),
     wait: parseFloat(w),
     grid: rows.split(':')
@@ -48,7 +50,9 @@ const decompressFrameWithGrid = (frame: FrameWithCompressedGrid): FrameWithGrid 
   fade: frame.fade,
   wait: frame.wait,
   type: 'grid',
-  grid: decompressDeltasToArrayArrayFromLeft(frame.grid),
+  grid: frame.flipped
+    ? gridFlippedDiag(decompressDeltasToArrayArrayFromLeft(frame.grid))
+    : decompressDeltasToArrayArrayFromLeft(frame.grid),
 })
 
 const decompressFrameWithDeltas = (frame: FrameWithCompressedDeltas): FrameWithDeltas => {
@@ -113,8 +117,8 @@ const getPatternsFromFrames = (frames: FrameWithGrid[]) => {
   return patterns;
 }
 
-const loadFromLocalStorage = (retileRows = g.nRows, retileCols = g.nCols): FrameWithGrid[] => {
-  const encodedSlug = window.localStorage.getItem('animation')
+const loadFromLocalStorage = (animationName: string, retileRows = g.nRows, retileCols = g.nCols): FrameWithGrid[] => {
+  const encodedSlug = window.localStorage.getItem(animationName)
   const frames = getFramesWithGridsFromSlugs(encodedSlug);
 
   const retiled = frames.map(frame => ({

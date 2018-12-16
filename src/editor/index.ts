@@ -16,6 +16,7 @@ const inputFade = document.getElementById('editor-option-fade') as HTMLInputElem
 const inputSpeed = document.getElementById('editor-option-speed') as HTMLInputElement;
 const inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
 const inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
+const inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
 
 class Editor {
   colorBtns: HTMLElement[];
@@ -137,6 +138,10 @@ class Editor {
     inputFade.onblur = () => this.inputFocused = false;
     inputWait.onfocus = () => this.inputFocused = true;
     inputWait.onblur = () => this.inputFocused = false;
+    inputAnimationName.onfocus = () => this.inputFocused = true;
+    inputAnimationName.onblur = () => this.inputFocused = false;
+
+    // update 'new' tweenblocks if this frame changes
     inputWait.onchange = this.updateNewTweenBlocks;
     inputFade.onchange = this.updateNewTweenBlocks;
   }
@@ -365,10 +370,10 @@ class Editor {
     })
   }
 
-  save = () => serializer.saveToLocalStorage(this.frames);
+  save = () => serializer.saveToLocalStorage(this.frames, inputAnimationName.value);
 
   load = () => {
-    const retiled = deserializer.loadFromLocalStorage();
+    const retiled = deserializer.loadFromLocalStorage(inputAnimationName.value);
     this.frames = retiled;
     this.triColors = gridCopy(retiled[retiled.length - 1].grid);
   }

@@ -1,6 +1,7 @@
 import { TriangleDelta, FrameWithDeltas, FrameWithGrid, AnimationSlug, AnimationSlugEncoded, FrameWithCompressedGrid, CompressedFrameType, FrameWithCompressedDeltas } from "./typings";
 import { addEncodings } from "./encodings";
 import { compressArrayArrayToDeltasFromLeft } from "./deltas";
+import { gridFlippedDiag } from "../utils";
 
 const convertFrameGridsToDeltas = (frames: FrameWithGrid[]): FrameWithDeltas[] => {
   // get starting colors
@@ -27,11 +28,17 @@ const convertFrameGridsToDeltas = (frames: FrameWithGrid[]): FrameWithDeltas[] =
   return compressed;
 }
 
-const compressFrameWithGrid = (frame: FrameWithGrid): FrameWithCompressedGrid => ({
-  ...frame,
-  grid: compressArrayArrayToDeltasFromLeft(frame.grid),
-  type: 'cgrid'
-})
+const compressFrameWithGrid = (frame: FrameWithGrid): FrameWithCompressedGrid => {
+  const gridNormal = compressArrayArrayToDeltasFromLeft(frame.grid);
+  const gridFlipped = compressArrayArrayToDeltasFromLeft(gridFlippedDiag(frame.grid));
+  const flipped = !(JSON.stringify(gridNormal).length <= JSON.stringify(gridFlipped).length);
+  return {
+    ...frame,
+    flipped,
+    grid: flipped ? gridFlipped : gridNormal,
+    type: 'cgrid'
+  }
+}
 
 const compressFrameWithDeltas = (frame: FrameWithDeltas): FrameWithCompressedDeltas => {
   const arrayedJFirst = frame.deltas.map(d => [d.j, d.i, d.c]);
@@ -59,9 +66,11 @@ const slugifyFrames = (frames: CompressedFrameType[]): AnimationSlug[] => {
   }
 
   const slugifyFrameWithGrid = (frame: FrameWithCompressedGrid) => {
-    const { fade: f, wait: w, grid: g } = frame;
+    const { fade: f, wait: w, grid: g, flipped } = frame;
     const rowStrings = g.map(row => row.join(''));
-    return `${f},${w}^${rowStrings.join(':')}`;
+    return flipped
+      ? `${f},${w}<${rowStrings.join(':')}`
+      : `${f},${w}^${rowStrings.join(':')}`;
   }
 
   return frames.map(frame => {
@@ -132,11 +141,11 @@ const serializeFrames = (frames: FrameWithGrid[]) => {
   console.log(`-----slugged: ${stats(g2)}, ` + (100 * g2 / g1).toFixed(2) + ' %');
   console.log(`-----encoded: ${stats(g3)}, ` + (100 * g3 / g2).toFixed(2) + ' %');
   console.log('ratio: ' + (100 * g3 / start).toFixed(2) + ' %');
-  console.log('BEST ratio: ' + (100 * best.length / start).toFixed(2) + ' %');
+  console.log(`BEST ratio: ${stats(best.length)}, ` + (100 * best.length / start).toFixed(2) + ' %');
   return best;
 }
 
-const saveToLocalStorage = (frames: FrameWithGrid[]) => window.localStorage.setItem('animation', serializeFrames(frames));
+const saveToLocalStorage = (frames: FrameWithGrid[], animationName) => window.localStorage.setItem(animationName, serializeFrames(frames));
 const serializer = {
   saveToLocalStorage,
 }
