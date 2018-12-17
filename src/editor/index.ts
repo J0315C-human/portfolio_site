@@ -17,6 +17,13 @@ const inputSpeed = document.getElementById('editor-option-speed') as HTMLInputEl
 const inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
 const inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
 const inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
+const btnUndo = document.getElementById('editor-option-undo');
+const btnFrame = document.getElementById('editor-option-frame');
+const btnPlay = document.getElementById('editor-option-play');
+const btnSave = document.getElementById('editor-option-save');
+const btnLoad = document.getElementById('editor-option-load');
+const btnRecolor = document.getElementById('editor-option-recolor');
+const btnRandom = document.getElementById('editor-option-random');
 
 class Editor {
   colorBtns: HTMLElement[];
@@ -30,6 +37,7 @@ class Editor {
   elapsed: number;
   inputFocused: boolean;
   toolboxLocation: 'left' | 'right';
+  toolboxVisible: boolean;
   shiftDown: boolean;
   MAX_CHANGES = 50;
   constructor() {
@@ -44,6 +52,7 @@ class Editor {
     this.elapsed = 0;
     this.newTweenBlocks = [];
     this.shiftDown = false;
+    this.toolboxVisible = true;
   }
 
   initialize = () => {
@@ -53,6 +62,7 @@ class Editor {
     }
     this.setupPalette();
     this.setBtnHandlers();
+    this.setFieldHandlers();
     this.setInitialState();
     this.setTriangleHandlers();
     this.setKeyHandlers();
@@ -106,34 +116,30 @@ class Editor {
   }
 
   setBtnHandlers = () => {
-    const undo = document.getElementById('editor-option-undo');
-    if (undo) {
-      undo.onclick = this.undoDraw;
+    if (btnUndo) {
+      btnUndo.onclick = this.undoDraw;
     }
-    const frame = document.getElementById('editor-option-frame');
-    if (frame) {
-      frame.onclick = () => this.saveFrame();
+    if (btnFrame) {
+      btnFrame.onclick = () => this.saveFrame();
     }
-    const play = document.getElementById('editor-option-play');
-    if (play) {
-      play.onclick = this.play;
+    if (btnPlay) {
+      btnPlay.onclick = this.play;
     }
-    const save = document.getElementById('editor-option-save');
-    if (save) {
-      save.onclick = this.save;
+    if (btnSave) {
+      btnSave.onclick = this.save;
     }
-    const load = document.getElementById('editor-option-load');
-    if (load) {
-      load.onclick = this.load;
+    if (btnLoad) {
+      btnLoad.onclick = this.load;
     }
-    const recolor = document.getElementById('editor-option-recolor');
-    if (recolor) {
-      recolor.onclick = this.recolor;
+    if (btnRecolor) {
+      btnRecolor.onclick = this.recolor;
     }
-    const random = document.getElementById('editor-option-random');
-    if (random) {
-      random.onclick = this.random;
+    if (btnRandom) {
+      btnRandom.onclick = this.random;
     }
+  }
+
+  setFieldHandlers = () => {
     inputFade.onfocus = () => this.inputFocused = true;
     inputFade.onblur = () => this.inputFocused = false;
     inputWait.onfocus = () => this.inputFocused = true;
@@ -161,6 +167,7 @@ class Editor {
   setKeyHandlers = () => {
     document.onkeypress = (e) => {
       if (this.inputFocused) { return; }
+      if (e.key.toLowerCase() === 'a') { this.switchToolboxVisibility(); }
       if (e.key.toLowerCase() === 's') { this.undoDraw(); }
       else if (e.key.toLowerCase() === 'f') { this.saveFrame(); }
       else if (e.key.toLowerCase() === 'p') { this.play(); }
@@ -251,6 +258,16 @@ class Editor {
     } else {
       outerEditor.style.left = '10vw';
       this.toolboxLocation = 'left';
+    }
+  }
+
+  switchToolboxVisibility = () => {
+    if (this.toolboxVisible) {
+      outerEditor.style.display = 'none';
+      this.toolboxVisible = false;
+    } else {
+      outerEditor.style.display = 'block';
+      this.toolboxVisible = true;
     }
   }
 

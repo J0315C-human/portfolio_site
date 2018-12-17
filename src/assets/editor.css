@@ -9,7 +9,7 @@
   padding: 13px;
   max-width: 215px;
   background-color: #8f8f8f;
-  opacity: 0.15;
+  opacity: 0.5;
   font-family: sans-serif;
   border-radius: 10px;
   border: 1px solid #666;
@@ -72,7 +72,7 @@
 }
 
 .editor-option-input-wide {
-  width: 70px;
+  width: 110px;
 }
 
 .editor-option:hover {

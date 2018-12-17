@@ -2,15 +2,15 @@ import { TimelineLite } from 'gsap';
 import { CoordFit } from './typings';
 
 const outer = document.getElementById("outer");
-const initialColor = "#888";
 
 const colors = [
-  initialColor,
-  "#4b4e97",
-  "#CCC",
-  "#54374a",
-  "#333",
-  "#2c8bee",
+  "#101615",
+  "#2F6876",
+  "#96B27D",
+  "#7D6336",
+  "#EBCE89",
+  "#CB6A2E",
+  "#662717",
 ]
 
 const pageWidth = outer.clientWidth;
@@ -91,7 +91,7 @@ const g = {
     lTriConfig,
     rTriConfig,
     throttleScrollUpdates,
-    initialColor,
+    initialColor: colors[0],
     colors,
     tlMargin,
     tlActiveArea,
