@@ -26,20 +26,24 @@ const btnRecolor = document.getElementById('editor-option-recolor');
 const btnRandom = document.getElementById('editor-option-random');
 
 class Editor {
+  // for storing previous frames
+  frames: FrameWithGrid[];
+  prevTweenBlocks: TweenBlock[][][]; // a list of tweenBlocks for each position 
+  // for tracking the Current Editing Frame
+  newTweenBlocks: { j: number, i: number, color: number, tweenBlock: TweenBlock }[];
+  triColors: number[][];
+  elapsed: number;
+  // for saving changes to be undone with "undo"
+  changes: TriangleChange[];
+  MAX_UNDO_CHANGES = 50;
+  // for UI stuff
   colorBtns: HTMLElement[];
   curColorIdx: number;
   curAltColorIdx: number;
-  triColors: number[][];
-  changes: TriangleChange[];
-  frames: FrameWithGrid[];
-  prevTweenBlocks: TweenBlock[][]; // a list of tweenBlocks for each position 
-  newTweenBlocks: { j: number, i: number, tweenBlock: TweenBlock }[];
-  elapsed: number;
   inputFocused: boolean;
   toolboxLocation: 'left' | 'right';
   toolboxVisible: boolean;
   shiftDown: boolean;
-  MAX_CHANGES = 50;
   constructor() {
     this.colorBtns = [];
     this.curColorIdx = 1;
@@ -53,6 +57,7 @@ class Editor {
     this.newTweenBlocks = [];
     this.shiftDown = false;
     this.toolboxVisible = true;
+    (window as any).logme = () => console.log(this.newTweenBlocks, this.prevTweenBlocks);
   }
 
   initialize = () => {
@@ -148,20 +153,38 @@ class Editor {
     inputAnimationName.onblur = () => this.inputFocused = false;
 
     // update 'new' tweenblocks if this frame changes
-    inputWait.onchange = this.updateNewTweenBlocks;
-    inputFade.onchange = this.updateNewTweenBlocks;
+    inputWait.onchange = this.refreshNewTweenBlocks;
+    inputFade.onchange = this.refreshNewTweenBlocks;
   }
 
-  updateNewTweenBlocks = () => {
-    const w = parseFloat(inputWait.value);
-    const f = parseFloat(inputFade.value);
-    const startPos = this.elapsed + w;
-    this.newTweenBlocks.forEach(tb => {
-      tb.tweenBlock = {
-        start: startPos,
-        end: startPos + f,
-      }
+  getLastFrame = () => this.frames[this.frames.length - 1];
+
+  clearCurrentFrame = () => {
+    const grid = this.getLastFrame().grid;
+    grid.forEach((row, j) => {
+      row.forEach((colorIdx, i) => {
+        g.triangles[j][i].setAttribute('fill', colors[colorIdx]);
+        this.triColors[j][i] = colorIdx;
+      })
     })
+    this.newTweenBlocks = [];
+  }
+
+  refreshNewTweenBlocks = () => {
+    const tweenBlocksToAdd = this.newTweenBlocks.map(tb => ({ i: tb.i, j: tb.j, color: tb.color }));
+    this.clearCurrentFrame();
+    tweenBlocksToAdd.forEach(tb => {
+      this.setTriangleColor(tb.j, tb.i, tb.color, false);
+    })
+  }
+
+  removeTweenBlockAt = (j: number, i: number) => {
+    this.newTweenBlocks = this.newTweenBlocks.filter(tb => !(tb.i === i && tb.j === j));
+  }
+
+  addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
+    this.removeTweenBlockAt(j, i);
+    this.newTweenBlocks.push({ i, j, color, tweenBlock })
   }
 
   setKeyHandlers = () => {
@@ -202,10 +225,10 @@ class Editor {
     this.prevTweenBlocks = [];
     g.triangles.forEach((row) => {
       const newRow = [] as number[];
-      const newRow2 = [] as TweenBlock[];
+      const newRow2 = [] as TweenBlock[][];
       row.forEach(() => {
         newRow.push(0);
-        newRow2.push({ start: 0, end: 0 }); // initial 'blocks' just to start
+        newRow2.push([{ start: 0, end: 0 }]); // initial 'tween blocks' just to start
       })
       this.triColors.push(newRow);
       this.prevTweenBlocks.push(newRow2);
@@ -224,31 +247,39 @@ class Editor {
 
   setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) { return; }
-    this.setTriangleColor(el, j, i, this.shiftDown ? this.curAltColorIdx : this.curColorIdx);
+    this.setTriangleColor(j, i, this.shiftDown ? this.curAltColorIdx : this.curColorIdx);
   }
 
-  setTriangleColor = (el: SVGElement, j: number, i: number, colorIdx: number) => {
+  setTriangleColor = (j: number, i: number, colorIdx: number, saveChange = true) => {
     const startPos = this.elapsed + parseFloat(inputWait.value);
-    if (this.checkForActiveTweens(startPos, j, i)) {
+    const endPos = startPos + parseFloat(inputFade.value);
+    const oldColor = this.triColors[j][i];
+    const lastFrameColor = this.getLastFrame().grid[j][i];
+    if (oldColor === colorIdx) { return; }
+    if (this.checkForActiveTweens(startPos, endPos, j, i)) {
       return;
     } else {
-      this.newTweenBlocks.push({
-        i, j, tweenBlock: {
+      // remove tweenblock if it's back to the original color
+      if (lastFrameColor === colorIdx) {
+        this.removeTweenBlockAt(j, i);
+      } else {
+        this.addTweenBlock(j, i, colorIdx, {
           start: startPos,
-          end: startPos + parseFloat(inputFade.value),
-        }
-      })
+          end: endPos,
+        });
+      }
     }
-    const oldColor = this.triColors[j][i];
-    if (oldColor === colorIdx) { return; }
-    el.setAttribute('fill', colors[colorIdx]);
+
+    g.triangles[j][i].setAttribute('fill', colors[colorIdx]);
     this.triColors[j][i] = colorIdx;
-    this.logChange(oldColor, j, i);
+    if (saveChange) {
+      this.logChange(oldColor, j, i);
+    }
   }
 
-  checkForActiveTweens = (t: number, j: number, i: number) => {
-    const tweenBlock = this.prevTweenBlocks[j][i];
-    return (tweenBlock.start < t) && (tweenBlock.end > t);
+  checkForActiveTweens = (start: number, end: number, j: number, i: number) => {
+    const tweenBlockList = this.prevTweenBlocks[j][i];
+    return tweenBlockList.some(tb => !(start >= tb.end || end <= tb.start));
   }
 
   switchToolboxLocation = () => {
@@ -278,18 +309,15 @@ class Editor {
   undoDraw = () => {
     if (!this.changes.length) { return; }
     const chg = this.changes.pop();
-    const tri = g.triangles[chg.j][chg.i];
-    tri.setAttribute('fill', colors[chg.oldColor]);
-    this.triColors[chg.j][chg.i] = chg.oldColor;
-    this.newTweenBlocks = this.newTweenBlocks.filter(tb => !(tb.i === chg.i && tb.j === chg.j));
+    this.setTriangleColor(chg.j, chg.i, chg.oldColor, false);
   }
 
   logChange = (oldColorIdx: number, j: number, i: number) => {
     const change = { oldColor: oldColorIdx, i, j };
-    if (this.changes.length < this.MAX_CHANGES) {
+    if (this.changes.length < this.MAX_UNDO_CHANGES) {
       this.changes.push(change);
     } else {
-      this.changes = [...this.changes.slice(1, this.MAX_CHANGES), change];
+      this.changes = [...this.changes.slice(1, this.MAX_UNDO_CHANGES), change];
     }
   }
 
@@ -313,9 +341,10 @@ class Editor {
       fade,
     });
     this.newTweenBlocks.forEach(ntb => {
-      this.prevTweenBlocks[ntb.j][ntb.i] = ntb.tweenBlock;
+      this.prevTweenBlocks[ntb.j][ntb.i].push(ntb.tweenBlock);
     })
     this.newTweenBlocks = [];
+    this.changes = [];
   }
 
   recolor = () => {
@@ -326,7 +355,7 @@ class Editor {
     for (let j = 0; j < g.nRows; j++) {
       for (let i = 0; i < g.nCols; i++) {
         if (this.triColors[j][i] + 1 === from) {
-          this.setTriangleColor(g.triangles[j][i], j, i, (to - 1));
+          this.setTriangleColor(j, i, (to - 1));
         }
       }
     }
@@ -338,7 +367,7 @@ class Editor {
       for (let i = 0; i < g.nCols; i++) {
         if (Math.random() < percent) {
           const colorIdx = Math.floor(Math.random() * colors.length);
-          this.setTriangleColor(g.triangles[j][i], j, i, colorIdx);
+          this.setTriangleColor(j, i, colorIdx);
         }
       }
     }
