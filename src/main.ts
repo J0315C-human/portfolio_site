@@ -2,13 +2,16 @@ import './assets/styles.css';
 import { setScrollAndResizeHandlers } from './dom/handlers';
 import { createTriangles, setInitialSizing } from './dom';
 import { initializePatternAnimations } from './patterns';
-import editor from './editor';
 import { fitToWindow } from './globals';
 import deserializer from './editor/deserializer';
+import EventChannel from './editor/EventChannel';
+import UIControls from './editor/uiControls';
+import Editor from './editor';
 
 const toggle = window.localStorage.getItem("editor");
 
 const runEditor = toggle && toggle === 'true';
+
 
 if (!runEditor) {
   setInitialSizing();
@@ -20,8 +23,13 @@ if (!runEditor) {
   initializePatternAnimations(patterns);
   setScrollAndResizeHandlers();
 } else {
-  document.getElementById('editor-outer').style.display = 'block';
   setInitialSizing();
   createTriangles();
+  const ec = new EventChannel();
+  const uiControls = new UIControls(ec);
+  uiControls.initialize();
+
+  const editor = new Editor(uiControls, ec);
+
   editor.initialize();
 }

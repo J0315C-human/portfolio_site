@@ -1,29 +1,14 @@
-import '../assets/editor.css';
 import g from '../globals';
-import { initializePatternAnimations } from '../patterns';
 import { createTriangles } from '../dom';
 import { TriangleChange, FrameWithGrid, TweenBlock } from './typings';
-import serializer from './serializer';
-import deserializer from './deserializer';
+import UIControls from './uiControls';
+import EventChannel from './EventChannel';
 import { gridCopy } from '../utils';
+import deserializer from './deserializer';
+import { initializePatternAnimations } from '../patterns';
+import serializer from './serializer';
 
 const colors = g.config.colors;
-
-const outerEditor = document.getElementById('editor-outer');
-const outerColors = document.getElementById('editor-colors');
-const inputWait = document.getElementById('editor-option-wait') as HTMLInputElement;
-const inputFade = document.getElementById('editor-option-fade') as HTMLInputElement;
-const inputSpeed = document.getElementById('editor-option-speed') as HTMLInputElement;
-const inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
-const inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
-const inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
-const btnUndo = document.getElementById('editor-option-undo');
-const btnFrame = document.getElementById('editor-option-frame');
-const btnPlay = document.getElementById('editor-option-play');
-const btnSave = document.getElementById('editor-option-save');
-const btnLoad = document.getElementById('editor-option-load');
-const btnRecolor = document.getElementById('editor-option-recolor');
-const btnRandom = document.getElementById('editor-option-random');
 
 class Editor {
   // for storing previous frames
@@ -36,28 +21,19 @@ class Editor {
   // for saving changes to be undone with "undo"
   changes: TriangleChange[];
   MAX_UNDO_CHANGES = 50;
-  // for UI stuff
-  colorBtns: HTMLElement[];
-  curColorIdx: number;
-  curAltColorIdx: number;
-  inputFocused: boolean;
-  toolboxLocation: 'left' | 'right';
-  toolboxVisible: boolean;
-  shiftDown: boolean;
-  constructor() {
-    this.colorBtns = [];
-    this.curColorIdx = 1;
-    this.curAltColorIdx = 0;
+
+  uiControls: UIControls;
+  eventChannel: EventChannel;
+  constructor(uiControls: UIControls, eventChannel: EventChannel) {
+    this.uiControls = uiControls;
+    this.eventChannel = eventChannel;
+
     this.triColors = [];
     this.changes = [];
     this.frames = [];
-    this.inputFocused = false;
-    this.toolboxLocation = 'left';
     this.elapsed = 0;
     this.newTweenBlocks = [];
-    this.shiftDown = false;
-    this.toolboxVisible = true;
-    (window as any).logme = () => console.log(this.newTweenBlocks, this.prevTweenBlocks);
+    (window as any).logme = () => console.log(this);
   }
 
   initialize = () => {
@@ -65,96 +41,34 @@ class Editor {
     if (scroll) {
       scroll.style.pointerEvents = 'none';
     }
-    this.setupPalette();
-    this.setBtnHandlers();
-    this.setFieldHandlers();
     this.setInitialState();
-    this.setTriangleHandlers();
+    this.setBtnHandlers();
+    this.setUIHandlers();
     this.setKeyHandlers();
-  }
-
-  setupPalette = () => {
-    if (outerColors) {
-      colors.forEach((color, n) => {
-        const btn = document.createElement('button');
-        btn.className = 'editor-color';
-        btn.onclick = this.colorClickHandler(n);
-        btn.style.backgroundColor = color;
-        outerColors.appendChild(btn);
-        this.colorBtns.push(btn);
-        if (n === this.curColorIdx) {
-          btn.classList.add('editor-color-selected');
-        }
-      });
-    }
-  }
-
-  colorClickHandler = (n: number) => () => {
-    if (this.shiftDown) {
-      this.setColorActiveAlt(n);
-    } else {
-      this.setColorActive(n);
-    }
-  }
-  setColorActive = (idx: number) => {
-    this.curColorIdx = idx;
-    this.colorBtns.forEach((btn, n) => {
-      if (n === idx) {
-        btn.classList.add('editor-color-selected');
-        btn.classList.remove('editor-color-selected-alt');
-      } else {
-        btn.classList.remove('editor-color-selected');
-      }
-    })
-  }
-
-  setColorActiveAlt = (idx: number) => {
-    this.curAltColorIdx = idx;
-    this.colorBtns.forEach((btn, n) => {
-      if (n === idx) {
-        btn.classList.add('editor-color-selected-alt');
-        btn.classList.remove('editor-color-selected');
-      } else {
-        btn.classList.remove('editor-color-selected-alt');
-      }
-    })
+    this.setTriangleHandlers();
   }
 
   setBtnHandlers = () => {
-    if (btnUndo) {
-      btnUndo.onclick = this.undoDraw;
-    }
-    if (btnFrame) {
-      btnFrame.onclick = () => this.saveFrame();
-    }
-    if (btnPlay) {
-      btnPlay.onclick = this.play;
-    }
-    if (btnSave) {
-      btnSave.onclick = this.save;
-    }
-    if (btnLoad) {
-      btnLoad.onclick = this.load;
-    }
-    if (btnRecolor) {
-      btnRecolor.onclick = this.recolor;
-    }
-    if (btnRandom) {
-      btnRandom.onclick = this.random;
-    }
+    const ec = this.eventChannel;
+    ec.subscribe('btnUndo', this.undoDraw);
+    ec.subscribe('btnFrame', () => this.saveFrame(false));
+    ec.subscribe('btnPlay', this.play);
+    ec.subscribe('btnSave', this.save);
+    ec.subscribe('btnLoad', this.load);
+    ec.subscribe('btnRecolor', this.recolor);
+    ec.subscribe('btnRandom', this.random);
   }
 
-  setFieldHandlers = () => {
-    inputFade.onfocus = () => this.inputFocused = true;
-    inputFade.onblur = () => this.inputFocused = false;
-    inputWait.onfocus = () => this.inputFocused = true;
-    inputWait.onblur = () => this.inputFocused = false;
-    inputAnimationName.onfocus = () => this.inputFocused = true;
-    inputAnimationName.onblur = () => this.inputFocused = false;
-
+  setUIHandlers = () => {
     // update 'new' tweenblocks if this frame changes
-    inputWait.onchange = this.refreshNewTweenBlocks;
-    inputFade.onchange = this.refreshNewTweenBlocks;
+    const ec = this.eventChannel;
+    const uiState = this.uiControls.state;
+    
+    ec.subscribe('inputWait', this.refreshNewTweenBlocks);
+    ec.subscribe('inputFade', this.refreshNewTweenBlocks);
+
+    ec.subscribe('setColor', (colIdx) => uiState.curColorIdx = colIdx);
+    ec.subscribe('setAltColor', (colIdx) => uiState.curAltColorIdx = colIdx);
   }
 
   getLastFrame = () => this.frames[this.frames.length - 1];
@@ -188,35 +102,13 @@ class Editor {
   }
 
   setKeyHandlers = () => {
-    document.onkeypress = (e) => {
-      if (this.inputFocused) { return; }
-      if (e.key.toLowerCase() === 'a') { this.switchToolboxVisibility(); }
-      if (e.key.toLowerCase() === 's') { this.undoDraw(); }
-      else if (e.key.toLowerCase() === 'f') { this.saveFrame(); }
-      else if (e.key.toLowerCase() === 'p') { this.play(); }
-      else if (e.key.toLowerCase() === 'c') { this.clear(); }
-      else if (e.key.toLowerCase() === 't') { this.switchToolboxLocation(); }
-      else if (e.key.toLowerCase() === 'l') { this.load(); }
-      else if (e.key.toLowerCase() === 'k') { this.save(); }
-      else if (e.key === '0') { return; }
-      else if (!isNaN(parseInt(e.key))) {
-        const idx = parseInt(e.key);
-        if (idx <= colors.length && idx > 0) {
-          this.colorClickHandler(idx - 1)();
-        }
-      }
-    }
-
-    document.onkeydown = (e) => {
-      if (e.key.toLowerCase() === 'shift') {
-        this.shiftDown = true;
-      }
-    }
-    document.onkeyup = (e) => {
-      if (e.key.toLowerCase() === 'shift') {
-        this.shiftDown = false;
-      }
-    }
+    const ec = this.eventChannel;
+    ec.subscribe('keypress_s', this.undoDraw);
+    ec.subscribe('keypress_f', this.saveFrame);
+    ec.subscribe('keypress_p', this.play);
+    ec.subscribe('keypress_c', this.clear);
+    ec.subscribe('keypress_l', this.load);
+    ec.subscribe('keypress_k', this.save);
   }
 
   setInitialState = () => {
@@ -247,12 +139,14 @@ class Editor {
 
   setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) { return; }
-    this.setTriangleColor(j, i, this.shiftDown ? this.curAltColorIdx : this.curColorIdx);
+    const uiState = this.uiControls.state;
+    this.setTriangleColor(j, i, uiState.shiftDown ? uiState.curAltColorIdx : uiState.curColorIdx);
   }
 
   setTriangleColor = (j: number, i: number, colorIdx: number, saveChange = true) => {
-    const startPos = this.elapsed + parseFloat(inputWait.value);
-    const endPos = startPos + parseFloat(inputFade.value);
+    const uiState = this.uiControls.state;
+    const startPos = this.elapsed + uiState.wait;
+    const endPos = startPos + uiState.fade;
     const oldColor = this.triColors[j][i];
     const lastFrameColor = this.getLastFrame().grid[j][i];
     if (oldColor === colorIdx) { return; }
@@ -282,30 +176,6 @@ class Editor {
     return tweenBlockList.some(tb => !(start >= tb.end || end <= tb.start));
   }
 
-  switchToolboxLocation = () => {
-    if (this.toolboxLocation === 'left') {
-      outerEditor.style.left = '60vw';
-      this.toolboxLocation = 'right';
-    } else {
-      outerEditor.style.left = '10vw';
-      this.toolboxLocation = 'left';
-    }
-  }
-
-  switchToolboxVisibility = () => {
-    if (this.toolboxVisible) {
-      outerEditor.style.display = 'none';
-      this.toolboxVisible = false;
-    } else {
-      outerEditor.style.display = 'block';
-      this.toolboxVisible = true;
-    }
-  }
-
-  logPattern = () => {
-    console.log(this.triColors);
-  }
-
   undoDraw = () => {
     if (!this.changes.length) { return; }
     const chg = this.changes.pop();
@@ -331,8 +201,9 @@ class Editor {
   }
 
   saveFrame = (instant?: boolean) => {
-    const wait = instant ? 0 : parseFloat(inputWait.value);
-    const fade = instant ? 0 : parseFloat(inputFade.value);
+    const uiState = this.uiControls.state;
+    const wait = instant ? 0 : uiState.wait;
+    const fade = instant ? 0 : uiState.fade;
     this.elapsed += wait + fade;
     this.frames.push({
       type: 'grid',
@@ -348,8 +219,9 @@ class Editor {
   }
 
   recolor = () => {
-    const from = parseInt(inputRecolorFrom.value, 10);
-    const to = parseInt(inputRecolorTo.value, 10);
+    const uiState = this.uiControls.state;
+    const from = uiState.colorFrom;
+    const to = uiState.colorTo;
 
     if (!colors[to - 1]) { return; }
     for (let j = 0; j < g.nRows; j++) {
@@ -377,7 +249,7 @@ class Editor {
     const patterns = deserializer.getPatternsFromFrames(this.frames);
     g.tl.clear();
     initializePatternAnimations(patterns);
-    g.tl.timeScale(parseFloat(inputSpeed.value));
+    g.tl.timeScale(this.uiControls.state.speed);
     g.tl.play();
     g.tl.eventCallback("onComplete", () => {
       setTimeout(this.cleanupAfterPlay, 100);
@@ -416,10 +288,10 @@ class Editor {
     })
   }
 
-  save = () => serializer.saveToLocalStorage(this.frames, inputAnimationName.value);
+  save = () => serializer.saveToLocalStorage(this.frames, this.uiControls.state.animationName);
 
   load = () => {
-    const retiled = deserializer.loadFromLocalStorage(inputAnimationName.value);
+    const retiled = deserializer.loadFromLocalStorage(this.uiControls.state.animationName);
     this.frames = retiled;
     this.triColors = gridCopy(retiled[retiled.length - 1].grid);
   }
@@ -427,5 +299,4 @@ class Editor {
 
 }
 
-const editor = new Editor();
-export default editor;
+export default Editor;

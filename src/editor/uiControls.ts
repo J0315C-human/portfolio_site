@@ -4,30 +4,53 @@ import '../assets/editor.css';
 
 const colors = g.config.colors;
 
-
+const inputWait = document.getElementById('editor-option-wait') as HTMLInputElement;
+const inputFade = document.getElementById('editor-option-fade') as HTMLInputElement;
+const inputSpeed = document.getElementById('editor-option-speed') as HTMLInputElement;
+const inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
+const inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
+const inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
 
 class UIControls {
-  curColorIdx: number;
-  curAltColorIdx: number;
-  inputFocused: boolean;
+  state: {
+    inputFocused: boolean;
+    shiftDown: boolean;
+    curColorIdx: number;
+    curAltColorIdx: number;
+    fade: number;
+    wait: number;
+    speed: number;
+    colorFrom: number;
+    colorTo: number;
+    animationName: string;
+  }
   toolboxLocation: 'left' | 'right';
   toolboxVisible: boolean;
-  shiftDown: boolean;
   eventChannel: EventChannel;
   elements: {
     outerEditor: HTMLElement;
   }
   constructor(eventChannel: EventChannel) {
-    this.curColorIdx = 1;
-    this.curAltColorIdx = 0;
-    this.inputFocused = false;
     this.toolboxLocation = 'left';
-    this.shiftDown = false;
+    this.state = {
+      inputFocused: false,
+      shiftDown: false,
+      curColorIdx: 1,
+      curAltColorIdx: 2,
+      wait: parseFloat(inputWait.value),
+      fade: parseFloat(inputFade.value),
+      speed: parseFloat(inputSpeed.value),
+      colorFrom: parseInt(inputRecolorFrom.value, 10),
+      colorTo: parseInt(inputRecolorTo.value, 10),
+      animationName: inputAnimationName.value,
+    }
     this.toolboxVisible = true;
+    (window as any).logyou = () => console.log(this);
     this.eventChannel = eventChannel;
     this.elements = {
       outerEditor: document.getElementById('editor-outer'),
     }
+
   }
 
   initialize = () => {
@@ -41,9 +64,7 @@ class UIControls {
     this.addColorPalette();
     this.addButtonEventSources();
     this.addInputEventSources();
-    this.setBtnHandlers();
-    this.setFieldHandlers();
-    // this.setTriangleHandlers();
+    this.addFieldHandlers();
     this.setKeyHandlers();
   }
 
@@ -58,7 +79,7 @@ class UIControls {
         btn.onclick = this.colorClickHandler(n);
         btn.style.backgroundColor = color;
         outerColors.appendChild(btn);
-        if (n === this.curColorIdx) {
+        if (n === 1) {
           btn.classList.add('editor-color-selected');
         }
       });
@@ -78,16 +99,17 @@ class UIControls {
 
   addInputEventSources = () => {
     const ec = this.eventChannel;
-    ec.addInputEventSource('inputWait', document.getElementById('editor-option-wait') as HTMLInputElement);
-    ec.addInputEventSource('inputFade', document.getElementById('editor-option-fade') as HTMLInputElement);
-    ec.addInputEventSource('inputSpeed', document.getElementById('editor-option-speed') as HTMLInputElement);
-    ec.addInputEventSource('inputRecolorFrom', document.getElementById('editor-option-colorfrom') as HTMLInputElement);
-    ec.addInputEventSource('inputRecolorTo', document.getElementById('editor-option-colorto') as HTMLInputElement);
-    ec.addInputEventSource('inputAnimationName', document.getElementById('editor-option-name') as HTMLInputElement);
+    ec.addInputEventSource('inputWait', inputWait);
+    ec.addInputEventSource('inputFade', inputFade);
+    ec.addInputEventSource('inputSpeed', inputSpeed);
+    ec.addInputEventSource('inputRecolorFrom', inputRecolorFrom);
+    ec.addInputEventSource('inputRecolorTo', inputRecolorTo);
+    ec.addInputEventSource('inputAnimationName', inputAnimationName);
   }
 
   colorClickHandler = (n: number) => () => {
-    if (this.shiftDown) {
+    if (this.state.inputFocused) return;
+    if (this.state.shiftDown) {
       this.setColorActiveAlt(n);
     } else {
       this.setColorActive(n);
@@ -106,6 +128,11 @@ class UIControls {
         }
       }
     }
+    this.state.curColorIdx = idx;
+    this.eventChannel.dispatch({
+      type: 'setColor',
+      payload: idx,
+    })
   }
 
   setColorActiveAlt = (idx: number) => {
@@ -120,43 +147,41 @@ class UIControls {
         }
       }
     }
+    this.state.curAltColorIdx = idx;
+    this.eventChannel.dispatch({
+      type: 'setAltColor',
+      payload: idx,
+    })
   }
 
-  setBtnHandlers = () => {
-    // if (btnUndo) {
-    //   btnUndo.onclick = this.undoDraw;
-    // }
-    // if (btnFrame) {
-    //   btnFrame.onclick = () => this.saveFrame();
-    // }
-    // if (btnPlay) {
-    //   btnPlay.onclick = this.play;
-    // }
-    // if (btnSave) {
-    //   btnSave.onclick = this.save;
-    // }
-    // if (btnLoad) {
-    //   btnLoad.onclick = this.load;
-    // }
-    // if (btnRecolor) {
-    //   btnRecolor.onclick = this.recolor;
-    // }
-    // if (btnRandom) {
-    //   btnRandom.onclick = this.random;
-    // }
-  }
+  setInputFocused = (focused: boolean) => () => this.state.inputFocused = focused;
 
-  setFieldHandlers = () => {
-    // inputFade.onfocus = () => this.inputFocused = true;
-    // inputFade.onblur = () => this.inputFocused = false;
-    // inputWait.onfocus = () => this.inputFocused = true;
-    // inputWait.onblur = () => this.inputFocused = false;
-    // inputAnimationName.onfocus = () => this.inputFocused = true;
-    // inputAnimationName.onblur = () => this.inputFocused = false;
+  addFieldHandlers = () => {
+    const ec = this.eventChannel;
+    [
+      document.getElementById('editor-option-wait') as HTMLInputElement,
+      document.getElementById('editor-option-fade') as HTMLInputElement,
+      document.getElementById('editor-option-speed') as HTMLInputElement,
+      document.getElementById('editor-option-colorfrom') as HTMLInputElement,
+      document.getElementById('editor-option-colorto') as HTMLInputElement,
+      document.getElementById('editor-option-name') as HTMLInputElement,
+    ]
+      .forEach(input => {
+        input.onfocus = () => this.eventChannel.dispatch({ type: 'input_focus', payload: { input } });
+        input.onblur = () => this.eventChannel.dispatch({ type: 'input_blur', payload: { input } });
+      })
 
-    // // update 'new' tweenblocks if this frame changes
-    // inputWait.onchange = this.refreshNewTweenBlocks;
-    // inputFade.onchange = this.refreshNewTweenBlocks;
+    ec.subscribe('input_focus', this.setInputFocused(true));
+    ec.subscribe('input_blur', this.setInputFocused(false));
+    ec.subscribe('inputWait', (payload) => this.state.wait = parseFloat(payload.value));
+    ec.subscribe('inputFade', (payload) => {
+      console.log(payload, parseFloat(payload.value))
+      this.state.fade = parseFloat(payload.value)
+    });
+    ec.subscribe('inputSpeed', (payload) => this.state.speed = parseFloat(payload.value));
+    ec.subscribe('inputRecolorFrom', (payload) => this.state.colorFrom = parseInt(payload.value, 10));
+    ec.subscribe('inputRecolorTo', (payload) => this.state.colorTo = parseInt(payload.value, 10));
+    ec.subscribe('inputAnimationName', (payload) => this.state.animationName = payload.value);
   }
 
   setKeyHandlers = () => {
@@ -173,21 +198,13 @@ class UIControls {
     ec.subscribe('keypress_6', this.colorClickHandler(6));
     ec.subscribe('keypress_7', this.colorClickHandler(7));
 
-    ec.subscribe('keydown_shift', () => this.shiftDown = true);
-    ec.subscribe('keyup_shift', () => this.shiftDown = false);
-
-    // document.onkeypress = (e) => {
-    //   if (e.key.toLowerCase() === 's') { this.undoDraw(); }
-    //   else if (e.key.toLowerCase() === 'f') { this.saveFrame(); }
-    //   else if (e.key.toLowerCase() === 'p') { this.play(); }
-    //   else if (e.key.toLowerCase() === 'c') { this.clear(); }
-    //   else if (e.key.toLowerCase() === 'l') { this.load(); }
-    //   else if (e.key.toLowerCase() === 'k') { this.save(); }
- 
+    ec.subscribe('keydown_shift', () => this.state.shiftDown = true);
+    ec.subscribe('keyup_shift', () => this.state.shiftDown = false);
   }
 
 
   switchToolboxLocation = () => {
+    if (this.state.inputFocused) return;
     if (this.toolboxLocation === 'left') {
       this.elements.outerEditor.style.left = '60vw';
       this.toolboxLocation = 'right';
@@ -198,6 +215,7 @@ class UIControls {
   }
 
   switchToolboxVisibility = () => {
+    if (this.state.inputFocused) return;
     if (this.toolboxVisible) {
       this.elements.outerEditor.style.display = 'none';
       this.toolboxVisible = false;
@@ -206,21 +224,6 @@ class UIControls {
       this.toolboxVisible = true;
     }
   }
-
-  // setTriangleHandlers = () => {
-  //   g.triangles.forEach((row, j) => {
-  //     row.forEach((tri, i) => {
-  //       tri.onpointerdown = this.setTriangleColorClickHandler(tri, j, i, false);
-  //       tri.onpointerenter = this.setTriangleColorClickHandler(tri, j, i, true);
-  //     })
-  //   });
-  // }
-
-  // setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
-  //   if (checkMouseDown && e.buttons === 0) { return; }
-  //   this.setTriangleColor(j, i, this.shiftDown ? this.curAltColorIdx : this.curColorIdx);
-  // }
 }
 
-const uiControls = new UIControls(new EventChannel());
-export default uiControls;
+export default UIControls;
