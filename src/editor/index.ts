@@ -10,6 +10,20 @@ import serializer from './serializer';
 
 const colors = g.config.colors;
 
+
+/* What this class does:
+-Keeps track of past frames from animation
+-saves/loads animations from storage
+-keeps track of timing for 'tween blocks'
+-keeps track of current frame:
+  -colors
+  -timing
+  -draw state
+  -draw event logging/undo
+-setup /tear down of animations
+-
+
+*/
 class Editor {
   // for storing previous frames
   frames: FrameWithGrid[];
@@ -37,10 +51,6 @@ class Editor {
   }
 
   initialize = () => {
-    const scroll = document.getElementById('scrollOuter');
-    if (scroll) {
-      scroll.style.pointerEvents = 'none';
-    }
     this.setInitialState();
     this.setBtnHandlers();
     this.setUIHandlers();
@@ -63,7 +73,7 @@ class Editor {
     // update 'new' tweenblocks if this frame changes
     const ec = this.eventChannel;
     const uiState = this.uiControls.state;
-    
+
     ec.subscribe('inputWait', this.refreshNewTweenBlocks);
     ec.subscribe('inputFade', this.refreshNewTweenBlocks);
 
@@ -112,7 +122,6 @@ class Editor {
   }
 
   setInitialState = () => {
-    document.body.style.backgroundColor = "#FFF";
     this.triColors = [];
     this.prevTweenBlocks = [];
     g.triangles.forEach((row) => {

@@ -30,6 +30,10 @@ class EventChannel {
     }
   }
 
+  subscribeAll = (actionHandler: { action: string, handler: ActionHandler }[]) => {
+    actionHandler.forEach(actionHandler => this.subscribe(actionHandler.action, actionHandler.handler));
+  }
+
   dispatch = (action: Action) => {
     console.log(action);
     this.subscribers.forEach(subscriber => {

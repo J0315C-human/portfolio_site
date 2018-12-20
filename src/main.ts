@@ -7,6 +7,7 @@ import deserializer from './editor/deserializer';
 import EventChannel from './editor/EventChannel';
 import UIControls from './editor/uiControls';
 import Editor from './editor';
+import Elements from './editor/elements';
 
 const toggle = window.localStorage.getItem("editor");
 
@@ -25,8 +26,11 @@ if (!runEditor) {
 } else {
   setInitialSizing();
   createTriangles();
+
   const ec = new EventChannel();
-  const uiControls = new UIControls(ec);
+  const elements = new Elements();
+  const uiControls = new UIControls(ec, elements);
+  
   uiControls.initialize();
 
   const editor = new Editor(uiControls, ec);
