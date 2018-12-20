@@ -1,8 +1,10 @@
-import g from "../globals";
-
+import Globals from "../globals";
 
 export default class Elements {
   body: HTMLElement;
+  outer: HTMLElement;
+  svgOuter: HTMLElement;
+  rootSvgGroup: HTMLElement;
   scrollContainer: HTMLDivElement;
   outerEditor: HTMLDivElement;
   outerColors: HTMLDivElement;
@@ -23,6 +25,9 @@ export default class Elements {
   inputs: HTMLInputElement[];
   constructor() {
     this.body = document.body;
+    this.outer = document.getElementById("outer");
+    this.svgOuter = document.getElementById("svg");
+    this.rootSvgGroup = document.getElementById("rootGroup");
     this.scrollContainer = document.getElementById('scrollOuter') as HTMLDivElement;
     this.outerEditor = document.getElementById('editor-outer') as HTMLDivElement;
     this.outerColors = document.getElementById('editor-colors') as HTMLDivElement;
@@ -60,13 +65,13 @@ export default class Elements {
     ]
   }
 
-  setupForEditorMode = () => {
+  setupForEditorMode = (g: Globals) => {
     this.scrollContainer.style.pointerEvents = 'none';
     this.outerEditor.style.display = 'block';
     this.body.style.backgroundColor = "#FFF";
   }
 
-  setupForNormalMode = () => {
+  setupForNormalMode = (g: Globals) => {
     this.scrollContainer.style.pointerEvents = 'auto';
     this.outerEditor.style.display = 'none';
     this.body.style.backgroundColor = g.config.colors[0];

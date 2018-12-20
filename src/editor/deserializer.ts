@@ -1,11 +1,9 @@
 import { PatternData } from "../typings";
 import { FrameWithDeltas, FrameWithGrid, AnimationSlug, AnimationSlugEncoded, FrameWithCompressedGrid, FrameWithCompressedDeltas, CompressedFrameType } from "./typings";
-import g from "../globals";
 import { retileGrid, gridCopy, gridFlippedDiag } from "../utils";
 import { removeEncodings } from "./encodings";
 import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
-
-const colors = g.config.colors;
+import Globals from "../globals";
 
 const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^') || slug.includes('<')
   ? unslugFrameWithGrid(slug)
@@ -80,7 +78,7 @@ const getFrameWithGridFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: n
   return f;
 }
 
-const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded): FrameWithGrid[] => {
+const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded, g: Globals): FrameWithGrid[] => {
   const allSlugs = removeEncodings(allSlugsEncoded);
   let grid = new Array(g.nRows).fill(0).map(() => new Array(g.nCols).fill(0));
   const frames: FrameWithGrid[] = [];
@@ -96,8 +94,9 @@ const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded): Fra
   return frames;
 }
 
-const getPatternsFromFrames = (frames: FrameWithGrid[]) => {
+const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals) => {
   const patterns: PatternData[] = [];
+  const colors = g.config.colors;
   const getZeroOffset = () => 0;
   frames.forEach((frame, n) => {
     const lastGrid = n > 0 ? frames[n - 1].grid : undefined;
@@ -117,13 +116,13 @@ const getPatternsFromFrames = (frames: FrameWithGrid[]) => {
   return patterns;
 }
 
-const loadFromLocalStorage = (animationName: string, retileRows = g.nRows, retileCols = g.nCols): FrameWithGrid[] => {
+const loadFromLocalStorage = (animationName: string, g: Globals): FrameWithGrid[] => {
   const encodedSlug = window.localStorage.getItem(animationName)
-  const frames = getFramesWithGridsFromSlugs(encodedSlug);
+  const frames = getFramesWithGridsFromSlugs(encodedSlug, g);
 
   const retiled = frames.map(frame => ({
     ...frame,
-    grid: retileGrid(frame.grid, retileRows, retileCols),
+    grid: retileGrid(frame.grid, g.nRows, g.nCols),
   }));
   return retiled;
 }

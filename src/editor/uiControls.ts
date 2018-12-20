@@ -1,10 +1,7 @@
-import g from '../globals';
 import EventChannel from './EventChannel';
 import '../assets/editor.css';
 import Elements from './elements';
-
-const colors = g.config.colors;
-
+import Globals from '../globals';
 
 class UIControls {
   state: {
@@ -23,7 +20,10 @@ class UIControls {
   toolboxVisible: boolean;
   eventChannel: EventChannel;
   elements: Elements;
-  constructor(eventChannel: EventChannel, elements: Elements) {
+  colors: string[];
+  g: Globals;
+  constructor(eventChannel: EventChannel, elements: Elements, globals: Globals) {
+    this.g = globals;
     this.elements = elements;
     this.toolboxLocation = 'left';
     this.state = {
@@ -41,10 +41,11 @@ class UIControls {
     this.toolboxVisible = true;
     (window as any).logyou = () => console.log(this);
     this.eventChannel = eventChannel;
+    this.colors = globals.config.colors;
   }
 
   initialize = () => {
-    this.elements.setupForEditorMode();
+    this.elements.setupForEditorMode(this.g);
 
     this.addColorPalette();
     this.addButtonEventSources();
@@ -58,7 +59,7 @@ class UIControls {
     // create color buttons
     colorButtons.forEach((btn, n) => {
       btn.onclick = this.colorClickHandler(n);
-      btn.style.backgroundColor = colors[n];
+      btn.style.backgroundColor = this.colors[n];
       if (n === 1) {
         btn.classList.add('editor-color-selected');
       }
@@ -134,7 +135,7 @@ class UIControls {
 
   addFieldHandlers = () => {
     const setInputFocused = (focused: boolean) => () => this.state.inputFocused = focused;
-    
+
     const ec = this.eventChannel;
     this.elements.inputs.forEach(input => {
       input.onfocus = () => this.eventChannel.dispatch({ type: 'input_focus', payload: { input } });

@@ -1,39 +1,43 @@
 import './assets/styles.css';
-import { setScrollAndResizeHandlers } from './dom/handlers';
-import { createTriangles, setInitialSizing } from './dom';
-import { initializePatternAnimations } from './patterns';
-import { fitToWindow } from './globals';
+import ScrollResizeHandler from './dom/handlers';
+import Triangles from './dom/triangles';
+import Patterns from './patterns';
+import Globals from './globals';
 import deserializer from './editor/deserializer';
 import EventChannel from './editor/EventChannel';
 import UIControls from './editor/uiControls';
 import Editor from './editor';
 import Elements from './editor/elements';
 
-const toggle = window.localStorage.getItem("editor");
+const elements = new Elements();
+const globals = new Globals(elements);
+const triangles = new Triangles(globals, elements);
 
+const patternHandler = new Patterns(globals);
+const toggle = window.localStorage.getItem("editor");
 const runEditor = toggle && toggle === 'true';
 
 
 if (!runEditor) {
-  setInitialSizing();
-  fitToWindow();
-  createTriangles();
+  triangles.setInitialSizing();
+  globals.getGlobalSizingFromWindow();
+  triangles.createTriangles();
 
-  const decoded = deserializer.loadFromLocalStorage('animation');
-  const patterns = deserializer.getPatternsFromFrames(decoded);
-  initializePatternAnimations(patterns);
-  setScrollAndResizeHandlers();
+  const decoded = deserializer.loadFromLocalStorage('animation', globals);
+  const patterns = deserializer.getPatternsFromFrames(decoded, globals);
+  patternHandler.initializePatternAnimations(patterns);
+  const handler = new ScrollResizeHandler(globals);
+  handler.setScrollAndResizeHandlers();
 } else {
-  setInitialSizing();
-  createTriangles();
+  triangles.setInitialSizing();
+  triangles.createTriangles();
 
   const ec = new EventChannel();
-  const elements = new Elements();
-  const uiControls = new UIControls(ec, elements);
-  
+  const uiControls = new UIControls(ec, elements, globals);
+
   uiControls.initialize();
 
-  const editor = new Editor(uiControls, ec);
+  const editor = new Editor(uiControls, ec, globals, triangles, patternHandler);
 
   editor.initialize();
 }

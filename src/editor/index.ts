@@ -1,15 +1,12 @@
-import g from '../globals';
-import { createTriangles } from '../dom';
+import Triangles from '../dom/triangles';
 import { TriangleChange, FrameWithGrid, TweenBlock } from './typings';
 import UIControls from './uiControls';
 import EventChannel from './EventChannel';
 import { gridCopy } from '../utils';
 import deserializer from './deserializer';
-import { initializePatternAnimations } from '../patterns';
+import Patterns from '../patterns';
 import serializer from './serializer';
-
-const colors = g.config.colors;
-
+import Globals from '../globals';
 
 /* What this class does:
 -Keeps track of past frames from animation
@@ -38,9 +35,15 @@ class Editor {
 
   uiControls: UIControls;
   eventChannel: EventChannel;
-  constructor(uiControls: UIControls, eventChannel: EventChannel) {
+  g: Globals;
+  triangles: Triangles;
+  patterns: Patterns;
+  constructor(uiControls: UIControls, eventChannel: EventChannel, globals: Globals, triangles: Triangles, patterns: Patterns) {
     this.uiControls = uiControls;
     this.eventChannel = eventChannel;
+    this.g = globals;
+    this.triangles = triangles;
+    this.patterns = patterns;
 
     this.triColors = [];
     this.changes = [];
@@ -87,7 +90,7 @@ class Editor {
     const grid = this.getLastFrame().grid;
     grid.forEach((row, j) => {
       row.forEach((colorIdx, i) => {
-        g.triangles[j][i].setAttribute('fill', colors[colorIdx]);
+        this.g.triangles[j][i].setAttribute('fill', this.g.config.colors[colorIdx]);
         this.triColors[j][i] = colorIdx;
       })
     })
@@ -124,7 +127,7 @@ class Editor {
   setInitialState = () => {
     this.triColors = [];
     this.prevTweenBlocks = [];
-    g.triangles.forEach((row) => {
+    this.g.triangles.forEach((row) => {
       const newRow = [] as number[];
       const newRow2 = [] as TweenBlock[][];
       row.forEach(() => {
@@ -138,7 +141,7 @@ class Editor {
   }
 
   setTriangleHandlers = () => {
-    g.triangles.forEach((row, j) => {
+    this.g.triangles.forEach((row, j) => {
       row.forEach((tri, i) => {
         tri.onpointerdown = this.setTriangleColorClickHandler(tri, j, i, false);
         tri.onpointerenter = this.setTriangleColorClickHandler(tri, j, i, true);
@@ -173,7 +176,7 @@ class Editor {
       }
     }
 
-    g.triangles[j][i].setAttribute('fill', colors[colorIdx]);
+    this.g.triangles[j][i].setAttribute('fill', this.g.config.colors[colorIdx]);
     this.triColors[j][i] = colorIdx;
     if (saveChange) {
       this.logChange(oldColor, j, i);
@@ -201,9 +204,9 @@ class Editor {
   }
 
   clear = () => {
-    g.triangles.forEach((row, j) => {
+    this.g.triangles.forEach((row, j) => {
       row.forEach((tri, i) => {
-        tri.setAttribute('fill', colors[0]);
+        tri.setAttribute('fill', this.g.config.colors[0]);
         this.triColors[j][i] = 0;
       })
     });
@@ -231,10 +234,11 @@ class Editor {
     const uiState = this.uiControls.state;
     const from = uiState.colorFrom;
     const to = uiState.colorTo;
+    const { config, nRows, nCols } = this.g
 
-    if (!colors[to - 1]) { return; }
-    for (let j = 0; j < g.nRows; j++) {
-      for (let i = 0; i < g.nCols; i++) {
+    if (!config.colors[to - 1]) { return; }
+    for (let j = 0; j < nRows; j++) {
+      for (let i = 0; i < nCols; i++) {
         if (this.triColors[j][i] + 1 === from) {
           this.setTriangleColor(j, i, (to - 1));
         }
@@ -243,11 +247,12 @@ class Editor {
   }
 
   random = () => {
+    const { config, nRows, nCols } = this.g
     const percent = 0.7;
-    for (let j = 0; j < g.nRows; j++) {
-      for (let i = 0; i < g.nCols; i++) {
+    for (let j = 0; j < nRows; j++) {
+      for (let i = 0; i < nCols; i++) {
         if (Math.random() < percent) {
-          const colorIdx = Math.floor(Math.random() * colors.length);
+          const colorIdx = Math.floor(Math.random() * config.colors.length);
           this.setTriangleColor(j, i, colorIdx);
         }
       }
@@ -255,24 +260,24 @@ class Editor {
   }
 
   play = () => {
-    const patterns = deserializer.getPatternsFromFrames(this.frames);
-    g.tl.clear();
-    initializePatternAnimations(patterns);
-    g.tl.timeScale(this.uiControls.state.speed);
-    g.tl.play();
-    g.tl.eventCallback("onComplete", () => {
+    const patterns = deserializer.getPatternsFromFrames(this.frames, this.g);
+    this.g.tl.clear();
+    this.patterns.initializePatternAnimations(patterns);
+    this.g.tl.timeScale(this.uiControls.state.speed);
+    this.g.tl.play();
+    this.g.tl.eventCallback("onComplete", () => {
       setTimeout(this.cleanupAfterPlay, 100);
     });
   }
 
   cleanupAfterPlay = () => {
-    g.tl.clear();
+    this.g.tl.clear();
     this.recreateCanvas();
     this.redraw();
   }
 
   recreateCanvas = () => {
-    createTriangles();
+    this.triangles.createTriangles();
     this.setTriangleHandlers();
   }
 
@@ -281,8 +286,8 @@ class Editor {
       const grid = this.frames[idx].grid;
       grid.forEach((row, j) => {
         row.forEach((colIdx, i) => {
-          const color = colors[colIdx];
-          g.triangles[j][i].setAttribute('fill', color);
+          const color = this.g.config.colors[colIdx];
+          this.g.triangles[j][i].setAttribute('fill', color);
         })
       })
     }
@@ -291,8 +296,8 @@ class Editor {
   redraw = () => {
     this.triColors.forEach((row, j) => {
       row.forEach((colIdx, i) => {
-        const color = colors[colIdx];
-        g.triangles[j][i].setAttribute('fill', color);
+        const color = this.g.config.colors[colIdx];
+        this.g.triangles[j][i].setAttribute('fill', color);
       })
     })
   }
@@ -300,7 +305,7 @@ class Editor {
   save = () => serializer.saveToLocalStorage(this.frames, this.uiControls.state.animationName);
 
   load = () => {
-    const retiled = deserializer.loadFromLocalStorage(this.uiControls.state.animationName);
+    const retiled = deserializer.loadFromLocalStorage(this.uiControls.state.animationName, this.g);
     this.frames = retiled;
     this.triColors = gridCopy(retiled[retiled.length - 1].grid);
   }
