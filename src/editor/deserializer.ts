@@ -1,9 +1,9 @@
-import { PatternData } from "../typings";
 import { FrameWithDeltas, FrameWithGrid, AnimationSlug, AnimationSlugEncoded, FrameWithCompressedGrid, FrameWithCompressedDeltas, CompressedFrameType } from "./typings";
-import { retileGrid, gridCopy, gridFlippedDiag } from "../utils";
+import { retileGrid, gridCopy, gridFlippedDiag, getPatternsFromFrames } from "../utils";
 import { removeEncodings } from "./encodings";
 import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
 import Globals from "../globals";
+import EventChannel from "./EventChannel";
 
 const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^') || slug.includes('<')
   ? unslugFrameWithGrid(slug)
@@ -78,9 +78,9 @@ const getFrameWithGridFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: n
   return f;
 }
 
-const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded, g: Globals): FrameWithGrid[] => {
+const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded, nRows: number, nCols: number): FrameWithGrid[] => {
   const allSlugs = removeEncodings(allSlugsEncoded);
-  let grid = new Array(g.nRows).fill(0).map(() => new Array(g.nCols).fill(0));
+  let grid = new Array(nRows).fill(0).map(() => new Array(nCols).fill(0));
   const frames: FrameWithGrid[] = [];
   allSlugs.split(';')
     .forEach(slug => {
@@ -94,41 +94,48 @@ const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded, g: G
   return frames;
 }
 
-const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals) => {
-  const patterns: PatternData[] = [];
-  const colors = g.config.colors;
-  const getZeroOffset = () => 0;
-  frames.forEach((frame, n) => {
-    const lastGrid = n > 0 ? frames[n - 1].grid : undefined;
-    const pattern: PatternData = {
-      getColor: (col, row) => {
-        if (!frame.grid[row]) { return colors[0]; }
-        const colorIdx = frame.grid[row][col];
-        if (lastGrid && lastGrid[row][col] === colorIdx) { return undefined; }
-        else { return colors[colorIdx]; }
-      },
-      getDuration: () => frame.fade,
-      getOffset: getZeroOffset,
-      wait: frame.wait,
-    }
-    patterns.push(pattern);
-  })
-  return patterns;
-}
+export default class Deserializer {
+  eventChannel: EventChannel;
+  g: Globals;
+  constructor(eventChannel: EventChannel, g: Globals) {
+    this.eventChannel = eventChannel;
+    this.g = g;
+    this.eventChannel.subscribe('load_animation_editor_to_timeline', this.loadAnimationToTimelineFromEditor);
+    this.eventChannel.subscribe('load_animation_localstorage_to_timeline', this.loadAnimationToTimelineFromLocalStorage);
+    this.eventChannel.subscribe('load_animation_localstorage_to_editor', this.loadAnimationToEditorFromLocalStorage);
+  }
 
-const loadFromLocalStorage = (animationName: string, g: Globals): FrameWithGrid[] => {
-  const encodedSlug = window.localStorage.getItem(animationName)
-  const frames = getFramesWithGridsFromSlugs(encodedSlug, g);
+  private getAnimationFromLocalStorage = (name: string): FrameWithGrid[] => {
+    const { nRows, nCols } = this.g;
+    const encodedSlug = window.localStorage.getItem(name)
+    const frames = getFramesWithGridsFromSlugs(encodedSlug, nRows, nCols);
 
-  const retiled = frames.map(frame => ({
-    ...frame,
-    grid: retileGrid(frame.grid, g.nRows, g.nCols),
-  }));
-  return retiled;
-}
+    const retiled = frames.map(frame => ({
+      ...frame,
+      grid: retileGrid(frame.grid, nRows, nCols),
+    }));
+    return retiled;
+  }
 
-const deserializer = {
-  getPatternsFromFrames,
-  loadFromLocalStorage,
+  private loadAnimationToTimelineFromLocalStorage = (payload: { name: string }): void => {
+    const frames = this.getAnimationFromLocalStorage(payload.name);
+    this.eventChannel.dispatch({
+      type: 'patterns_init',
+      payload: { patterns: getPatternsFromFrames(frames, this.g) },
+    })
+  }
+
+  private loadAnimationToEditorFromLocalStorage = (payload: { name: string }): void => {
+    this.eventChannel.dispatch({
+      type: 'editor_load_frames',
+      payload: { frames: this.getAnimationFromLocalStorage(payload.name) },
+    })
+  }
+
+  private loadAnimationToTimelineFromEditor = (payload: { frames: FrameWithGrid[] }): void => {
+    this.eventChannel.dispatch({
+      type: 'patterns_init',
+      payload: { patterns: getPatternsFromFrames(payload.frames, this.g) },
+    })
+  }
 }
-export default deserializer;

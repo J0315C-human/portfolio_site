@@ -3,41 +3,34 @@ import ScrollResizeHandler from './dom/handlers';
 import Triangles from './dom/triangles';
 import Patterns from './patterns';
 import Globals from './globals';
-import deserializer from './editor/deserializer';
 import EventChannel from './editor/EventChannel';
-import UIControls from './editor/uiControls';
 import Editor from './editor';
 import Elements from './editor/elements';
+import Deserializer from './editor/deserializer';
 
-const elements = new Elements();
-const globals = new Globals(elements);
-const triangles = new Triangles(globals, elements);
+// other classes should only depend on these:
+const el = new Elements();
+const ec = new EventChannel();
+const g = new Globals();
+// -- use event passing!
 
-const patternHandler = new Patterns(globals);
-const toggle = window.localStorage.getItem("editor");
-const runEditor = toggle && toggle === 'true';
+new Triangles(g, ec);
+new Patterns(g, ec);
+new Deserializer(ec, g);
+
+const runEditor = window.localStorage.getItem("editor");
 
 
-if (!runEditor) {
-  triangles.setInitialSizing();
-  globals.getGlobalSizingFromWindow();
-  triangles.createTriangles();
+if (!(runEditor && runEditor === 'true')) {
+  g.getGlobalSizingFromWindow();
+  ec.dispatch({ type: 'triangles_init' });
 
-  const decoded = deserializer.loadFromLocalStorage('animation', globals);
-  const patterns = deserializer.getPatternsFromFrames(decoded, globals);
-  patternHandler.initializePatternAnimations(patterns);
-  const handler = new ScrollResizeHandler(globals);
+  ec.dispatch({ type: 'load_animation_localstorage_to_timeline', payload: { name: 'animation' } });
+  const handler = new ScrollResizeHandler(g);
   handler.setScrollAndResizeHandlers();
+
 } else {
-  triangles.setInitialSizing();
-  triangles.createTriangles();
-
-  const ec = new EventChannel();
-  const uiControls = new UIControls(ec, elements, globals);
-
-  uiControls.initialize();
-
-  const editor = new Editor(uiControls, ec, globals, triangles, patternHandler);
+  const editor = new Editor(ec, el, g);
 
   editor.initialize();
 }

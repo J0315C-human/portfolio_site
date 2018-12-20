@@ -1,26 +1,21 @@
-import Triangles from '../dom/triangles';
 import { TriangleChange, FrameWithGrid, TweenBlock } from './typings';
 import UIControls from './uiControls';
 import EventChannel from './EventChannel';
 import { gridCopy } from '../utils';
-import deserializer from './deserializer';
-import Patterns from '../patterns';
 import serializer from './serializer';
 import Globals from '../globals';
+import Elements from './elements';
 
 /* What this class does:
 -Keeps track of past frames from animation
--saves/loads animations from storage
 -keeps track of timing for 'tween blocks'
 -keeps track of current frame:
   -colors
   -timing
   -draw state
   -draw event logging/undo
--setup /tear down of animations
--
-
 */
+
 class Editor {
   // for storing previous frames
   frames: FrameWithGrid[];
@@ -36,14 +31,10 @@ class Editor {
   uiControls: UIControls;
   eventChannel: EventChannel;
   g: Globals;
-  triangles: Triangles;
-  patterns: Patterns;
-  constructor(uiControls: UIControls, eventChannel: EventChannel, globals: Globals, triangles: Triangles, patterns: Patterns) {
-    this.uiControls = uiControls;
+  constructor(eventChannel: EventChannel, elements: Elements, globals: Globals) {
+    this.uiControls = new UIControls(eventChannel, elements, globals);
     this.eventChannel = eventChannel;
     this.g = globals;
-    this.triangles = triangles;
-    this.patterns = patterns;
 
     this.triColors = [];
     this.changes = [];
@@ -54,14 +45,17 @@ class Editor {
   }
 
   initialize = () => {
+    this.eventChannel.dispatch({ type: 'triangles_init' });
+    this.uiControls.initialize();
     this.setInitialState();
     this.setBtnHandlers();
     this.setUIHandlers();
     this.setKeyHandlers();
     this.setTriangleHandlers();
+    this.setOtherEventHandlers();
   }
 
-  setBtnHandlers = () => {
+  private setBtnHandlers = () => {
     const ec = this.eventChannel;
     ec.subscribe('btnUndo', this.undoDraw);
     ec.subscribe('btnFrame', () => this.saveFrame(false));
@@ -72,7 +66,7 @@ class Editor {
     ec.subscribe('btnRandom', this.random);
   }
 
-  setUIHandlers = () => {
+  private setUIHandlers = () => {
     // update 'new' tweenblocks if this frame changes
     const ec = this.eventChannel;
     const uiState = this.uiControls.state;
@@ -84,20 +78,34 @@ class Editor {
     ec.subscribe('setAltColor', (colIdx) => uiState.curAltColorIdx = colIdx);
   }
 
-  getLastFrame = () => this.frames[this.frames.length - 1];
+  private setOtherEventHandlers = () => {
+    this.eventChannel.subscribe('editor_load_frames', this.loadFrames);
+    this.eventChannel.subscribe('animation_finished', () => {
+      this.g.tl.clear();
+      this.recreateCanvas();
+      this.redrawCurrentFrame();
+    });
+  }
 
-  clearCurrentFrame = () => {
+  private recreateCanvas = () => {
+    this.eventChannel.dispatch({ type: 'triangles_init' })
+    this.setTriangleHandlers();
+  }
+
+  private getLastFrame = () => this.frames[this.frames.length - 1];
+
+  private clearCurrentFrame = () => {
     const grid = this.getLastFrame().grid;
     grid.forEach((row, j) => {
       row.forEach((colorIdx, i) => {
-        this.g.triangles[j][i].setAttribute('fill', this.g.config.colors[colorIdx]);
+        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: this.g.config.colors[colorIdx] } });
         this.triColors[j][i] = colorIdx;
       })
     })
     this.newTweenBlocks = [];
   }
 
-  refreshNewTweenBlocks = () => {
+  private refreshNewTweenBlocks = () => {
     const tweenBlocksToAdd = this.newTweenBlocks.map(tb => ({ i: tb.i, j: tb.j, color: tb.color }));
     this.clearCurrentFrame();
     tweenBlocksToAdd.forEach(tb => {
@@ -105,16 +113,16 @@ class Editor {
     })
   }
 
-  removeTweenBlockAt = (j: number, i: number) => {
+  private removeTweenBlockAt = (j: number, i: number) => {
     this.newTweenBlocks = this.newTweenBlocks.filter(tb => !(tb.i === i && tb.j === j));
   }
 
-  addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
+  private addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
     this.removeTweenBlockAt(j, i);
     this.newTweenBlocks.push({ i, j, color, tweenBlock })
   }
 
-  setKeyHandlers = () => {
+  private setKeyHandlers = () => {
     const ec = this.eventChannel;
     ec.subscribe('keypress_s', this.undoDraw);
     ec.subscribe('keypress_f', this.saveFrame);
@@ -124,38 +132,49 @@ class Editor {
     ec.subscribe('keypress_k', this.save);
   }
 
-  setInitialState = () => {
+  private setInitialState = () => {
     this.triColors = [];
     this.prevTweenBlocks = [];
-    this.g.triangles.forEach((row) => {
+    for (let j = 0; j < this.g.nRows; j++) {
       const newRow = [] as number[];
       const newRow2 = [] as TweenBlock[][];
-      row.forEach(() => {
+      for (let i = 0; i < this.g.nCols; i++) {
         newRow.push(0);
         newRow2.push([{ start: 0, end: 0 }]); // initial 'tween blocks' just to start
-      })
+      }
       this.triColors.push(newRow);
       this.prevTweenBlocks.push(newRow2);
-    });
+    }
     this.saveFrame(true);
   }
 
-  setTriangleHandlers = () => {
-    this.g.triangles.forEach((row, j) => {
-      row.forEach((tri, i) => {
-        tri.onpointerdown = this.setTriangleColorClickHandler(tri, j, i, false);
-        tri.onpointerenter = this.setTriangleColorClickHandler(tri, j, i, true);
-      })
-    });
+  private setTriangleHandlers = () => {
+    for (let j = 0; j < this.g.nRows; j++)
+      for (let i = 0; i < this.g.nCols; i++) {
+        this.eventChannel.dispatch({
+          type: 'triangle_set_onpointerdown',
+          payload: {
+            j, i,
+            handler: this.setTriangleColorClickHandler(j, i, false),
+          }
+        });
+        this.eventChannel.dispatch({
+          type: 'triangle_set_onpointerenter',
+          payload: {
+            j, i,
+            handler: this.setTriangleColorClickHandler(j, i, true),
+          }
+        });
+      }
   }
 
-  setTriangleColorClickHandler = (el: SVGElement, j: number, i: number, checkMouseDown: boolean) => (e: PointerEvent) => {
+  private setTriangleColorClickHandler = (j: number, i: number, checkMouseDown: boolean) => (el: SVGElement) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) { return; }
     const uiState = this.uiControls.state;
     this.setTriangleColor(j, i, uiState.shiftDown ? uiState.curAltColorIdx : uiState.curColorIdx);
   }
 
-  setTriangleColor = (j: number, i: number, colorIdx: number, saveChange = true) => {
+  private setTriangleColor = (j: number, i: number, colorIdx: number, saveChange = true) => {
     const uiState = this.uiControls.state;
     const startPos = this.elapsed + uiState.wait;
     const endPos = startPos + uiState.fade;
@@ -176,25 +195,25 @@ class Editor {
       }
     }
 
-    this.g.triangles[j][i].setAttribute('fill', this.g.config.colors[colorIdx]);
+    this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: this.g.config.colors[colorIdx] } })
     this.triColors[j][i] = colorIdx;
     if (saveChange) {
       this.logChange(oldColor, j, i);
     }
   }
 
-  checkForActiveTweens = (start: number, end: number, j: number, i: number) => {
+  private checkForActiveTweens = (start: number, end: number, j: number, i: number) => {
     const tweenBlockList = this.prevTweenBlocks[j][i];
     return tweenBlockList.some(tb => !(start >= tb.end || end <= tb.start));
   }
 
-  undoDraw = () => {
+  private undoDraw = () => {
     if (!this.changes.length) { return; }
     const chg = this.changes.pop();
     this.setTriangleColor(chg.j, chg.i, chg.oldColor, false);
   }
 
-  logChange = (oldColorIdx: number, j: number, i: number) => {
+  private logChange = (oldColorIdx: number, j: number, i: number) => {
     const change = { oldColor: oldColorIdx, i, j };
     if (this.changes.length < this.MAX_UNDO_CHANGES) {
       this.changes.push(change);
@@ -203,16 +222,16 @@ class Editor {
     }
   }
 
-  clear = () => {
-    this.g.triangles.forEach((row, j) => {
-      row.forEach((tri, i) => {
-        tri.setAttribute('fill', this.g.config.colors[0]);
+  private clear = () => {
+    const color = this.g.config.colors[0];
+    for (let j = 0; j < this.g.nRows; j++)
+      for (let i = 0; i < this.g.nCols; i++) {
+        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color } });
         this.triColors[j][i] = 0;
-      })
-    });
+      }
   }
 
-  saveFrame = (instant?: boolean) => {
+  private saveFrame = (instant?: boolean) => {
     const uiState = this.uiControls.state;
     const wait = instant ? 0 : uiState.wait;
     const fade = instant ? 0 : uiState.fade;
@@ -230,7 +249,7 @@ class Editor {
     this.changes = [];
   }
 
-  recolor = () => {
+  private recolor = () => {
     const uiState = this.uiControls.state;
     const from = uiState.colorFrom;
     const to = uiState.colorTo;
@@ -246,7 +265,7 @@ class Editor {
     }
   }
 
-  random = () => {
+  private random = () => {
     const { config, nRows, nCols } = this.g
     const percent = 0.7;
     for (let j = 0; j < nRows; j++) {
@@ -259,55 +278,51 @@ class Editor {
     }
   }
 
-  play = () => {
-    const patterns = deserializer.getPatternsFromFrames(this.frames, this.g);
-    this.g.tl.clear();
-    this.patterns.initializePatternAnimations(patterns);
+  private play = () => {
+    this.eventChannel.dispatch({
+      type: 'load_animation_editor_to_timeline',
+      payload: { frames: this.frames },
+    })
     this.g.tl.timeScale(this.uiControls.state.speed);
     this.g.tl.play();
     this.g.tl.eventCallback("onComplete", () => {
-      setTimeout(this.cleanupAfterPlay, 100);
+      this.eventChannel.dispatch({ type: 'animation_finished' });
     });
   }
 
-  cleanupAfterPlay = () => {
-    this.g.tl.clear();
-    this.recreateCanvas();
-    this.redraw();
-  }
+  // private drawFrame = (idx: number) => {
+  //   if (this.frames[idx]) {
+  //     const grid = this.frames[idx].grid;
+  //     grid.forEach((row, j) => {
+  //       row.forEach((colIdx, i) => {
+  //         const color = this.g.config.colors[colIdx];
+  //         this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color } });
+  //       })
+  //     })
+  //   }
+  // }
 
-  recreateCanvas = () => {
-    this.triangles.createTriangles();
-    this.setTriangleHandlers();
-  }
-
-  drawFrame = (idx: number) => {
-    if (this.frames[idx]) {
-      const grid = this.frames[idx].grid;
-      grid.forEach((row, j) => {
-        row.forEach((colIdx, i) => {
-          const color = this.g.config.colors[colIdx];
-          this.g.triangles[j][i].setAttribute('fill', color);
-        })
-      })
-    }
-  }
-
-  redraw = () => {
+  private redrawCurrentFrame = () => {
     this.triColors.forEach((row, j) => {
       row.forEach((colIdx, i) => {
         const color = this.g.config.colors[colIdx];
-        this.g.triangles[j][i].setAttribute('fill', color);
+        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color } });
       })
     })
   }
 
-  save = () => serializer.saveToLocalStorage(this.frames, this.uiControls.state.animationName);
+  private save = () => serializer.saveToLocalStorage(this.frames, this.uiControls.state.animationName);
 
-  load = () => {
-    const retiled = deserializer.loadFromLocalStorage(this.uiControls.state.animationName, this.g);
-    this.frames = retiled;
-    this.triColors = gridCopy(retiled[retiled.length - 1].grid);
+  private load = () => {
+    this.eventChannel.dispatch({
+      type: 'load_animation_localstorage_to_editor',
+      payload: { name: this.uiControls.state.animationName },
+    })
+  }
+
+  private loadFrames = (payload: { frames: FrameWithGrid[] }) => {
+    this.triColors = gridCopy(payload.frames[payload.frames.length - 1].grid);
+    this.frames = payload.frames;
   }
 
 

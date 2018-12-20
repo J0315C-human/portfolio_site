@@ -1,6 +1,5 @@
 import { TimelineLite } from 'gsap';
 import { CoordFit } from './typings';
-import Elements from './editor/elements';
 
 
 export interface TriangleConfig { startX: number, startY: number; }
@@ -14,7 +13,6 @@ export default class Globals {
   nCols: number;
   scrollPos: number;
   lastUpdate: number;
-  triangles: SVGElement[][];
   scaleAll: number;
   triWidth: number;
   triHeight: number;
@@ -34,10 +32,10 @@ export default class Globals {
   private MAX_COLS: number;
   private MAX_ROWS: number;
 
-  constructor(elements: Elements) {
+  constructor() {
 
-    const pageWidth = elements.outer.clientWidth;
-    const pageHeight = elements.outer.clientHeight;
+    const pageWidth = document.getElementById("outer").clientWidth;
+    const pageHeight = document.getElementById("outer").clientHeight;
 
     const colors = [
       "#101615",
@@ -91,7 +89,6 @@ export default class Globals {
     this.nCols = nCols;
     this.scrollPos = 0;
     this.lastUpdate = 0;
-    this.triangles = [];
     this.scaleAll = scaleAll;
     this.triWidth = this.TRI_WIDTH * scaleAll;
     this.triHeight = this.TRI_HEIGHT * scaleAll;
@@ -103,7 +100,6 @@ export default class Globals {
       tlMargin,
       tlActiveArea,
     }
-    console.log('end of cnst', this);
   }
 
   getScaleForXCols = (cols: number) => this.pageWidth / (this.TRI_WIDTH * cols);
@@ -149,6 +145,5 @@ export default class Globals {
     };
     this.triWidth = this.TRI_WIDTH * scaleAll;
     this.triHeight = this.TRI_HEIGHT * scaleAll;
-    console.log('best fit', this);
   }
 }

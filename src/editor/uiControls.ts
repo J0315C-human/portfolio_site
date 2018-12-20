@@ -3,19 +3,21 @@ import '../assets/editor.css';
 import Elements from './elements';
 import Globals from '../globals';
 
+export interface UIState {
+  inputFocused: boolean;
+  shiftDown: boolean;
+  curColorIdx: number;
+  curAltColorIdx: number;
+  fade: number;
+  wait: number;
+  speed: number;
+  colorFrom: number;
+  colorTo: number;
+  animationName: string;
+}
+
 class UIControls {
-  state: {
-    inputFocused: boolean;
-    shiftDown: boolean;
-    curColorIdx: number;
-    curAltColorIdx: number;
-    fade: number;
-    wait: number;
-    speed: number;
-    colorFrom: number;
-    colorTo: number;
-    animationName: string;
-  }
+  state: UIState;
   toolboxLocation: 'left' | 'right';
   toolboxVisible: boolean;
   eventChannel: EventChannel;

@@ -1,3 +1,6 @@
+import { FrameWithGrid } from "./editor/typings";
+import Globals from "./globals";
+import { PatternData } from "./typings";
 
 
 export const retileGrid = (grid: any[][], rows: number, cols: number) => {
@@ -27,4 +30,26 @@ export const gridFlippedDiag = (grid: any[][]) => {
     newGrid.push(newRow);
   }
   return newGrid;
+}
+
+export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals) => {
+  const patterns: PatternData[] = [];
+  const colors = g.config.colors;
+  const getZeroOffset = () => 0;
+  frames.forEach((frame, n) => {
+    const lastGrid = n > 0 ? frames[n - 1].grid : undefined;
+    const pattern: PatternData = {
+      getColor: (col, row) => {
+        if (!frame.grid[row]) { return colors[0]; }
+        const colorIdx = frame.grid[row][col];
+        if (lastGrid && lastGrid[row][col] === colorIdx) { return undefined; }
+        else { return colors[colorIdx]; }
+      },
+      getDuration: () => frame.fade,
+      getOffset: getZeroOffset,
+      wait: frame.wait,
+    }
+    patterns.push(pattern);
+  })
+  return patterns;
 }
