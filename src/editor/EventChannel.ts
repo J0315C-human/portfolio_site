@@ -35,7 +35,7 @@ class EventChannel {
   }
 
   dispatch = (action: Action) => {
-    console.log(action);
+    // console.log(action);
     this.subscribers.forEach(subscriber => {
       if (action.type === subscriber.type) {
         subscriber.handler(action.payload);

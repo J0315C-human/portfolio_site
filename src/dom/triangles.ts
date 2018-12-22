@@ -88,8 +88,19 @@ export default class Triangles {
   private subscribeEvents = () => {
     this.eventChannel.subscribe('triangles_init', this.initialize);
     this.eventChannel.subscribe('triangle_fill', this.fill);
+    this.eventChannel.subscribe('triangles_draw_grid', this.drawGrid);
     this.eventChannel.subscribe('triangle_set_onpointerdown', this.setOnPointerDown);
     this.eventChannel.subscribe('triangle_set_onpointerenter', this.setOnPointerEnter);
     this.eventChannel.subscribe('triangle_call', this.applyElementToCall);
+  }
+
+  private drawGrid = (payload: { grid: number[][] }) => {
+    payload.grid.forEach((row, j) => {
+      row.forEach((colIdx, i) => {
+        const color = this.g.config.colors[colIdx];
+        const el = this.triangles[j][i];
+        el.setAttribute('fill', color);
+      })
+    })
   }
 }

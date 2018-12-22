@@ -41,7 +41,6 @@ class Editor {
     this.frames = [];
     this.elapsed = 0;
     this.tweenBlocks = new TweenBlocks(this.g);
-    (window as any).logme = () => console.log(this.tweenBlocks);
   }
 
   initialize = () => {
@@ -284,12 +283,10 @@ class Editor {
   // }
 
   private redrawCurrentFrame = () => {
-    this.triColors.forEach((row, j) => {
-      row.forEach((colIdx, i) => {
-        const color = this.g.config.colors[colIdx];
-        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color } });
-      })
-    })
+    this.eventChannel.dispatch({
+      type: 'triangles_draw_grid',
+      payload: { grid: this.triColors }
+    });
   }
 
   private save = () => serializer.saveToLocalStorage(this.frames, this.uiControls.state.animationName);
