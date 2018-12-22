@@ -1,14 +1,14 @@
-import { TriangleChange, FrameWithGrid, TweenBlock } from './typings';
+import { TriangleChange, FrameWithGrid } from './typings';
 import UIControls from './uiControls';
 import EventChannel from './EventChannel';
 import { gridCopy } from '../utils';
 import serializer from './serializer';
 import Globals from '../globals';
 import Elements from './elements';
+import TweenBlocks from './tweenBlocks';
 
 /* What this class does:
 -Keeps track of past frames from animation
--keeps track of timing for 'tween blocks'
 -keeps track of current frame:
   -colors
   -timing
@@ -19,9 +19,9 @@ import Elements from './elements';
 class Editor {
   // for storing previous frames
   frames: FrameWithGrid[];
-  prevTweenBlocks: TweenBlock[][][]; // a list of tweenBlocks for each position 
+
   // for tracking the Current Editing Frame
-  newTweenBlocks: { j: number, i: number, color: number, tweenBlock: TweenBlock }[];
+  tweenBlocks: TweenBlocks;
   triColors: number[][];
   elapsed: number;
   // for saving changes to be undone with "undo"
@@ -40,8 +40,8 @@ class Editor {
     this.changes = [];
     this.frames = [];
     this.elapsed = 0;
-    this.newTweenBlocks = [];
-    (window as any).logme = () => console.log(this);
+    this.tweenBlocks = new TweenBlocks(this.g);
+    (window as any).logme = () => console.log(this.tweenBlocks);
   }
 
   initialize = () => {
@@ -58,7 +58,7 @@ class Editor {
   private setBtnHandlers = () => {
     const ec = this.eventChannel;
     ec.subscribe('btnUndo', this.undoDraw);
-    ec.subscribe('btnFrame', () => this.saveFrame(false));
+    ec.subscribe('btnFrame', () => this.stashFrame(false));
     ec.subscribe('btnPlay', this.play);
     ec.subscribe('btnSave', this.save);
     ec.subscribe('btnLoad', this.load);
@@ -71,8 +71,8 @@ class Editor {
     const ec = this.eventChannel;
     const uiState = this.uiControls.state;
 
-    ec.subscribe('inputWait', this.refreshNewTweenBlocks);
-    ec.subscribe('inputFade', this.refreshNewTweenBlocks);
+    ec.subscribe('inputWait', this.updateCurrentFrameTiming);
+    ec.subscribe('inputFade', this.updateCurrentFrameTiming);
 
     ec.subscribe('setColor', (colIdx) => uiState.curColorIdx = colIdx);
     ec.subscribe('setAltColor', (colIdx) => uiState.curAltColorIdx = colIdx);
@@ -102,30 +102,23 @@ class Editor {
         this.triColors[j][i] = colorIdx;
       })
     })
-    this.newTweenBlocks = [];
+    this.tweenBlocks.clear();
   }
 
-  private refreshNewTweenBlocks = () => {
-    const tweenBlocksToAdd = this.newTweenBlocks.map(tb => ({ i: tb.i, j: tb.j, color: tb.color }));
+  private updateCurrentFrameTiming = () => {
+    const tweenBlocksToAdd = this.tweenBlocks.newBlocks.map(tb => ({ i: tb.i, j: tb.j, color: tb.color }));
     this.clearCurrentFrame();
+    // "replay" all the changes with the new timing
     tweenBlocksToAdd.forEach(tb => {
       this.setTriangleColor(tb.j, tb.i, tb.color, false);
     })
   }
 
-  private removeTweenBlockAt = (j: number, i: number) => {
-    this.newTweenBlocks = this.newTweenBlocks.filter(tb => !(tb.i === i && tb.j === j));
-  }
-
-  private addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
-    this.removeTweenBlockAt(j, i);
-    this.newTweenBlocks.push({ i, j, color, tweenBlock })
-  }
 
   private setKeyHandlers = () => {
     const ec = this.eventChannel;
     ec.subscribe('keypress_s', this.undoDraw);
-    ec.subscribe('keypress_f', this.saveFrame);
+    ec.subscribe('keypress_f', this.stashFrame);
     ec.subscribe('keypress_p', this.play);
     ec.subscribe('keypress_c', this.clear);
     ec.subscribe('keypress_l', this.load);
@@ -134,18 +127,14 @@ class Editor {
 
   private setInitialState = () => {
     this.triColors = [];
-    this.prevTweenBlocks = [];
     for (let j = 0; j < this.g.nRows; j++) {
       const newRow = [] as number[];
-      const newRow2 = [] as TweenBlock[][];
       for (let i = 0; i < this.g.nCols; i++) {
         newRow.push(0);
-        newRow2.push([{ start: 0, end: 0 }]); // initial 'tween blocks' just to start
       }
       this.triColors.push(newRow);
-      this.prevTweenBlocks.push(newRow2);
     }
-    this.saveFrame(true);
+    this.stashFrame(true);
   }
 
   private setTriangleHandlers = () => {
@@ -174,21 +163,21 @@ class Editor {
     this.setTriangleColor(j, i, uiState.shiftDown ? uiState.curAltColorIdx : uiState.curColorIdx);
   }
 
-  private setTriangleColor = (j: number, i: number, colorIdx: number, saveChange = true) => {
+  private setTriangleColor = (j: number, i: number, colorIdx: number, saveChangeForUndo = true) => {
     const uiState = this.uiControls.state;
     const startPos = this.elapsed + uiState.wait;
     const endPos = startPos + uiState.fade;
-    const oldColor = this.triColors[j][i];
     const lastFrameColor = this.getLastFrame().grid[j][i];
+    const oldColor = this.triColors[j][i];
     if (oldColor === colorIdx) { return; }
-    if (this.checkForActiveTweens(startPos, endPos, j, i)) {
+    if (this.tweenBlocks.checkForActiveTweens(startPos, endPos, j, i)) {
       return;
     } else {
       // remove tweenblock if it's back to the original color
       if (lastFrameColor === colorIdx) {
-        this.removeTweenBlockAt(j, i);
+        this.tweenBlocks.removeTweenBlockAt(j, i);
       } else {
-        this.addTweenBlock(j, i, colorIdx, {
+        this.tweenBlocks.addTweenBlock(j, i, colorIdx, {
           start: startPos,
           end: endPos,
         });
@@ -197,14 +186,9 @@ class Editor {
 
     this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: this.g.config.colors[colorIdx] } })
     this.triColors[j][i] = colorIdx;
-    if (saveChange) {
+    if (saveChangeForUndo) {
       this.logChange(oldColor, j, i);
     }
-  }
-
-  private checkForActiveTweens = (start: number, end: number, j: number, i: number) => {
-    const tweenBlockList = this.prevTweenBlocks[j][i];
-    return tweenBlockList.some(tb => !(start >= tb.end || end <= tb.start));
   }
 
   private undoDraw = () => {
@@ -231,7 +215,7 @@ class Editor {
       }
   }
 
-  private saveFrame = (instant?: boolean) => {
+  private stashFrame = (instant?: boolean) => {
     const uiState = this.uiControls.state;
     const wait = instant ? 0 : uiState.wait;
     const fade = instant ? 0 : uiState.fade;
@@ -242,10 +226,7 @@ class Editor {
       wait,
       fade,
     });
-    this.newTweenBlocks.forEach(ntb => {
-      this.prevTweenBlocks[ntb.j][ntb.i].push(ntb.tweenBlock);
-    })
-    this.newTweenBlocks = [];
+    this.tweenBlocks.stashTweenBlocks();
     this.changes = [];
   }
 
@@ -323,9 +304,10 @@ class Editor {
   private loadFrames = (payload: { frames: FrameWithGrid[] }) => {
     this.triColors = gridCopy(payload.frames[payload.frames.length - 1].grid);
     this.frames = payload.frames;
+    const finalPosition = this.tweenBlocks.loadFromFrames(payload.frames);
+    this.elapsed = finalPosition;
+    this.redrawCurrentFrame();
   }
-
-
 }
 
 export default Editor;
