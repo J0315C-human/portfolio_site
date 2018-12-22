@@ -14,6 +14,7 @@ export interface UIState {
   colorFrom: number;
   colorTo: number;
   animationName: string;
+  cursorType: number;
 }
 
 class UIControls {
@@ -39,6 +40,7 @@ class UIControls {
       colorFrom: parseInt(elements.inputRecolorFrom.value, 10),
       colorTo: parseInt(elements.inputRecolorTo.value, 10),
       animationName: elements.inputAnimationName.value,
+      cursorType: 0,
     }
     this.toolboxVisible = true;
     (window as any).logyou = () => console.log(this);
@@ -89,6 +91,7 @@ class UIControls {
     ec.addInputEventSource('inputRecolorFrom', el.inputRecolorFrom);
     ec.addInputEventSource('inputRecolorTo', el.inputRecolorTo);
     ec.addInputEventSource('inputAnimationName', el.inputAnimationName);
+    ec.addInputEventSource('inputCursorType', el.inputCursorType);
   }
 
   colorClickHandler = (n: number) => () => {
@@ -152,6 +155,7 @@ class UIControls {
     ec.subscribe('inputRecolorFrom', (payload) => this.state.colorFrom = parseInt(payload.value, 10));
     ec.subscribe('inputRecolorTo', (payload) => this.state.colorTo = parseInt(payload.value, 10));
     ec.subscribe('inputAnimationName', (payload) => this.state.animationName = payload.value);
+    ec.subscribe('inputCursorType', (payload) => this.state.cursorType = parseInt(payload.value, 10));
   }
 
   setKeyHandlers = () => {

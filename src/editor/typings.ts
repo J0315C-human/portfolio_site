@@ -1,10 +1,4 @@
 
-export interface TriangleChange {
-  i: number;
-  j: number;
-  oldColor: number;
-}
-
 export interface TriangleDelta {
   i: number;
   j: number;
@@ -32,6 +26,10 @@ export type CompressedFrameType = FrameWithCompressedGrid | FrameWithCompressedD
 export interface TweenBlock {
   start: number;
   end: number;
+}
+export interface TweenBlockWithCoords extends TweenBlock {
+  i: number;
+  j: number;
 }
 
 export interface FrameWithCompressedGrid {

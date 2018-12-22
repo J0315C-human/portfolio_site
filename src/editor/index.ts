@@ -1,4 +1,4 @@
-import { TriangleChange, FrameWithGrid } from './typings';
+import { FrameWithGrid, TweenBlockWithCoords } from './typings';
 import UIControls from './uiControls';
 import EventChannel from './EventChannel';
 import { gridCopy } from '../utils';
@@ -6,38 +6,34 @@ import serializer from './serializer';
 import Globals from '../globals';
 import Elements from './elements';
 import TweenBlocks from './tweenBlocks';
-
+import UndoQueue from './undoQueue';
 /* What this class does:
 -Keeps track of past frames from animation
 -keeps track of current frame:
   -colors
   -timing
   -draw state
-  -draw event logging/undo
 */
 
 class Editor {
   // for storing previous frames
   frames: FrameWithGrid[];
-
   // for tracking the Current Editing Frame
-  tweenBlocks: TweenBlocks;
   triColors: number[][];
   elapsed: number;
+  tweenBlocks: TweenBlocks;
   // for saving changes to be undone with "undo"
-  changes: TriangleChange[];
-  MAX_UNDO_CHANGES = 50;
-
+  undoQueue: UndoQueue;
   uiControls: UIControls;
   eventChannel: EventChannel;
   g: Globals;
   constructor(eventChannel: EventChannel, elements: Elements, globals: Globals) {
     this.uiControls = new UIControls(eventChannel, elements, globals);
+    this.undoQueue = new UndoQueue();
     this.eventChannel = eventChannel;
     this.g = globals;
 
     this.triColors = [];
-    this.changes = [];
     this.frames = [];
     this.elapsed = 0;
     this.tweenBlocks = new TweenBlocks(this.g);
@@ -56,7 +52,7 @@ class Editor {
 
   private setBtnHandlers = () => {
     const ec = this.eventChannel;
-    ec.subscribe('btnUndo', this.undoDraw);
+    ec.subscribe('btnUndo', this.undoQueue.undo);
     ec.subscribe('btnFrame', () => this.stashFrame(false));
     ec.subscribe('btnPlay', this.play);
     ec.subscribe('btnSave', this.save);
@@ -116,7 +112,7 @@ class Editor {
 
   private setKeyHandlers = () => {
     const ec = this.eventChannel;
-    ec.subscribe('keypress_s', this.undoDraw);
+    ec.subscribe('keypress_s', this.undoQueue.undo);
     ec.subscribe('keypress_f', this.stashFrame);
     ec.subscribe('keypress_p', this.play);
     ec.subscribe('keypress_c', this.clear);
@@ -186,22 +182,7 @@ class Editor {
     this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: this.g.config.colors[colorIdx] } })
     this.triColors[j][i] = colorIdx;
     if (saveChangeForUndo) {
-      this.logChange(oldColor, j, i);
-    }
-  }
-
-  private undoDraw = () => {
-    if (!this.changes.length) { return; }
-    const chg = this.changes.pop();
-    this.setTriangleColor(chg.j, chg.i, chg.oldColor, false);
-  }
-
-  private logChange = (oldColorIdx: number, j: number, i: number) => {
-    const change = { oldColor: oldColorIdx, i, j };
-    if (this.changes.length < this.MAX_UNDO_CHANGES) {
-      this.changes.push(change);
-    } else {
-      this.changes = [...this.changes.slice(1, this.MAX_UNDO_CHANGES), change];
+      this.undoQueue.add(() => this.setTriangleColor(j, i, oldColor, false));
     }
   }
 
@@ -225,8 +206,30 @@ class Editor {
       wait,
       fade,
     });
+    // for use in undoing:
+    const stashedTweenBlocks = this.tweenBlocks.newBlocks
+      .map(tb => ({ i: tb.i, j: tb.j, start: tb.tweenBlock.start, end: tb.tweenBlock.end }))
     this.tweenBlocks.stashTweenBlocks();
-    this.changes = [];
+    this.undoQueue.add(this.undoStashFrame(stashedTweenBlocks));
+  }
+
+  private undoStashFrame = (stashedTweenBlocks: TweenBlockWithCoords[]) => () => {
+    const popped = this.frames.pop();
+    const poppedDuration = popped.wait + popped.fade;
+    this.elapsed -= poppedDuration;
+    const last = this.frames[this.frames.length - 1];
+    this.tweenBlocks.clear();
+    this.tweenBlocks.erasePastTweenBlocks(stashedTweenBlocks);
+    for (let j = 0; j < this.g.nRows; j++)
+      for (let i = 0; i < this.g.nCols; i++) {
+        const newColorIdx = popped.grid[j][i];
+        if (last.grid[j][i] != newColorIdx) {
+          this.tweenBlocks.addTweenBlock(j, i, newColorIdx, {
+            start: this.elapsed,
+            end: this.elapsed + poppedDuration,
+          });
+        }
+      }
   }
 
   private recolor = () => {

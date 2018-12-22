@@ -1,4 +1,4 @@
-import { TweenBlock, FrameWithGrid } from "./typings";
+import { TweenBlock, FrameWithGrid, TweenBlockWithCoords } from "./typings";
 import Globals from "../globals";
 import { gridCopy } from "../utils";
 
@@ -35,6 +35,14 @@ export default class TweenBlocks {
 
   clear = () => {
     this.newBlocks = [];
+  }
+
+  erasePastTweenBlocks = (tweenBlocks: TweenBlockWithCoords[]) => {
+    tweenBlocks.forEach(tbwc => {
+      const { i, j, start, end } = tbwc;
+      this.prevBlocks[j][i] = this.prevBlocks[j][i].filter(tb =>
+        !(tb.start === start && tb.end === end))
+    })
   }
 
   removeTweenBlockAt = (j: number, i: number) => {
