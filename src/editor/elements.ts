@@ -14,7 +14,6 @@ export default class Elements {
   inputRecolorFrom: HTMLInputElement;
   inputRecolorTo: HTMLInputElement;
   inputAnimationName: HTMLInputElement;
-  inputCursorType: HTMLInputElement;
   btnUndo: HTMLButtonElement;
   btnFrame: HTMLButtonElement;
   btnPlay: HTMLButtonElement;
@@ -38,7 +37,6 @@ export default class Elements {
     this.inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
     this.inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
     this.inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
-    this.inputCursorType = document.getElementById('editor-option-cursor') as HTMLInputElement;
 
     this.btnUndo = document.getElementById('editor-option-undo') as HTMLButtonElement;
     this.btnFrame = document.getElementById('editor-option-frame') as HTMLButtonElement;
