@@ -18,10 +18,8 @@ new Triangles(g, ec);
 new Patterns(g, ec);
 new Deserializer(ec, g);
 
-const runEditor = window.localStorage.getItem("editor");
 
-
-if (!(runEditor && runEditor === 'true')) {
+if (g.mode === 'normal') {
   g.getGlobalSizingFromWindow();
   ec.dispatch({ type: 'triangles_init' });
 

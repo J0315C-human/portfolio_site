@@ -7,6 +7,7 @@ export interface TriangleConfig { startX: number, startY: number; }
 
 export default class Globals {
   tl: TimelineLite;
+  mode: 'editor' | 'normal';
   pageWidth: number;
   pageHeight: number;
   nRows: number;
@@ -37,6 +38,9 @@ export default class Globals {
     const pageWidth = document.getElementById("outer").clientWidth;
     const pageHeight = document.getElementById("outer").clientHeight;
 
+    const runEditor = window.localStorage.getItem("editor");
+    this.mode = (runEditor && runEditor === 'true') ? 'editor' : 'normal';
+
     const colors = [
       "#101615",
       "#2F6876",
@@ -46,7 +50,7 @@ export default class Globals {
       "#CB6A2E",
       "#662717",
     ]
-    
+
     this.pageWidth = pageWidth;
     this.pageHeight = pageHeight;
     this.TRI_WIDTH = 101.8;
