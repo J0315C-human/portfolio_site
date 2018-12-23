@@ -2,6 +2,7 @@ import { TweenLite, Linear } from 'gsap';
 import { PatternData } from "../typings";
 import Globals from "../globals";
 import EventChannel from '../editor/EventChannel';
+import constants from '../constants';
 
 
 export default class Patterns {
@@ -16,7 +17,7 @@ export default class Patterns {
 
   private updateTimelineGlobals = () => {
     const totalDur = this.g.tl.duration();
-    this.g.tl.time(this.g.config.tlMargin * totalDur);
+    this.g.tl.time(constants.tlMargin * totalDur);
   }
 
   private initializePatternAnimations = (payload: { patterns: PatternData[] }) => {

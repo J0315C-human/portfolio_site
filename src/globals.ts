@@ -1,5 +1,6 @@
 import { TimelineLite } from 'gsap';
 import { CoordFit } from './typings';
+import constants from './constants';
 
 
 export interface TriangleConfig { startX: number, startY: number; }
@@ -20,18 +21,9 @@ export default class Globals {
   config: {
     lTriConfig: TriangleConfig;
     rTriConfig: TriangleConfig;
-    throttleScrollUpdatesMS: number;
-    colors: string[];
-    tlMargin: number;
-    tlActiveArea: number;
   }
 
-  private TRI_WIDTH: number;
-  private TRI_HEIGHT: number;
   private IDEAL_NUM_TRIANGLES: number;
-  private MIN_COLS: number;
-  private MAX_COLS: number;
-  private MAX_ROWS: number;
 
   constructor() {
 
@@ -41,30 +33,15 @@ export default class Globals {
     const runEditor = window.localStorage.getItem("editor");
     this.mode = (runEditor && runEditor === 'true') ? 'editor' : 'normal';
 
-    const colors = [
-      "#101615",
-      "#2F6876",
-      "#96B27D",
-      "#7D6336",
-      "#EBCE89",
-      "#CB6A2E",
-      "#662717",
-    ]
-
     this.pageWidth = pageWidth;
     this.pageHeight = pageHeight;
-    this.TRI_WIDTH = 101.8;
-    this.TRI_HEIGHT = 58.3;
     this.IDEAL_NUM_TRIANGLES = ((500 * 0.4) + ((pageWidth * pageHeight) / 3000) * 0.6);
-    this.MIN_COLS = 1;
-    this.MAX_COLS = 30;
-    this.MAX_ROWS = 50;
 
     // start everything at maximums
     const initialFit = {
-      cols: this.MAX_COLS,
-      rows: this.MAX_ROWS,
-      scale: this.getScaleForXCols(this.MAX_COLS)
+      cols: constants.maxCols,
+      rows: constants.maxRows,
+      scale: this.getScaleForXCols(constants.maxCols)
     };
     const scaleAll = initialFit.scale;
     const nRows = initialFit.rows;
@@ -80,10 +57,6 @@ export default class Globals {
       startY: -66.2 * scaleAll
     };
 
-    const throttleScrollUpdatesMS = 23;
-    const tlMargin = 0.001;
-    const tlActiveArea = 1 - 2 * tlMargin;
-
     var tl = new TimelineLite();
     tl.pause();
 
@@ -94,38 +67,34 @@ export default class Globals {
     this.scrollPos = 0;
     this.lastUpdate = 0;
     this.scaleAll = scaleAll;
-    this.triWidth = this.TRI_WIDTH * scaleAll;
-    this.triHeight = this.TRI_HEIGHT * scaleAll;
+    this.triWidth = constants.triangleRelWidth * scaleAll;
+    this.triHeight = constants.triangleRelHeight * scaleAll;
     this.config = {
       lTriConfig,
       rTriConfig,
-      throttleScrollUpdatesMS,
-      colors,
-      tlMargin,
-      tlActiveArea,
     }
   }
 
-  getScaleForXCols = (cols: number) => this.pageWidth / (this.TRI_WIDTH * cols);
+  getScaleForXCols = (cols: number) => this.pageWidth / (constants.triangleRelWidth * cols);
 
   // get a relatively equal number of triangles for any aspect ratio
   getBestFit = (): CoordFit => {
-    const { pageHeight, TRI_HEIGHT, MIN_COLS, IDEAL_NUM_TRIANGLES, MAX_COLS, MAX_ROWS } = this;
-    const nRowsForXCols = (cols: number, scale: number) => Math.ceil(pageHeight / (TRI_HEIGHT * scale)) + 1;
+    const { pageHeight, IDEAL_NUM_TRIANGLES } = this;
+    const nRowsForXCols = (cols: number, scale: number) => Math.ceil(pageHeight / (constants.triangleRelHeight * scale)) + 1;
 
-    const firstScale = this.getScaleForXCols(MIN_COLS);
-    const firstRows = nRowsForXCols(MIN_COLS, firstScale);
+    const firstScale = this.getScaleForXCols(constants.minCols);
+    const firstRows = nRowsForXCols(constants.minCols, firstScale);
     let bestFit: CoordFit = {
-      cols: MIN_COLS,
+      cols: constants.minCols,
       rows: firstRows,
       scale: firstScale,
-      distFromIdeal: Math.abs(MIN_COLS * firstRows - IDEAL_NUM_TRIANGLES)
+      distFromIdeal: Math.abs(constants.minCols * firstRows - IDEAL_NUM_TRIANGLES)
     };
-    for (let cols = MIN_COLS + 1; cols <= MAX_COLS; cols++) {
+    for (let cols = constants.minCols + 1; cols <= constants.maxCols; cols++) {
       const scale = this.getScaleForXCols(cols);
       const rows = nRowsForXCols(cols, scale);
       const distFromIdeal = Math.abs(cols * rows - IDEAL_NUM_TRIANGLES);
-      if (!bestFit || ((distFromIdeal < bestFit.distFromIdeal) && (rows <= MAX_ROWS))) {
+      if (!bestFit || ((distFromIdeal < bestFit.distFromIdeal) && (rows <= constants.maxRows))) {
         bestFit = { cols, rows, distFromIdeal, scale };
       }
     }
@@ -147,7 +116,9 @@ export default class Globals {
       startX: -17.7 * scaleAll,
       startY: -66.2 * scaleAll
     };
-    this.triWidth = this.TRI_WIDTH * scaleAll;
-    this.triHeight = this.TRI_HEIGHT * scaleAll;
+    this.triWidth = constants.triangleRelWidth * scaleAll;
+    this.triHeight = constants.triangleRelHeight * scaleAll;
+    constants.centerX = this.nCols / 2;
+    constants.centerY = this.nRows / 2;
   }
 }

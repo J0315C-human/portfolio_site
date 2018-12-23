@@ -8,6 +8,7 @@ import Elements from './elements';
 import TweenBlocks from './tweenBlocks';
 import UndoQueue from './undoQueue';
 import { getTimingFunction } from '../patterns/timingFunctions';
+import constants from '../constants';
 /* What this class does:
 -Keeps track of past frames from animation
 -keeps track of current frame:
@@ -103,7 +104,7 @@ class Editor {
     const grid = this.getLastFrame().grid;
     grid.forEach((row, j) => {
       row.forEach((colorIdx, i) => {
-        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: this.g.config.colors[colorIdx] } });
+        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: constants.colors[colorIdx] } });
         this.triColors[j][i] = colorIdx;
       })
     })
@@ -190,7 +191,7 @@ class Editor {
       }
     }
 
-    this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: this.g.config.colors[colorIdx] } })
+    this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: constants.colors[colorIdx] } })
     this.triColors[j][i] = colorIdx;
     if (saveChangeForUndo) {
       this.undoQueue.add(() => this.setTriangleColor(j, i, oldColor, false));
@@ -198,7 +199,7 @@ class Editor {
   }
 
   private clear = () => {
-    const color = this.g.config.colors[0];
+    const color = constants.colors[0];
     for (let j = 0; j < this.g.nRows; j++)
       for (let i = 0; i < this.g.nCols; i++) {
         this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color } });
@@ -250,9 +251,9 @@ class Editor {
     const uiState = this.uiControls.state;
     const from = uiState.colorFrom;
     const to = uiState.colorTo;
-    const { config, nRows, nCols } = this.g
+    const { nRows, nCols } = this.g
 
-    if (!config.colors[to - 1]) { return; }
+    if (!constants.colors[to - 1]) { return; }
     for (let j = 0; j < nRows; j++) {
       for (let i = 0; i < nCols; i++) {
         if (this.triColors[j][i] + 1 === from) {
@@ -263,12 +264,12 @@ class Editor {
   }
 
   private random = () => {
-    const { config, nRows, nCols } = this.g
+    const { nRows, nCols } = this.g
     const percent = 0.7;
     for (let j = 0; j < nRows; j++) {
       for (let i = 0; i < nCols; i++) {
         if (Math.random() < percent) {
-          const colorIdx = Math.floor(Math.random() * config.colors.length);
+          const colorIdx = Math.floor(Math.random() * constants.colors.length);
           this.setTriangleColor(j, i, colorIdx);
         }
       }

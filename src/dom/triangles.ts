@@ -1,5 +1,6 @@
 import Globals from '../globals';
 import EventChannel from '../editor/EventChannel';
+import constants from '../constants';
 
 const svgNS = "http://www.w3.org/2000/svg";
 const lPath = "M119.486 125.534L17.052 66.368l102.495-58.89-.06 118.056z";
@@ -35,7 +36,7 @@ export default class Triangles {
 
   private getTriangle = (path, config) => (x, y) => {
     const { scaleAll, triWidth, triHeight } = this.g;
-    const { colors } = this.g.config;
+    const { colors } = constants;
 
     const el = document.createElementNS(svgNS, "path");
     el.classList.add('triangle');
@@ -97,7 +98,7 @@ export default class Triangles {
   private drawGrid = (payload: { grid: number[][] }) => {
     payload.grid.forEach((row, j) => {
       row.forEach((colIdx, i) => {
-        const color = this.g.config.colors[colIdx];
+        const color = constants.colors[colIdx];
         const el = this.triangles[j][i];
         el.setAttribute('fill', color);
       })

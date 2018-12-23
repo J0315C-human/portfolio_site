@@ -1,4 +1,5 @@
 import Globals from "../globals";
+import constants from "../constants";
 
 export default class Elements {
   body: HTMLElement;
@@ -78,6 +79,6 @@ export default class Elements {
   setupForNormalMode = (g: Globals) => {
     this.scrollContainer.style.pointerEvents = 'auto';
     this.outerEditor.style.display = 'none';
-    this.body.style.backgroundColor = g.config.colors[0];
+    this.body.style.backgroundColor = constants.colors[0];
   }
 }

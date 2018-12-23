@@ -1,4 +1,5 @@
 import Globals from "../globals";
+import constants from "../constants";
 
 const outer = document.getElementById("outer");
 const svgOuter = document.getElementById("svg");
@@ -19,15 +20,15 @@ export default class ScrollResizeHandler {
 
   // set scroll handler
   private scrollHandler = () => {
-    const { tl, scrollPos, config } = this.g;
+    const { tl, scrollPos } = this.g;
     tl.time(0);
-    tl.time((config.tlMargin + scrollPos * config.tlActiveArea) * tl.duration());
+    tl.time((constants.tlMargin + scrollPos * constants.tlActiveArea) * tl.duration());
   };
 
   private scrollHandlerThrottled = (e: any) => {
-    const { lastUpdate, config } = this.g;
+    const { lastUpdate } = this.g;
     const now = Date.now();
-    if (now - lastUpdate < config.throttleScrollUpdatesMS) {
+    if (now - lastUpdate < constants.throttleScrollUpdatesMS) {
       return;
     }
     this.g.lastUpdate = now;

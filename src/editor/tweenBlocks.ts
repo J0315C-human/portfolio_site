@@ -1,6 +1,7 @@
 import { TweenBlock, FrameWithGrid, TweenBlockWithCoords } from "./typings";
 import Globals from "../globals";
 import { gridCopy } from "../utils";
+import { getTimingFunction } from "../patterns/timingFunctions";
 
 
 export default class TweenBlocks {
@@ -49,7 +50,7 @@ export default class TweenBlocks {
     this.newBlocks = this.newBlocks.filter(tb => !(tb.i === i && tb.j === j));
   }
 
-addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
+  addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
     this.removeTweenBlockAt(j, i);
     this.newBlocks.push({ i, j, color, tweenBlock })
   }
@@ -73,15 +74,17 @@ addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) =>
     const gridState = gridCopy(frames[0].grid);
     let elapsed = 0;
     frames.forEach(frame => {
+      const getOffset = getTimingFunction(frame.timingFunc);
       const startPos = elapsed + frame.wait;
       const endPos = startPos + frame.fade;
       frame.grid.forEach((row, j) => {
         row.forEach((colorIdx, i) => {
+          const offset = getOffset(j, i);
           if (gridState[j][i] !== colorIdx) {
             gridState[j][i] = colorIdx;
             this.addTweenBlock(j, i, colorIdx, {
-              start: startPos,
-              end: endPos,
+              start: startPos + offset,
+              end: endPos + offset,
             })
           }
         })

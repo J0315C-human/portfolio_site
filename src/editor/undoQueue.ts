@@ -1,7 +1,7 @@
+import constants from "../constants";
 
 export default class UndoQueue {
   queue: (() => void)[];
-  MAX_UNDO_CHANGES = 1500;
   constructor() {
     this.queue = [];
   }
@@ -13,10 +13,10 @@ export default class UndoQueue {
   }
 
   add = (undoFunc: () => void) => {
-    if (this.queue.length < this.MAX_UNDO_CHANGES) {
+    if (this.queue.length < constants.maxUndoChanges) {
       this.queue.push(undoFunc);
     } else {
-      this.queue = [...this.queue.slice(1, this.MAX_UNDO_CHANGES), undoFunc];
+      this.queue = [...this.queue.slice(1, constants.maxUndoChanges), undoFunc];
     }
   }
 

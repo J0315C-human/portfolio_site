@@ -2,6 +2,7 @@ import { FrameWithGrid } from "./editor/typings";
 import Globals from "./globals";
 import { PatternData } from "./typings";
 import { getTimingFunction } from './patterns/timingFunctions';
+import constants from "./constants";
 
 export const retileGrid = (grid: any[][], rows: number, cols: number) => {
   const newGrid = [];
@@ -34,7 +35,7 @@ export const gridFlippedDiag = (grid: any[][]) => {
 
 export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals): PatternData[] => {
   const patterns: PatternData[] = [];
-  const colors = g.config.colors;
+  const colors = constants.colors;
   frames.forEach((frame, n) => {
     const lastGrid = n > 0 ? frames[n - 1].grid : undefined;
     const pattern: PatternData = {

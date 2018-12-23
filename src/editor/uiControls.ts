@@ -3,6 +3,7 @@ import '../assets/editor.css';
 import Elements from './elements';
 import Globals from '../globals';
 import { TimingFunctionName } from './typings';
+import constants from '../constants';
 
 export interface UIState {
   inputFocused: boolean;
@@ -47,7 +48,7 @@ class UIControls {
     this.toolboxVisible = true;
     (window as any).logyou = () => console.log(this);
     this.eventChannel = eventChannel;
-    this.colors = globals.config.colors;
+    this.colors = constants.colors;
   }
 
   initialize = () => {

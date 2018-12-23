@@ -18,7 +18,6 @@ new Triangles(g, ec);
 new Patterns(g, ec);
 new Deserializer(ec, g);
 
-
 if (g.mode === 'normal') {
   g.getGlobalSizingFromWindow();
   ec.dispatch({ type: 'triangles_init' });
