@@ -43,7 +43,7 @@ class EventChannel {
     })
   }
 
-  addInputEventSource = (name: string, el: HTMLInputElement) => {
+  addInputEventSource = (name: string, el: HTMLInputElement | HTMLSelectElement) => {
     el.onchange = (event: any) => {
       const value = event.target.value;
       this.dispatch({ type: name, payload: { value, element: el } });
@@ -68,26 +68,5 @@ class EventChannel {
     }
   }
 }
-
-// const ec = new EventChannel();
-
-// ec.dispatch({ type: 'nothin', payload: 'nothing should happen' })
-
-// ec.subscribe('funevent', (payload) => console.log(payload));
-// ec.subscribe('funevent', (payload) => console.log(payload + ' +extra thing'));
-// ec.subscribe('btnUndo', (payload) => console.log(payload, ' btn Action Recieved'));
-// ec.subscribe(['funevent', 'boringevent'], (payload) => console.log(payload + ' +extra thing'));
-
-
-// ec.dispatch({ type: 'funevent', payload: 'PAYLOAD FUN' })
-// ec.dispatch({ type: 'boringevent', payload: 'PAYLOAD BORING' })
-
-// const inputSpeed = document.getElementById('editor-option-speed') as HTMLInputElement;
-// const btnUndo = document.getElementById('editor-option-undo') as HTMLButtonElement;
-
-// ec.addButtonEventSource('btnUndo', btnUndo);
-// ec.addInputEventSource('inputSpeed', inputSpeed);
-
-// ec.subscribe('inputSpeed', (payload) => console.log(payload, ' speed Action Recieved'));
 
 export default EventChannel;

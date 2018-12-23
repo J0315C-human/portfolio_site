@@ -2,6 +2,7 @@ import { TriangleDelta, FrameWithDeltas, FrameWithGrid, AnimationSlug, Animation
 import { addEncodings } from "./encodings";
 import { compressArrayArrayToDeltasFromLeft } from "./deltas";
 import { gridFlippedDiag } from "../utils";
+import { getTimingFunctionCodeSlug } from "../patterns/timingFunctions";
 
 const convertFrameGridsToDeltas = (frames: FrameWithGrid[]): FrameWithDeltas[] => {
   // get starting colors
@@ -22,7 +23,8 @@ const convertFrameGridsToDeltas = (frames: FrameWithGrid[]): FrameWithDeltas[] =
       type: 'deltas',
       deltas: changes,
       wait: frame.wait,
-      fade: frame.fade
+      fade: frame.fade,
+      timingFunc: frame.timingFunc,
     });
   })
   return compressed;
@@ -57,20 +59,22 @@ const compressFrameWithDeltas = (frame: FrameWithDeltas): FrameWithCompressedDel
 const slugifyFrames = (frames: CompressedFrameType[]): AnimationSlug[] => {
 
   const slugifyFrameWithDeltas = (frame: FrameWithCompressedDeltas) => {
-    const { fade: f, wait: w, deltas: d, flipped } = frame;
-
+    const { fade: f, wait: w, deltas: d, flipped, timingFunc } = frame;
+    const timingFuncCode = getTimingFunctionCodeSlug(timingFunc);
     return flipped
-      ? `${f},${w}&${d.map(delta => delta.join(',')).join(':')}`
-      : `${f},${w}$${d.map(delta => delta.join(',')).join(':')}`;
+      ? `${f},${w}${timingFuncCode}&${d.map(delta => delta.join(',')).join(':')}`
+      : `${f},${w}${timingFuncCode}$${d.map(delta => delta.join(',')).join(':')}`;
     // return `${f},${w}$${d.map(delta => `${delta.j},${delta.i},${delta.c}`).join(':')}`;
   }
 
   const slugifyFrameWithGrid = (frame: FrameWithCompressedGrid) => {
-    const { fade: f, wait: w, grid: g, flipped } = frame;
+    const { fade: f, wait: w, grid: g, flipped, timingFunc } = frame;
     const rowStrings = g.map(row => row.join(''));
+    const timingFuncCode = getTimingFunctionCodeSlug(timingFunc);
+
     return flipped
-      ? `${f},${w}<${rowStrings.join(':')}`
-      : `${f},${w}^${rowStrings.join(':')}`;
+      ? `${f},${w}${timingFuncCode}<${rowStrings.join(':')}`
+      : `${f},${w}${timingFuncCode}^${rowStrings.join(':')}`;
   }
 
   return frames.map(frame => {

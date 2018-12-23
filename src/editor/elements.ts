@@ -14,6 +14,7 @@ export default class Elements {
   inputRecolorFrom: HTMLInputElement;
   inputRecolorTo: HTMLInputElement;
   inputAnimationName: HTMLInputElement;
+  inputTiming: HTMLSelectElement;
   btnUndo: HTMLButtonElement;
   btnFrame: HTMLButtonElement;
   btnPlay: HTMLButtonElement;
@@ -21,6 +22,7 @@ export default class Elements {
   btnLoad: HTMLButtonElement;
   btnRecolor: HTMLButtonElement;
   btnRandom: HTMLButtonElement;
+  divCurrentTime: HTMLDivElement;
   colorButtons: HTMLButtonElement[];
   inputs: HTMLInputElement[];
   constructor() {
@@ -37,6 +39,7 @@ export default class Elements {
     this.inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
     this.inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
     this.inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
+    this.inputTiming = document.getElementById('editor-option-timing') as HTMLSelectElement;
 
     this.btnUndo = document.getElementById('editor-option-undo') as HTMLButtonElement;
     this.btnFrame = document.getElementById('editor-option-frame') as HTMLButtonElement;
@@ -46,6 +49,7 @@ export default class Elements {
     this.btnRecolor = document.getElementById('editor-option-recolor') as HTMLButtonElement;
     this.btnRandom = document.getElementById('editor-option-random') as HTMLButtonElement;
 
+    this.divCurrentTime = document.getElementById('editor-current-time') as HTMLDivElement;
     this.colorButtons = [
       document.getElementById('btnColor_0') as HTMLButtonElement,
       document.getElementById('btnColor_1') as HTMLButtonElement,

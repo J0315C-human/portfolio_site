@@ -49,7 +49,7 @@ export default class TweenBlocks {
     this.newBlocks = this.newBlocks.filter(tb => !(tb.i === i && tb.j === j));
   }
 
-  addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
+addTweenBlock = (j: number, i: number, color: number, tweenBlock: TweenBlock) => {
     this.removeTweenBlockAt(j, i);
     this.newBlocks.push({ i, j, color, tweenBlock })
   }

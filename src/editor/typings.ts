@@ -5,11 +5,14 @@ export interface TriangleDelta {
   c: number; // new color
 }
 
+export type TimingFunctionName = 'none' | 'swipe_left' | 'swipe_right';
+// the animations are created using only FrameWithGrid
 export interface FrameWithGrid {
   type: 'grid',
   grid: number[][];
   wait: number;
   fade: number;
+  timingFunc: TimingFunctionName;
 }
 
 export interface FrameWithDeltas {
@@ -17,6 +20,7 @@ export interface FrameWithDeltas {
   deltas: TriangleDelta[];
   wait: number;
   fade: number;
+  timingFunc: TimingFunctionName;
 }
 
 export type FrameType = FrameWithGrid | FrameWithDeltas;
@@ -38,6 +42,7 @@ export interface FrameWithCompressedGrid {
   wait: number;
   fade: number;
   flipped?: boolean;
+  timingFunc: TimingFunctionName;
 }
 
 export interface FrameWithCompressedDeltas {
@@ -46,6 +51,8 @@ export interface FrameWithCompressedDeltas {
   wait: number;
   fade: number;
   flipped?: boolean;
+  timingFunc: TimingFunctionName;
 }
+
 export type AnimationSlug = string;
 export type AnimationSlugEncoded = string;

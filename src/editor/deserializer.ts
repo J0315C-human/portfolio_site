@@ -4,6 +4,7 @@ import { removeEncodings } from "./encodings";
 import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
 import Globals from "../globals";
 import EventChannel from "./EventChannel";
+import { getTimingFunctionNameFromCode } from "../patterns/timingFunctions";
 
 const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^') || slug.includes('<')
   ? unslugFrameWithGrid(slug)
@@ -13,7 +14,7 @@ const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithCompressedDeltas =
   // 10.2,3.005$1,1,1:1,2,5 or 10.2,3.005&1,1,1:1,2,5
   const IFirst = slug.includes('&');
   const [params, deltas] = IFirst ? slug.split('&') : slug.split('$');
-  const [f, w] = params.split(',');
+  const [f, w, timingFuncCode] = params.split(',');
   const compressedDeltas = deltas.split(':');
   return {
     type: 'cdeltas',
@@ -21,6 +22,7 @@ const unslugFrameWithDeltas = (slug: AnimationSlug): FrameWithCompressedDeltas =
     wait: parseFloat(w),
     deltas: compressedDeltas.map(change => change.split(',').map(digit => parseInt(digit, 10))),
     flipped: IFirst,
+    timingFunc: getTimingFunctionNameFromCode(timingFuncCode),
   }
 }
 
@@ -28,7 +30,7 @@ const unslugFrameWithGrid = (slug: AnimationSlug): FrameWithCompressedGrid => {
   // 10.2,3.005^14325:00324:10101
   const flipped = slug.includes('<');
   const [params, rows] = flipped ? slug.split('<') : slug.split('^');
-  const [f, w] = params.split(',');
+  const [f, w, timingFuncCode] = params.split(',');
   return {
     type: 'cgrid',
     flipped,
@@ -37,6 +39,7 @@ const unslugFrameWithGrid = (slug: AnimationSlug): FrameWithCompressedGrid => {
     grid: rows.split(':')
       .map(rowString => rowString.split('')
         .map(digit => parseInt(digit, 10))),
+    timingFunc: getTimingFunctionNameFromCode(timingFuncCode),
   }
 }
 
@@ -48,6 +51,7 @@ const decompressFrameWithGrid = (frame: FrameWithCompressedGrid): FrameWithGrid 
   fade: frame.fade,
   wait: frame.wait,
   type: 'grid',
+  timingFunc: frame.timingFunc,
   grid: frame.flipped
     ? gridFlippedDiag(decompressDeltasToArrayArrayFromLeft(frame.grid))
     : decompressDeltasToArrayArrayFromLeft(frame.grid),
@@ -57,6 +61,7 @@ const decompressFrameWithDeltas = (frame: FrameWithCompressedDeltas): FrameWithD
   return {
     fade: frame.fade,
     wait: frame.wait,
+    timingFunc: frame.timingFunc,
     type: 'deltas',
     deltas: decompressDeltasToArrayArrayFromLeft(frame.deltas).map(d => {
       return frame.flipped ? { j: d[1], i: d[0], c: d[2] } : { j: d[0], i: d[1], c: d[2] };
@@ -69,6 +74,7 @@ const getFrameWithGridFromFrameWithDeltas = (frame: FrameWithDeltas, lastGrid: n
     type: 'grid',
     wait: frame.wait,
     fade: frame.fade,
+    timingFunc: frame.timingFunc,
     grid: lastGrid.map((row, j) => row.map((_, i) => {
       const delta = frame.deltas.find(d => d.i === i && d.j === j);
       if (!delta) { return lastGrid[j][i]; }
@@ -91,6 +97,7 @@ const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded, nRow
       grid = gridCopy(frame.grid);
       frames.push(frame);
     })
+  frames.forEach(f => console.log(f.timingFunc))
   return frames;
 }
 

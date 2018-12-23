@@ -1,7 +1,7 @@
 import { FrameWithGrid } from "./editor/typings";
 import Globals from "./globals";
 import { PatternData } from "./typings";
-
+import { getTimingFunction } from './patterns/timingFunctions';
 
 export const retileGrid = (grid: any[][], rows: number, cols: number) => {
   const newGrid = [];
@@ -22,9 +22,9 @@ export const gridFlippedDiag = (grid: any[][]) => {
   const rows = grid.length;
   const cols = grid[0].length;
   const newGrid = [];
-  for (let j = 0; j < cols; j++){
+  for (let j = 0; j < cols; j++) {
     const newRow = [];
-    for (let i = 0; i < rows; i++){
+    for (let i = 0; i < rows; i++) {
       newRow.push(grid[i][j]);
     }
     newGrid.push(newRow);
@@ -32,10 +32,9 @@ export const gridFlippedDiag = (grid: any[][]) => {
   return newGrid;
 }
 
-export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals) => {
+export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals): PatternData[] => {
   const patterns: PatternData[] = [];
   const colors = g.config.colors;
-  const getZeroOffset = () => 0;
   frames.forEach((frame, n) => {
     const lastGrid = n > 0 ? frames[n - 1].grid : undefined;
     const pattern: PatternData = {
@@ -45,8 +44,8 @@ export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals) => {
         if (lastGrid && lastGrid[row][col] === colorIdx) { return undefined; }
         else { return colors[colorIdx]; }
       },
-      getDuration: () => frame.fade,
-      getOffset: getZeroOffset,
+      fade: frame.fade,
+      getOffset: getTimingFunction(frame.timingFunc),
       wait: frame.wait,
     }
     patterns.push(pattern);

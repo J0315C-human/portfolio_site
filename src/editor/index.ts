@@ -7,6 +7,7 @@ import Globals from '../globals';
 import Elements from './elements';
 import TweenBlocks from './tweenBlocks';
 import UndoQueue from './undoQueue';
+import { getTimingFunction } from '../patterns/timingFunctions';
 /* What this class does:
 -Keeps track of past frames from animation
 -keeps track of current frame:
@@ -24,6 +25,7 @@ class Editor {
   tweenBlocks: TweenBlocks;
   // for saving changes to be undone with "undo"
   undoQueue: UndoQueue;
+  elements: Elements;
   uiControls: UIControls;
   eventChannel: EventChannel;
   g: Globals;
@@ -32,10 +34,11 @@ class Editor {
     this.undoQueue = new UndoQueue();
     this.eventChannel = eventChannel;
     this.g = globals;
+    this.elements = elements;
 
     this.triColors = [];
     this.frames = [];
-    this.elapsed = 0;
+    this.setElapsed(0);
     this.tweenBlocks = new TweenBlocks(this.g);
   }
 
@@ -48,6 +51,12 @@ class Editor {
     this.setKeyHandlers();
     this.setTriangleHandlers();
     this.setOtherEventHandlers();
+  }
+
+
+  public setElapsed = (elapsed: number) => {
+    this.elapsed = elapsed;
+    this.elements.divCurrentTime.textContent = `${elapsed}`;
   }
 
   private setBtnHandlers = () => {
@@ -68,6 +77,7 @@ class Editor {
 
     ec.subscribe('inputWait', this.updateCurrentFrameTiming);
     ec.subscribe('inputFade', this.updateCurrentFrameTiming);
+    ec.subscribe('inputTiming', this.updateCurrentFrameTiming);
 
     ec.subscribe('setColor', (colIdx) => uiState.curColorIdx = colIdx);
     ec.subscribe('setAltColor', (colIdx) => uiState.curAltColorIdx = colIdx);
@@ -159,8 +169,9 @@ class Editor {
   }
 
   private setTriangleColor = (j: number, i: number, colorIdx: number, saveChangeForUndo = true) => {
+    const getOffset = getTimingFunction(this.uiControls.state.timingFunction);
     const uiState = this.uiControls.state;
-    const startPos = this.elapsed + uiState.wait;
+    const startPos = this.elapsed + uiState.wait + getOffset(j, i);
     const endPos = startPos + uiState.fade;
     const lastFrameColor = this.getLastFrame().grid[j][i];
     const oldColor = this.triColors[j][i];
@@ -199,12 +210,13 @@ class Editor {
     const uiState = this.uiControls.state;
     const wait = instant ? 0 : uiState.wait;
     const fade = instant ? 0 : uiState.fade;
-    this.elapsed += wait + fade;
+    this.setElapsed(this.elapsed + wait + fade);
     this.frames.push({
       type: 'grid',
       grid: gridCopy(this.triColors),
       wait,
       fade,
+      timingFunc: uiState.timingFunction,
     });
     // for use in undoing:
     const stashedTweenBlocks = this.tweenBlocks.newBlocks
@@ -214,19 +226,21 @@ class Editor {
   }
 
   private undoStashFrame = (stashedTweenBlocks: TweenBlockWithCoords[]) => () => {
+    const getOffset = getTimingFunction(this.uiControls.state.timingFunction);
     const popped = this.frames.pop();
     const poppedDuration = popped.wait + popped.fade;
-    this.elapsed -= poppedDuration;
+    this.setElapsed(this.elapsed - poppedDuration);
     const last = this.frames[this.frames.length - 1];
     this.tweenBlocks.clear();
     this.tweenBlocks.erasePastTweenBlocks(stashedTweenBlocks);
     for (let j = 0; j < this.g.nRows; j++)
       for (let i = 0; i < this.g.nCols; i++) {
         const newColorIdx = popped.grid[j][i];
+        const offset = getOffset(j, i);
         if (last.grid[j][i] != newColorIdx) {
           this.tweenBlocks.addTweenBlock(j, i, newColorIdx, {
-            start: this.elapsed,
-            end: this.elapsed + poppedDuration,
+            start: this.elapsed + offset,
+            end: this.elapsed + poppedDuration + offset,
           });
         }
       }
@@ -305,7 +319,7 @@ class Editor {
     this.triColors = gridCopy(payload.frames[payload.frames.length - 1].grid);
     this.frames = payload.frames;
     const finalPosition = this.tweenBlocks.loadFromFrames(payload.frames);
-    this.elapsed = finalPosition;
+    this.setElapsed(finalPosition);
     this.redrawCurrentFrame();
   }
 }

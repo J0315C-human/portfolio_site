@@ -1,7 +1,7 @@
 export interface PatternData {
-  getColor: (col: number, row: number) => string | undefined; // when returning undefined, no animation happens
-  getOffset: (col: number, row: number) => number;
-  getDuration: (col: number, row: number) => number;
+  getColor: (row: number, col: number) => string | undefined; // when returning undefined, no animation happens
+  getOffset: (row: number, col: number) => number;
+  fade: number;
   wait: number;
 }
 

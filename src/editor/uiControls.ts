@@ -2,6 +2,7 @@ import EventChannel from './EventChannel';
 import '../assets/editor.css';
 import Elements from './elements';
 import Globals from '../globals';
+import { TimingFunctionName } from './typings';
 
 export interface UIState {
   inputFocused: boolean;
@@ -14,7 +15,9 @@ export interface UIState {
   colorFrom: number;
   colorTo: number;
   animationName: string;
+  timingFunction: TimingFunctionName;
 }
+
 
 class UIControls {
   state: UIState;
@@ -33,6 +36,7 @@ class UIControls {
       shiftDown: false,
       curColorIdx: 1,
       curAltColorIdx: 2,
+      timingFunction: 'none',
       wait: parseFloat(elements.inputWait.value),
       fade: parseFloat(elements.inputFade.value),
       speed: parseFloat(elements.inputSpeed.value),
@@ -89,6 +93,7 @@ class UIControls {
     ec.addInputEventSource('inputRecolorFrom', el.inputRecolorFrom);
     ec.addInputEventSource('inputRecolorTo', el.inputRecolorTo);
     ec.addInputEventSource('inputAnimationName', el.inputAnimationName);
+    ec.addInputEventSource('inputTiming', el.inputTiming);
   }
 
   colorClickHandler = (n: number) => () => {
@@ -152,6 +157,7 @@ class UIControls {
     ec.subscribe('inputRecolorFrom', (payload) => this.state.colorFrom = parseInt(payload.value, 10));
     ec.subscribe('inputRecolorTo', (payload) => this.state.colorTo = parseInt(payload.value, 10));
     ec.subscribe('inputAnimationName', (payload) => this.state.animationName = payload.value);
+    ec.subscribe('inputTiming', (payload) => this.state.timingFunction = payload.value);
   }
 
   setKeyHandlers = () => {
