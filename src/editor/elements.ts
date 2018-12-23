@@ -15,12 +15,15 @@ export default class Elements {
   inputRecolorFrom: HTMLInputElement;
   inputRecolorTo: HTMLInputElement;
   inputAnimationName: HTMLInputElement;
+  inputGridName: HTMLInputElement;
   inputTiming: HTMLSelectElement;
   btnUndo: HTMLButtonElement;
   btnFrame: HTMLButtonElement;
   btnPlay: HTMLButtonElement;
   btnSave: HTMLButtonElement;
   btnLoad: HTMLButtonElement;
+  btnLoadGrid: HTMLButtonElement;
+  btnSaveGrid: HTMLButtonElement;
   btnRecolor: HTMLButtonElement;
   btnRandom: HTMLButtonElement;
   divCurrentTime: HTMLDivElement;
@@ -40,6 +43,7 @@ export default class Elements {
     this.inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
     this.inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
     this.inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
+    this.inputGridName = document.getElementById('editor-option-grid-name') as HTMLInputElement;
     this.inputTiming = document.getElementById('editor-option-timing') as HTMLSelectElement;
 
     this.btnUndo = document.getElementById('editor-option-undo') as HTMLButtonElement;
@@ -49,6 +53,8 @@ export default class Elements {
     this.btnLoad = document.getElementById('editor-option-load') as HTMLButtonElement;
     this.btnRecolor = document.getElementById('editor-option-recolor') as HTMLButtonElement;
     this.btnRandom = document.getElementById('editor-option-random') as HTMLButtonElement;
+    this.btnSaveGrid = document.getElementById('editor-option-save-grid') as HTMLButtonElement;
+    this.btnLoadGrid = document.getElementById('editor-option-load-grid') as HTMLButtonElement;
 
     this.divCurrentTime = document.getElementById('editor-current-time') as HTMLDivElement;
     this.colorButtons = [
@@ -64,9 +70,8 @@ export default class Elements {
       this.inputWait,
       this.inputFade,
       this.inputSpeed,
-      this.inputRecolorFrom,
-      this.inputRecolorTo,
       this.inputAnimationName,
+      this.inputGridName,
     ]
   }
 

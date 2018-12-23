@@ -54,7 +54,6 @@ class Editor {
     this.setOtherEventHandlers();
   }
 
-
   public setElapsed = (elapsed: number) => {
     this.elapsed = elapsed;
     this.elements.divCurrentTime.textContent = `${elapsed}`;
@@ -62,6 +61,7 @@ class Editor {
 
   private setBtnHandlers = () => {
     const ec = this.eventChannel;
+    const uiState = this.uiControls.state;
     ec.subscribe('btnUndo', this.undoQueue.undo);
     ec.subscribe('btnFrame', () => this.stashFrame(false));
     ec.subscribe('btnPlay', this.play);
@@ -69,6 +69,19 @@ class Editor {
     ec.subscribe('btnLoad', this.load);
     ec.subscribe('btnRecolor', this.recolor);
     ec.subscribe('btnRandom', this.random);
+    ec.subscribe('btnSaveGrid', () => {
+      console.log(uiState);
+      localStorage.setItem(uiState.gridName, JSON.stringify(this.triColors));
+    });
+    ec.subscribe('btnLoadGrid', () => {
+      const json = localStorage.getItem(this.uiControls.state.gridName);
+      const grid = JSON.parse(json);
+      for (let j = 0; j < this.g.nRows; j++) {
+        for (let i = 0; i < this.g.nCols; i++) {
+          this.setTriangleColor(j, i, grid[j][i]);
+        }
+      }
+    });
   }
 
   private setUIHandlers = () => {
@@ -199,6 +212,7 @@ class Editor {
   }
 
   private clear = () => {
+    if (this.uiControls.state.inputFocused) return;
     const color = constants.colors[0];
     for (let j = 0; j < this.g.nRows; j++)
       for (let i = 0; i < this.g.nCols; i++) {

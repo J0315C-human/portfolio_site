@@ -17,12 +17,13 @@ export interface UIState {
   colorTo: number;
   animationName: string;
   timingFunction: TimingFunctionName;
+  gridName: string;
 }
 
 
 class UIControls {
   state: UIState;
-  toolboxLocation: 'left' | 'right';
+  toolboxLocation: 'left' | 'right' | 'bottomLeft' | 'bottomRight';
   toolboxVisible: boolean;
   eventChannel: EventChannel;
   elements: Elements;
@@ -44,6 +45,7 @@ class UIControls {
       colorFrom: parseInt(elements.inputRecolorFrom.value, 10),
       colorTo: parseInt(elements.inputRecolorTo.value, 10),
       animationName: elements.inputAnimationName.value,
+      gridName: elements.inputGridName.value,
     }
     this.toolboxVisible = true;
     (window as any).logyou = () => console.log(this);
@@ -83,6 +85,8 @@ class UIControls {
     ec.addButtonEventSource('btnLoad', el.btnLoad);
     ec.addButtonEventSource('btnRecolor', el.btnRecolor);
     ec.addButtonEventSource('btnRandom', el.btnRandom);
+    ec.addButtonEventSource('btnSaveGrid', el.btnSaveGrid);
+    ec.addButtonEventSource('btnLoadGrid', el.btnLoadGrid);
   }
 
   addInputEventSources = () => {
@@ -94,6 +98,8 @@ class UIControls {
     ec.addInputEventSource('inputRecolorFrom', el.inputRecolorFrom);
     ec.addInputEventSource('inputRecolorTo', el.inputRecolorTo);
     ec.addInputEventSource('inputAnimationName', el.inputAnimationName);
+    ec.addInputEventSource('inputGridName', el.inputGridName);
+    ec.addInputEventSource('inputTiming', el.inputTiming);
     ec.addInputEventSource('inputTiming', el.inputTiming);
   }
 
@@ -158,6 +164,7 @@ class UIControls {
     ec.subscribe('inputRecolorFrom', (payload) => this.state.colorFrom = parseInt(payload.value, 10));
     ec.subscribe('inputRecolorTo', (payload) => this.state.colorTo = parseInt(payload.value, 10));
     ec.subscribe('inputAnimationName', (payload) => this.state.animationName = payload.value);
+    ec.subscribe('inputGridName', (payload) => this.state.gridName = payload.value);
     ec.subscribe('inputTiming', (payload) => this.state.timingFunction = payload.value);
   }
 
@@ -183,9 +190,21 @@ class UIControls {
   switchToolboxLocation = () => {
     if (this.state.inputFocused) return;
     if (this.toolboxLocation === 'left') {
+      this.elements.outerEditor.style.top = '10vh';
       this.elements.outerEditor.style.left = '60vw';
       this.toolboxLocation = 'right';
-    } else {
+    } else if (this.toolboxLocation === 'right') {
+      this.elements.outerEditor.style.top = '50vh';
+      this.elements.outerEditor.style.left = '60vw';
+      this.toolboxLocation = 'bottomRight';
+    }
+    else if (this.toolboxLocation === 'bottomRight') {
+      this.elements.outerEditor.style.top = '50vh';
+      this.elements.outerEditor.style.left = '10vw';
+      this.toolboxLocation = 'bottomLeft';
+    }
+    else if (this.toolboxLocation === 'bottomLeft') {
+      this.elements.outerEditor.style.top = '10vh';
       this.elements.outerEditor.style.left = '10vw';
       this.toolboxLocation = 'left';
     }
