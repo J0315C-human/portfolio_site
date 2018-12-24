@@ -16,9 +16,32 @@ export interface UIState {
   animationName: string;
   timingFunction: TimingFunctionName;
   gridName: string;
+  cursorMode: string;
 }
 
+const cursorModes = [
+  'normal',
+  'thing',
+  'other',
+]
 
+const timingFunctions = [
+  'none',
+  'swipe_right_slow',
+  'swipe_right',
+  'swipe_right_fast',
+  'swipe_left_slow',
+  'swipe_left',
+  'swipe_left_fast',
+  'diag_1',
+  'diag_2',
+  'diag_3',
+  'diag_4',
+  'rand',
+  'rand_swipe',
+  'center',
+  'thing',
+]
 class UIControls {
   state: UIState;
   toolboxLocation: 'left' | 'right' | 'bottomLeft' | 'bottomRight';
@@ -42,6 +65,7 @@ class UIControls {
       speed: parseFloat(elements.inputSpeed.value),
       animationName: elements.inputAnimationName.value,
       gridName: elements.inputGridName.value,
+      cursorMode: elements.inputCursor.value,
     }
     this.toolboxVisible = true;
     (window as any).logyou = () => console.log(this);
@@ -95,7 +119,7 @@ class UIControls {
     ec.addInputEventSource('inputAnimationName', el.inputAnimationName);
     ec.addInputEventSource('inputGridName', el.inputGridName);
     ec.addInputEventSource('inputTiming', el.inputTiming);
-    ec.addInputEventSource('inputTiming', el.inputTiming);
+    ec.addInputEventSource('inputCursor', el.inputCursor);
   }
 
   colorClickHandler = (n: number) => () => {
@@ -159,6 +183,7 @@ class UIControls {
     ec.subscribe('inputAnimationName', (payload) => this.state.animationName = payload.value);
     ec.subscribe('inputGridName', (payload) => this.state.gridName = payload.value);
     ec.subscribe('inputTiming', (payload) => this.state.timingFunction = payload.value);
+    ec.subscribe('inputCursor', (payload) => this.state.cursorMode = payload.value);
   }
 
   setKeyHandlers = () => {
@@ -177,8 +202,24 @@ class UIControls {
 
     ec.subscribe('keydown_shift', () => this.state.shiftDown = true);
     ec.subscribe('keyup_shift', () => this.state.shiftDown = false);
+
+    ec.subscribe('keypress_q', this.selectNextOption(this.elements.inputCursor, cursorModes, 'inputCursor'));
+    ec.subscribe('keypress_w', this.selectNextOption(this.elements.inputTiming, timingFunctions, 'inputTiming'));
+
   }
 
+  private selectNextOption = (input: HTMLSelectElement, options: string[], actionType: string) => () => {
+    if (this.state.inputFocused) return;
+    const shift = this.state.shiftDown ? -1 : 1;
+    const newIdx = options.findIndex(v => v === input.value) + shift;
+    const newVal = this.state.shiftDown ?
+      (newIdx < 0 ?
+        options[options.length - 1] : options[newIdx])
+      : (newIdx > (options.length - 1) ?
+        options[0] : options[newIdx]);
+    input.value = newVal;
+    this.eventChannel.dispatch({ type: actionType, payload: { value: newVal } });
+  }
 
   switchToolboxLocation = () => {
     if (this.state.inputFocused) return;

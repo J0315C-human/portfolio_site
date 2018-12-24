@@ -13,6 +13,7 @@ export default class Elements {
   inputFade: HTMLInputElement;
   inputSpeed: HTMLInputElement;
   inputAnimationName: HTMLInputElement;
+  inputCursor: HTMLSelectElement;
   inputGridName: HTMLInputElement;
   inputTiming: HTMLSelectElement;
   btnUndo: HTMLButtonElement;
@@ -42,6 +43,7 @@ export default class Elements {
     this.inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
     this.inputGridName = document.getElementById('editor-option-grid-name') as HTMLInputElement;
     this.inputTiming = document.getElementById('editor-option-timing') as HTMLSelectElement;
+    this.inputCursor = document.getElementById('editor-option-cursor-mode') as HTMLSelectElement;
 
     this.btnUndo = document.getElementById('editor-option-undo') as HTMLButtonElement;
     this.btnFrame = document.getElementById('editor-option-frame') as HTMLButtonElement;
