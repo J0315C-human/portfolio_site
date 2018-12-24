@@ -13,8 +13,6 @@ export interface UIState {
   fade: number;
   wait: number;
   speed: number;
-  colorFrom: number;
-  colorTo: number;
   animationName: string;
   timingFunction: TimingFunctionName;
   gridName: string;
@@ -42,8 +40,6 @@ class UIControls {
       wait: parseFloat(elements.inputWait.value),
       fade: parseFloat(elements.inputFade.value),
       speed: parseFloat(elements.inputSpeed.value),
-      colorFrom: parseInt(elements.inputRecolorFrom.value, 10),
-      colorTo: parseInt(elements.inputRecolorTo.value, 10),
       animationName: elements.inputAnimationName.value,
       gridName: elements.inputGridName.value,
     }
@@ -96,8 +92,6 @@ class UIControls {
     ec.addInputEventSource('inputWait', el.inputWait);
     ec.addInputEventSource('inputFade', el.inputFade);
     ec.addInputEventSource('inputSpeed', el.inputSpeed);
-    ec.addInputEventSource('inputRecolorFrom', el.inputRecolorFrom);
-    ec.addInputEventSource('inputRecolorTo', el.inputRecolorTo);
     ec.addInputEventSource('inputAnimationName', el.inputAnimationName);
     ec.addInputEventSource('inputGridName', el.inputGridName);
     ec.addInputEventSource('inputTiming', el.inputTiming);
@@ -162,8 +156,6 @@ class UIControls {
     ec.subscribe('inputWait', (payload) => this.state.wait = parseFloat(payload.value));
     ec.subscribe('inputFade', (payload) => this.state.fade = parseFloat(payload.value));
     ec.subscribe('inputSpeed', (payload) => this.state.speed = parseFloat(payload.value));
-    ec.subscribe('inputRecolorFrom', (payload) => this.state.colorFrom = parseInt(payload.value, 10));
-    ec.subscribe('inputRecolorTo', (payload) => this.state.colorTo = parseInt(payload.value, 10));
     ec.subscribe('inputAnimationName', (payload) => this.state.animationName = payload.value);
     ec.subscribe('inputGridName', (payload) => this.state.gridName = payload.value);
     ec.subscribe('inputTiming', (payload) => this.state.timingFunction = payload.value);

@@ -7,7 +7,7 @@ export default class UndoQueue {
   }
 
   undo = () => {
-    if (!this.queue.length) { return; }
+    if (this.queue.length === 1) { return; }
     const undoFunc = this.queue.pop();
     undoFunc();
   }

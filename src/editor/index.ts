@@ -30,13 +30,14 @@ class Editor {
   uiControls: UIControls;
   eventChannel: EventChannel;
   g: Globals;
+  isPlaying: boolean;
   constructor(eventChannel: EventChannel, elements: Elements, globals: Globals) {
     this.uiControls = new UIControls(eventChannel, elements, globals);
     this.undoQueue = new UndoQueue();
     this.eventChannel = eventChannel;
     this.g = globals;
     this.elements = elements;
-
+    this.isPlaying = false;
     this.triColors = [];
     this.frames = [];
     this.setElapsed(0);
@@ -56,7 +57,15 @@ class Editor {
 
   public setElapsed = (elapsed: number) => {
     this.elapsed = elapsed;
-    this.elements.divCurrentTime.textContent = `${elapsed}`;
+    this.setElapsedDisplay(elapsed);
+  }
+  private setElapsedDisplay = (elapsed: number) => {
+    const el = this.elements.divCurrentTime;
+    const curText = el.textContent;
+    const newText = elapsed.toFixed(3);
+    if (curText !== newText) {
+      this.elements.divCurrentTime.textContent = newText;
+    }
   }
 
   private setBtnHandlers = () => {
@@ -70,7 +79,6 @@ class Editor {
     ec.subscribe('btnRecolor', this.recolor);
     ec.subscribe('btnRandom', this.random);
     ec.subscribe('btnSaveGrid', () => {
-      console.log(uiState);
       localStorage.setItem(uiState.gridName, JSON.stringify(this.triColors));
     });
     ec.subscribe('btnLoadGrid', () => {
@@ -103,12 +111,27 @@ class Editor {
     ec.subscribe('setAltColor', (colIdx) => uiState.curAltColorIdx = colIdx);
   }
 
+  private setKeyHandlers = () => {
+    const callIfInputNotFocused = (func: () => any) => () => { if (!this.uiControls.state.inputFocused) func(); }
+    const ec = this.eventChannel;
+    ec.subscribe('keypress_s', callIfInputNotFocused(this.undoQueue.undo));
+    ec.subscribe('keypress_f', callIfInputNotFocused(this.stashFrame));
+    ec.subscribe('keypress_p', callIfInputNotFocused(this.play));
+    ec.subscribe('keypress_c', callIfInputNotFocused(this.clear));
+    ec.subscribe('keypress_l', callIfInputNotFocused(this.load));
+    ec.subscribe('keypress_k', callIfInputNotFocused(this.save));
+    ec.subscribe('keypress_r', callIfInputNotFocused(this.recolor));
+  }
+
   private setOtherEventHandlers = () => {
-    this.eventChannel.subscribe('editor_load_frames', this.loadFrames);
+    this.eventChannel.subscribe('editor_load_frames', this.loadFrames(true));
+    this.eventChannel.subscribe('editor_add_frames', this.loadFrames(false));
     this.eventChannel.subscribe('animation_finished', () => {
       this.g.tl.clear();
       this.recreateCanvas();
       this.redrawCurrentFrame();
+      this.setElapsedDisplay(this.elapsed);
+      this.isPlaying = false;
     });
   }
 
@@ -137,17 +160,6 @@ class Editor {
     tweenBlocksToAdd.forEach(tb => {
       this.setTriangleColor(tb.j, tb.i, tb.color, false);
     })
-  }
-
-
-  private setKeyHandlers = () => {
-    const ec = this.eventChannel;
-    ec.subscribe('keypress_s', this.undoQueue.undo);
-    ec.subscribe('keypress_f', this.stashFrame);
-    ec.subscribe('keypress_p', this.play);
-    ec.subscribe('keypress_c', this.clear);
-    ec.subscribe('keypress_l', this.load);
-    ec.subscribe('keypress_k', this.save);
   }
 
   private setInitialState = () => {
@@ -218,13 +230,12 @@ class Editor {
   }
 
   private clear = () => {
-    if (this.uiControls.state.inputFocused) return;
-    const color = constants.colors[0];
-    for (let j = 0; j < this.g.nRows; j++)
+    this.addUndoToOldTriangleGrid();
+    for (let j = 0; j < this.g.nRows; j++) {
       for (let i = 0; i < this.g.nCols; i++) {
-        this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color } });
-        this.triColors[j][i] = 0;
+        this.setTriangleColor(j, i, this.uiControls.state.curColorIdx, false);
       }
+    }
   }
 
   private stashFrame = (instant?: boolean) => {
@@ -269,15 +280,15 @@ class Editor {
 
   private recolor = () => {
     const uiState = this.uiControls.state;
-    const from = uiState.colorFrom;
-    const to = uiState.colorTo;
+    this.addUndoToOldTriangleGrid();
+    const from = uiState.curAltColorIdx + 1;
+    const to = uiState.curColorIdx + 1;
     const { nRows, nCols } = this.g
-
     if (!constants.colors[to - 1]) { return; }
     for (let j = 0; j < nRows; j++) {
       for (let i = 0; i < nCols; i++) {
         if (this.triColors[j][i] + 1 === from) {
-          this.setTriangleColor(j, i, (to - 1));
+          this.setTriangleColor(j, i, (to - 1), false);
         }
       }
     }
@@ -285,27 +296,48 @@ class Editor {
 
   private random = () => {
     const { nRows, nCols } = this.g
+    this.addUndoToOldTriangleGrid();
     const percent = 0.7;
     for (let j = 0; j < nRows; j++) {
       for (let i = 0; i < nCols; i++) {
         if (Math.random() < percent) {
           const colorIdx = Math.floor(Math.random() * constants.colors.length);
-          this.setTriangleColor(j, i, colorIdx);
+          this.setTriangleColor(j, i, colorIdx, false);
         }
       }
     }
   }
 
   private play = () => {
+    if (this.isPlaying) {
+      if (this.g.tl.paused()) {
+        this.g.tl.play();
+      } else {
+        this.g.tl.pause();
+      }
+      return;
+    }
     this.eventChannel.dispatch({
       type: 'load_animation_editor_to_timeline',
       payload: { frames: this.frames },
     })
     this.g.tl.timeScale(this.uiControls.state.speed);
-    this.g.tl.play();
+    let t = 0;
+    while (t < this.g.tl.totalDuration()) {
+      this.g.tl.add(() => this.setElapsedDisplay(this.g.tl.time()), t);
+      t += 0.1;
+    }
     this.g.tl.eventCallback("onComplete", () => {
       this.eventChannel.dispatch({ type: 'animation_finished' });
     });
+    // undo: pause and reset
+    this.undoQueue.add(() => {
+      this.g.tl.pause();
+      this.eventChannel.dispatch({ type: 'animation_finished' });
+    })
+    this.setElapsedDisplay(0);
+    this.isPlaying = true;
+    this.g.tl.play();
   }
 
   // private drawFrame = (idx: number) => {
@@ -327,6 +359,18 @@ class Editor {
     });
   }
 
+  private addUndoToOldTriangleGrid = () => {
+    const { nRows, nCols } = this.g
+    const oldGrid = gridCopy(this.triColors);
+    this.undoQueue.add(() => {
+      for (let j = 0; j < nRows; j++) {
+        for (let i = 0; i < nCols; i++) {
+          this.setTriangleColor(j, i, oldGrid[j][i], false);
+        }
+      }
+    })
+  }
+
   private save = () => serializer.saveToLocalStorage(this.frames, this.uiControls.state.animationName);
 
   private load = () => {
@@ -336,13 +380,26 @@ class Editor {
     })
   }
 
-  private loadFrames = (payload: { frames: FrameWithGrid[] }) => {
+  private loadFrames = (replace: boolean) => (payload: { frames: FrameWithGrid[] }) => {
+    const oldTriColors = gridCopy(this.triColors);
+    const oldFramesLength = this.frames.length;
     this.triColors = gridCopy(payload.frames[payload.frames.length - 1].grid);
-    this.frames = payload.frames;
-    const finalPosition = this.tweenBlocks.loadFromFrames(payload.frames);
+    this.frames = replace
+      ? payload.frames
+      : this.frames.concat(payload.frames.slice(1));
+    const finalPosition = this.tweenBlocks.loadFromFrames(this.frames);
     this.setElapsed(finalPosition);
     this.redrawCurrentFrame();
+    // undo: remove all the frames and reset to that point
+    this.undoQueue.add(() => {
+      this.triColors = oldTriColors;
+      this.frames = this.frames.slice(0, oldFramesLength);
+      const finalPosition = this.tweenBlocks.loadFromFrames(this.frames);
+      this.setElapsed(finalPosition);
+      this.redrawCurrentFrame();
+    })
   }
+
 }
 
 export default Editor;

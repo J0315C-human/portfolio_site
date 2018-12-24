@@ -12,8 +12,6 @@ export default class Elements {
   inputWait: HTMLInputElement;
   inputFade: HTMLInputElement;
   inputSpeed: HTMLInputElement;
-  inputRecolorFrom: HTMLInputElement;
-  inputRecolorTo: HTMLInputElement;
   inputAnimationName: HTMLInputElement;
   inputGridName: HTMLInputElement;
   inputTiming: HTMLSelectElement;
@@ -41,8 +39,6 @@ export default class Elements {
     this.inputWait = document.getElementById('editor-option-wait') as HTMLInputElement;
     this.inputFade = document.getElementById('editor-option-fade') as HTMLInputElement;
     this.inputSpeed = document.getElementById('editor-option-speed') as HTMLInputElement;
-    this.inputRecolorFrom = document.getElementById('editor-option-colorfrom') as HTMLInputElement;
-    this.inputRecolorTo = document.getElementById('editor-option-colorto') as HTMLInputElement;
     this.inputAnimationName = document.getElementById('editor-option-name') as HTMLInputElement;
     this.inputGridName = document.getElementById('editor-option-grid-name') as HTMLInputElement;
     this.inputTiming = document.getElementById('editor-option-timing') as HTMLSelectElement;
