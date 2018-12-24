@@ -15,19 +15,29 @@ export interface ActionSubscriber {
 
 class EventChannel {
   subscribers: ActionSubscriber[];
-
+  eventsSubscribed: string[];
 
   constructor() {
     this.subscribers = [];
     this.addKeyEventSources();
+    this.eventsSubscribed = [];
   }
 
   subscribe = (actionType: string | string[], handler: ActionHandler) => {
     if (typeof actionType === 'string') {
       this.subscribers.push({ type: actionType, handler });
+      if (!this.eventsSubscribed.includes(actionType)) {
+        this.eventsSubscribed.push(actionType);
+      }
     } else {
-      actionType.forEach(type => this.subscribers.push({ type, handler }));
+      actionType.forEach(type => {
+        this.subscribers.push({ type, handler });
+        if (!this.eventsSubscribed.includes(type)) {
+          this.eventsSubscribed.push(type);
+        }
+      });
     }
+
   }
 
   subscribeAll = (actionHandler: { action: string, handler: ActionHandler }[]) => {
@@ -35,7 +45,8 @@ class EventChannel {
   }
 
   dispatch = (action: Action) => {
-    // console.log(action);
+    if (!this.eventsSubscribed.includes(action.type)) return;
+    if (!action.type.includes('triangle_')) console.log(action.type)
     this.subscribers.forEach(subscriber => {
       if (action.type === subscriber.type) {
         subscriber.handler(action.payload);

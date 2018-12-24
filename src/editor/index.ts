@@ -82,6 +82,12 @@ class Editor {
         }
       }
     });
+    ec.subscribe('btnAddAnimation', () => {
+      this.eventChannel.dispatch({
+        type: 'add_animation_localstorage_to_editor',
+        payload: { name: this.uiControls.state.animationName },
+      })
+    })
   }
 
   private setUIHandlers = () => {

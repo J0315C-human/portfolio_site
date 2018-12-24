@@ -97,7 +97,6 @@ const getFramesWithGridsFromSlugs = (allSlugsEncoded: AnimationSlugEncoded, nRow
       grid = gridCopy(frame.grid);
       frames.push(frame);
     })
-  frames.forEach(f => console.log(f.timingFunc))
   return frames;
 }
 
@@ -110,6 +109,7 @@ export default class Deserializer {
     this.eventChannel.subscribe('load_animation_editor_to_timeline', this.loadAnimationToTimelineFromEditor);
     this.eventChannel.subscribe('load_animation_localstorage_to_timeline', this.loadAnimationToTimelineFromLocalStorage);
     this.eventChannel.subscribe('load_animation_localstorage_to_editor', this.loadAnimationToEditorFromLocalStorage);
+    this.eventChannel.subscribe('add_animation_localstorage_to_editor', this.addAnimationToEditorFromLocalStorage);
   }
 
   private getAnimationFromLocalStorage = (name: string): FrameWithGrid[] => {
@@ -135,6 +135,13 @@ export default class Deserializer {
   private loadAnimationToEditorFromLocalStorage = (payload: { name: string }): void => {
     this.eventChannel.dispatch({
       type: 'editor_load_frames',
+      payload: { frames: this.getAnimationFromLocalStorage(payload.name) },
+    })
+  }
+
+  private addAnimationToEditorFromLocalStorage = (payload: { name: string }): void => {
+    this.eventChannel.dispatch({
+      type: 'editor_add_frames',
       payload: { frames: this.getAnimationFromLocalStorage(payload.name) },
     })
   }

@@ -10,7 +10,7 @@ const colors = [
 ]
 
 const throttleScrollUpdatesMS = 23;
-const tlMargin = 0;
+const tlMargin = 0.001;
 const tlActiveArea = 1 - 2 * tlMargin;
 const maxCols = 30;
 const maxRows = 50;

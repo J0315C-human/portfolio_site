@@ -87,6 +87,7 @@ class UIControls {
     ec.addButtonEventSource('btnRandom', el.btnRandom);
     ec.addButtonEventSource('btnSaveGrid', el.btnSaveGrid);
     ec.addButtonEventSource('btnLoadGrid', el.btnLoadGrid);
+    ec.addButtonEventSource('btnAddAnimation', el.btnAddAnimation);
   }
 
   addInputEventSources = () => {

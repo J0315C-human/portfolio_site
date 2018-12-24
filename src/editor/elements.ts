@@ -22,6 +22,7 @@ export default class Elements {
   btnPlay: HTMLButtonElement;
   btnSave: HTMLButtonElement;
   btnLoad: HTMLButtonElement;
+  btnAddAnimation: HTMLButtonElement;
   btnLoadGrid: HTMLButtonElement;
   btnSaveGrid: HTMLButtonElement;
   btnRecolor: HTMLButtonElement;
@@ -51,6 +52,7 @@ export default class Elements {
     this.btnPlay = document.getElementById('editor-option-play') as HTMLButtonElement;
     this.btnSave = document.getElementById('editor-option-save') as HTMLButtonElement;
     this.btnLoad = document.getElementById('editor-option-load') as HTMLButtonElement;
+    this.btnAddAnimation = document.getElementById('editor-option-add-animation') as HTMLButtonElement;
     this.btnRecolor = document.getElementById('editor-option-recolor') as HTMLButtonElement;
     this.btnRandom = document.getElementById('editor-option-random') as HTMLButtonElement;
     this.btnSaveGrid = document.getElementById('editor-option-save-grid') as HTMLButtonElement;
