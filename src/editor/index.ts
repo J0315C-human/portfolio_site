@@ -198,14 +198,14 @@ class Editor {
 
   private setTriangleColorClickHandler = (j: number, i: number, checkMouseDown: boolean) => (el: SVGElement) => (e: PointerEvent) => {
     if (checkMouseDown && e.buttons === 0) return;
-    const { curAltColorIdx, curColorIdx, shiftDown, cursorMode } = this.uiControls.state;
+    const { curAltColorIdx, curColorIdx, shiftDown, cursorMode, zDown } = this.uiControls.state;
     const colorIdx = shiftDown ? curAltColorIdx : curColorIdx;
     const cursor = getCursor(cursorMode, j, i);
     const changes = cursor.map(pos => ({ j: pos.j, i: pos.i, color: this.triColors[pos.j][pos.i] }))
-      .filter(chg => chg.color !== colorIdx);
+      .filter(chg => !((chg.color === colorIdx) || (zDown && (chg.color === curAltColorIdx))));
     if (cursor.length === 0 || changes.length === 0) return;
-    cursor.forEach(pos => {
-      this.setTriangleColor(pos.j, pos.i, colorIdx);
+    changes.forEach(chg => {
+      this.setTriangleColor(chg.j, chg.i, colorIdx);
     })
     this.undoQueue.add(() => {
       changes.forEach(chg => {

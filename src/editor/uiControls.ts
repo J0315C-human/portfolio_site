@@ -8,6 +8,7 @@ import constants from '../constants';
 export interface UIState {
   inputFocused: boolean;
   shiftDown: boolean;
+  zDown: boolean;
   curColorIdx: number;
   curAltColorIdx: number;
   fade: number;
@@ -68,6 +69,7 @@ class UIControls {
     this.state = {
       inputFocused: false,
       shiftDown: false,
+      zDown: false,
       curColorIdx: 1,
       curAltColorIdx: 2,
       timingFunction: 'none',
@@ -214,9 +216,11 @@ class UIControls {
     ec.subscribe('keydown_shift', () => this.state.shiftDown = true);
     ec.subscribe('keyup_shift', () => this.state.shiftDown = false);
 
+    ec.subscribe('keydown_z', () => this.state.zDown = true);
+    ec.subscribe('keyup_z', () => this.state.zDown = false);
+
     ec.subscribe('keypress_q', this.selectNextOption(this.elements.inputCursor, cursorModes, 'inputCursor'));
     ec.subscribe('keypress_w', this.selectNextOption(this.elements.inputTiming, timingFunctions, 'inputTiming'));
-
   }
 
   private selectNextOption = (input: HTMLSelectElement, options: string[], actionType: string) => () => {
