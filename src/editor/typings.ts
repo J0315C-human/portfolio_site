@@ -73,3 +73,5 @@ export interface FrameWithCompressedDeltas {
 
 export type AnimationSlug = string;
 export type AnimationSlugEncoded = string;
+
+export type CursorFunction = (j: number, i: number) => { j: number, i: number }[];

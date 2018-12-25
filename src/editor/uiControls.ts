@@ -21,8 +21,19 @@ export interface UIState {
 
 const cursorModes = [
   'normal',
-  'thing',
-  'other',
+  'hex',
+  'quad_1',
+  'quad_2',
+  'quad_3',
+  'line_1',
+  'line_2',
+  'line_3',
+  'line_4',
+  'large',
+  'left',
+  'left_2',
+  'right',
+  'right_2',
 ]
 
 const timingFunctions = [

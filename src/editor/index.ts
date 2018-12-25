@@ -8,6 +8,7 @@ import Elements from './elements';
 import TweenBlocks from './tweenBlocks';
 import UndoQueue from './undoQueue';
 import { getTimingFunction } from '../patterns/timingFunctions';
+import { getCursor } from '../patterns/cursorTypes';
 import constants from '../constants';
 /* What this class does:
 -Keeps track of past frames from animation
@@ -84,6 +85,7 @@ class Editor {
     ec.subscribe('btnLoadGrid', () => {
       const json = localStorage.getItem(this.uiControls.state.gridName);
       const grid = JSON.parse(json);
+      this.addUndoToOldTriangleGrid();
       for (let j = 0; j < this.g.nRows; j++) {
         for (let i = 0; i < this.g.nCols; i++) {
           this.setTriangleColor(j, i, grid[j][i]);
@@ -158,7 +160,7 @@ class Editor {
     this.clearCurrentFrame();
     // "replay" all the changes with the new timing
     tweenBlocksToAdd.forEach(tb => {
-      this.setTriangleColor(tb.j, tb.i, tb.color, false);
+      this.setTriangleColor(tb.j, tb.i, tb.color);
     })
   }
 
@@ -195,12 +197,24 @@ class Editor {
   }
 
   private setTriangleColorClickHandler = (j: number, i: number, checkMouseDown: boolean) => (el: SVGElement) => (e: PointerEvent) => {
-    if (checkMouseDown && e.buttons === 0) { return; }
-    const uiState = this.uiControls.state;
-    this.setTriangleColor(j, i, uiState.shiftDown ? uiState.curAltColorIdx : uiState.curColorIdx);
+    if (checkMouseDown && e.buttons === 0) return;
+    const { curAltColorIdx, curColorIdx, shiftDown, cursorMode } = this.uiControls.state;
+    const colorIdx = shiftDown ? curAltColorIdx : curColorIdx;
+    const cursor = getCursor(cursorMode, j, i);
+    const changes = cursor.map(pos => ({ j: pos.j, i: pos.i, color: this.triColors[pos.j][pos.i] }))
+      .filter(chg => chg.color !== colorIdx);
+    if (cursor.length === 0 || changes.length === 0) return;
+    cursor.forEach(pos => {
+      this.setTriangleColor(pos.j, pos.i, colorIdx);
+    })
+    this.undoQueue.add(() => {
+      changes.forEach(chg => {
+        this.setTriangleColor(chg.j, chg.i, chg.color);
+      })
+    })
   }
 
-  private setTriangleColor = (j: number, i: number, colorIdx: number, saveChangeForUndo = true) => {
+  private setTriangleColor = (j: number, i: number, colorIdx: number) => {
     const getOffset = getTimingFunction(this.uiControls.state.timingFunction);
     const uiState = this.uiControls.state;
     const startPos = this.elapsed + uiState.wait + getOffset(j, i);
@@ -224,16 +238,13 @@ class Editor {
 
     this.eventChannel.dispatch({ type: 'triangle_fill', payload: { j, i, color: constants.colors[colorIdx] } })
     this.triColors[j][i] = colorIdx;
-    if (saveChangeForUndo) {
-      this.undoQueue.add(() => this.setTriangleColor(j, i, oldColor, false));
-    }
   }
 
   private clear = () => {
     this.addUndoToOldTriangleGrid();
     for (let j = 0; j < this.g.nRows; j++) {
       for (let i = 0; i < this.g.nCols; i++) {
-        this.setTriangleColor(j, i, this.uiControls.state.curColorIdx, false);
+        this.setTriangleColor(j, i, this.uiControls.state.curColorIdx);
       }
     }
   }
@@ -288,7 +299,7 @@ class Editor {
     for (let j = 0; j < nRows; j++) {
       for (let i = 0; i < nCols; i++) {
         if (this.triColors[j][i] + 1 === from) {
-          this.setTriangleColor(j, i, (to - 1), false);
+          this.setTriangleColor(j, i, (to - 1));
         }
       }
     }
@@ -302,7 +313,7 @@ class Editor {
       for (let i = 0; i < nCols; i++) {
         if (Math.random() < percent) {
           const colorIdx = Math.floor(Math.random() * constants.colors.length);
-          this.setTriangleColor(j, i, colorIdx, false);
+          this.setTriangleColor(j, i, colorIdx);
         }
       }
     }
@@ -365,7 +376,7 @@ class Editor {
     this.undoQueue.add(() => {
       for (let j = 0; j < nRows; j++) {
         for (let i = 0; i < nCols; i++) {
-          this.setTriangleColor(j, i, oldGrid[j][i], false);
+          this.setTriangleColor(j, i, oldGrid[j][i]);
         }
       }
     })
