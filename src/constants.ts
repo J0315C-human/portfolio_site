@@ -9,6 +9,12 @@ const colors = [
   "#662717",
 ]
 
+const overlayTransitions = [
+  { color: '#030', wait: 0.05, fade: 0.3},
+  { color: '#005', wait: 0, fade: 0.3},
+  { color: '#300', wait: 0.05, fade: 0.3},
+]
+
 const throttleScrollUpdatesMS = 23;
 const tlMargin = 0.001;
 const tlActiveArea = 1 - 2 * tlMargin;
@@ -20,6 +26,7 @@ const centerY = maxRows / 2;
 const constants = {
   throttleScrollUpdatesMS,
   colors,
+  overlayTransitions,
   tlMargin,
   tlActiveArea,
   triangleRelWidth: 101.8,

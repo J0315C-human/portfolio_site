@@ -2,7 +2,7 @@ import Globals from "../globals";
 import constants from "../constants";
 
 const outer = document.getElementById("outer");
-const svgOuter = document.getElementById("svg");
+const svgRootGroup = document.getElementById("rootGroup");
 
 export default class ScrollResizeHandler {
   g: Globals;
@@ -15,7 +15,7 @@ export default class ScrollResizeHandler {
     const newHeight = outer.clientHeight;
     const hRatio = newWidth / this.g.pageWidth;
     const vRatio = newHeight / this.g.pageHeight;
-    svgOuter.style.transform = `scale(${hRatio}, ${vRatio})`;
+    svgRootGroup.style.transform = `scale(${hRatio}, ${vRatio})`;
   };
 
   // set scroll handler

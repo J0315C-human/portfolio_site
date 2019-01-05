@@ -17,6 +17,10 @@ body {
   left: 0;
 }
 
+#svg {
+  width: 100%;
+  height: 100%;
+}
 #title {
   font-family: Arial, Helvetica, sans-serif;
   margin: 100px;
@@ -44,4 +48,12 @@ body {
 
 .content-r {
   margin-left: 465px;
+}
+
+.blend {
+  mix-blend-mode: difference;
+}
+
+#svg_overlay {
+  pointer-events: none;
 }

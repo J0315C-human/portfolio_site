@@ -9,11 +9,11 @@ const rPath = "M121.361 10.228l102.434 59.166-102.494 58.89.06-118.056z";
 export default class Triangles {
   g: Globals;
   triangles: SVGElement[][];
-  svgOuter: HTMLElement;
+  rootGroup: HTMLElement;
   eventChannel: EventChannel;
   constructor(globals: Globals, eventChannel: EventChannel) {
     this.g = globals;
-    this.svgOuter = document.getElementById("svg")
+    this.rootGroup = document.getElementById("rootGroup")
     this.triangles = [];
     this.eventChannel = eventChannel;
     this.subscribeEvents();
@@ -26,9 +26,9 @@ export default class Triangles {
 
   setInitialSizing = () => {
     const { pageHeight, pageWidth } = this.g;
-    const svgOuter = this.svgOuter;
-    svgOuter.style.width = `${pageWidth}px`;
-    svgOuter.style.height = `${pageHeight}px`;
+    const rootGroup = this.rootGroup;
+    rootGroup.style.width = `${pageWidth}px`;
+    rootGroup.style.height = `${pageHeight}px`;
   }
 
   private getLeftTriangle = (x, y) => { return this.getTriangle(lPath, this.g.config.lTriConfig)(x, y); }
@@ -50,7 +50,7 @@ export default class Triangles {
 
   private createTriangles = () => {
     const { nRows, nCols } = this.g;
-    const group = this.svgOuter;
+    const group = this.rootGroup;
     while (group.firstChild) { group.removeChild(group.firstChild); };
     this.triangles = [];
     for (let j = 0; j < nRows; j++) {

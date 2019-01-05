@@ -1,4 +1,4 @@
-import { TweenLite, Linear } from 'gsap';
+import { TweenLite, Linear, Power2 } from 'gsap';
 import { PatternData } from "../typings";
 import Globals from "../globals";
 import EventChannel from '../editor/EventChannel';
@@ -20,14 +20,30 @@ export default class Patterns {
     this.g.tl.time(constants.tlMargin * totalDur);
   }
 
+  private addOverlayAnimatons = () => {
+    const transitions = constants.overlayTransitions;
+    const overlay = document.getElementById('svg_overlay');
+    const totalDur = this.g.tl.totalDuration();
+    let elapsed = 0;
+    this.g.tl.add(TweenLite.set(overlay, { fill: '#000' }), 0);
+    transitions.forEach(trans => {
+      const startPos = (elapsed + trans.wait) * totalDur;
+      const dur = trans.fade * totalDur;
+      this.g.tl.add(TweenLite.to(overlay, dur, { fill: trans.color, ease: Power2.easeInOut }), startPos);
+      elapsed += trans.fade + trans.wait;
+    })
+  }
+
   private initializePatternAnimations = (payload: { patterns: PatternData[] }) => {
     this.g.tl.clear();
     let elapsed = 0;
     payload.patterns.forEach(({ getColor, wait, fade, getOffset }, n) => {
+      let didAddTween = false;
       for (let j = 0; j < this.g.nRows; j++) {
         for (let i = 0; i < this.g.nCols; i++) {
           const color = getColor(i, j);
           if (color) {
+            didAddTween = true;
             const startPos = elapsed + wait + getOffset(j, i);
             this.eventChannel.dispatch({
               type: 'triangle_call',
@@ -40,9 +56,15 @@ export default class Patterns {
           }
         }
       }
+      if (!didAddTween) {
+        const dummy = { x: 0 };
+        const startPos = elapsed + wait
+        this.g.tl.add(TweenLite.to(dummy, fade, { x: 0 }), startPos);
+      }
       elapsed += wait + fade;
     });
 
     this.updateTimelineGlobals();
+    this.addOverlayAnimatons();
   }
 }

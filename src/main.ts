@@ -22,7 +22,7 @@ if (g.mode === 'normal') {
   g.getGlobalSizingFromWindow();
   ec.dispatch({ type: 'triangles_init' });
 
-  ec.dispatch({ type: 'load_animation_localstorage_to_timeline', payload: { name: 'animation' } });
+  ec.dispatch({ type: 'load_animation_file_to_timeline', payload: { name: 'animation' } });
   const handler = new ScrollResizeHandler(g);
   handler.setScrollAndResizeHandlers();
 

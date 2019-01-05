@@ -5,6 +5,7 @@ import { decompressDeltasToArrayArrayFromLeft } from "./deltas";
 import Globals from "../globals";
 import EventChannel from "./EventChannel";
 import { getTimingFunctionNameFromCode } from "../patterns/timingFunctions";
+import { pattern0 } from "../patterns/pattern0";
 
 const unslugFrame = (slug: AnimationSlug): CompressedFrameType => slug.includes('^') || slug.includes('<')
   ? unslugFrameWithGrid(slug)
@@ -108,6 +109,7 @@ export default class Deserializer {
     this.g = g;
     this.eventChannel.subscribe('load_animation_editor_to_timeline', this.loadAnimationToTimelineFromEditor);
     this.eventChannel.subscribe('load_animation_localstorage_to_timeline', this.loadAnimationToTimelineFromLocalStorage);
+    this.eventChannel.subscribe('load_animation_file_to_timeline', this.loadAnimationToTimelineFromFile);
     this.eventChannel.subscribe('load_animation_localstorage_to_editor', this.loadAnimationToEditorFromLocalStorage);
     this.eventChannel.subscribe('add_animation_localstorage_to_editor', this.addAnimationToEditorFromLocalStorage);
   }
@@ -129,6 +131,21 @@ export default class Deserializer {
     this.eventChannel.dispatch({
       type: 'patterns_init',
       payload: { patterns: getPatternsFromFrames(frames, this.g) },
+    })
+  }
+
+  private loadAnimationToTimelineFromFile = (): void => {
+    const { nRows, nCols } = this.g;
+    const encodedSlug = pattern0;
+    const frames = getFramesWithGridsFromSlugs(encodedSlug, nRows, nCols);
+
+    const framesRetiled = frames.map(frame => ({
+      ...frame,
+      grid: retileGrid(frame.grid, nRows, nCols),
+    }));
+    this.eventChannel.dispatch({
+      type: 'patterns_init',
+      payload: { patterns: getPatternsFromFrames(framesRetiled, this.g) },
     })
   }
 

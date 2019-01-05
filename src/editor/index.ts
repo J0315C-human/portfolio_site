@@ -140,6 +140,7 @@ class Editor {
   private recreateCanvas = () => {
     this.eventChannel.dispatch({ type: 'triangles_init' })
     this.setTriangleHandlers();
+    document.getElementById('svg_overlay').style.fill = '#000';
   }
 
   private getLastFrame = () => this.frames[this.frames.length - 1];
