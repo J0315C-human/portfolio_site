@@ -1,5 +1,5 @@
 import './assets/styles.css';
-import ScrollResizeHandler from './dom/handlers';
+import WindowHandler from './dom/handlers';
 import Triangles from './dom/triangles';
 import Patterns from './patterns';
 import Globals from './globals';
@@ -23,9 +23,11 @@ if (g.mode === 'normal') {
   ec.dispatch({ type: 'triangles_init' });
 
   ec.dispatch({ type: 'load_animation_file_to_timeline', payload: { name: 'animation' } });
-  const handler = new ScrollResizeHandler(g);
-  handler.setScrollAndResizeHandlers();
-
+  const handler = new WindowHandler(g);
+  // handler.setScrollAndResizeHandlers();
+  handler.setResizeHandler();
+  g.tl.eventCallback('onComplete', () => g.tl.restart());
+  g.tl.play();
 } else {
   const editor = new Editor(ec, el, g);
 

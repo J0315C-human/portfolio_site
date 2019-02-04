@@ -10,9 +10,9 @@ const colors = [
 ]
 
 const overlayTransitions = [
-  { color: '#030', wait: 0.05, fade: 0.3},
-  { color: '#005', wait: 0, fade: 0.3},
-  { color: '#300', wait: 0.05, fade: 0.3},
+  // { color: '#030', wait: 0.05, fade: 0.3},
+  // { color: '#005', wait: 0, fade: 0.3},
+  // { color: '#300', wait: 0.05, fade: 0.3},
 ]
 
 const throttleScrollUpdatesMS = 23;

@@ -11,22 +11,23 @@ const swipeRightSlow = getSwipeRight(1);
 const swipeRight = getSwipeRight(0.5);
 const swipeRightFast = getSwipeRight(0.2);
 const swipeLeftSlow = getSwipeLeft(1);
-const swipeLeft = getSwipeLeft(0.5);
+const swipeLeft = getSwipeLeft(0.5);  
 const swipeLeftFast = getSwipeLeft(0.2);
 
+const scaleAll = 3;
 const diag1 = (row: number, col: number) =>
-  (((maxRows - row) + col) / (maxRows + maxCols)) * 0.5;
+  ((((maxRows - row) + col) / (maxRows + maxCols)) * 0.5) * scaleAll;
 
-const diag2 = (row: number, col: number) => ((row + col) % 2)
+const diag2 = (row: number, col: number) => (((row + col) % 2)
   ? (((maxRows - row) + col) / (maxRows + maxCols)) * 0.3
-  : (((maxRows - row) + col) / (maxRows + maxCols)) * 0.3 + 0.05;
+  : (((maxRows - row) + col) / (maxRows + maxCols)) * 0.3 + 0.05) * scaleAll;
 
 const diag3 = (row: number, col: number) =>
-  (((maxRows - row) * 2 + (maxCols - col)) / (maxRows + maxCols)) * 0.3
+  ((((maxRows - row) * 2 + (maxCols - col)) / (maxRows + maxCols)) * 0.3) * scaleAll
 
-const diag4 = (row: number, col: number) => ((row + col) % 2)
+const diag4 = (row: number, col: number) => (((row + col) % 2)
   ? (((maxRows - row) * 2 + col) / (maxRows * 2 + maxCols)) * 0.3
-  : (((maxRows - row) * 2 + col) / (maxRows * 2 + maxCols)) * 0.3 + 0.05;
+  : (((maxRows - row) * 2 + col) / (maxRows * 2 + maxCols)) * 0.3 + 0.05) * scaleAll;
 
 const randomFade = () => Math.random() * 0.5;
 

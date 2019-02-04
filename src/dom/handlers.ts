@@ -4,7 +4,7 @@ import constants from "../constants";
 const outer = document.getElementById("outer");
 const svgRootGroup = document.getElementById("rootGroup");
 
-export default class ScrollResizeHandler {
+export default class WindowHandler {
   g: Globals;
   constructor(globals: Globals) {
     this.g = globals;
@@ -40,6 +40,10 @@ export default class ScrollResizeHandler {
 
   setScrollAndResizeHandlers = () => {
     document.getElementById("scrollOuter").onscroll = this.scrollHandlerThrottled;
+    window.onresize = this.resizeHandler;
+  }
+
+  setResizeHandler = () => {
     window.onresize = this.resizeHandler;
   }
 }
