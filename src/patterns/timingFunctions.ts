@@ -29,7 +29,7 @@ const diag4 = (row: number, col: number) => (((row + col) % 2)
   ? (((maxRows - row) * 2 + col) / (maxRows * 2 + maxCols)) * 0.3
   : (((maxRows - row) * 2 + col) / (maxRows * 2 + maxCols)) * 0.3 + 0.05) * scaleAll;
 
-const randomFade = () => Math.random() * 0.5;
+const randomFade = () => Math.random() * 1;
 
 const randomSwipeUp = (row: number, col: number) => ((maxRows - row) / maxRows) * 0.7 + randomFade() * 0.3;
 const randomSwipeUp2 = (row: number, col: number) => ((maxRows - row) / maxRows) * 0.4 + randomFade() * 0.6;
