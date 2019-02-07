@@ -79,6 +79,7 @@ class Editor {
     ec.subscribe('btnLoad', this.load);
     ec.subscribe('btnRecolor', this.recolor);
     ec.subscribe('btnRandom', this.random);
+    ec.subscribe('btnShowFrameTiming', () => this.uiControls.switchFrameTimingVisibility());
     ec.subscribe('btnSaveGrid', () => {
       localStorage.setItem(uiState.gridName, JSON.stringify(this.triColors));
     });
@@ -410,6 +411,7 @@ class Editor {
       this.setElapsed(finalPosition);
       this.redrawCurrentFrame();
     })
+    this.uiControls.createFrameTimingTable(payload.frames);
   }
 
 }

@@ -166,7 +166,7 @@ export default class Deserializer {
   private loadAnimationToTimelineFromEditor = (payload: { frames: FrameWithGrid[] }): void => {
     this.eventChannel.dispatch({
       type: 'patterns_init',
-      payload: { patterns: getPatternsFromFrames(payload.frames, this.g) },
+      payload: { patterns: getPatternsFromFrames(payload.frames, this.g), setFrameTimingCaret: true },
     })
   }
 }

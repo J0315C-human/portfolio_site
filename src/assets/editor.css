@@ -1,5 +1,18 @@
 .triangle:hover {
   opacity: 0.9;
+} 
+
+.justfortestingcolors {
+  color: #101615;
+  color: #1b5588;
+  color: #96B27D;
+  color: #7D6336;
+  color: #EBCE89;
+  color: #CB6A2E;
+  color: #662717;
+  color: #8a2060;
+  color: #571da3;
+  color: #2d501e;
 }
 
 #editor-outer {
@@ -7,7 +20,7 @@
   top: 10vh;
   left: 10vw;
   padding: 13px;
-  max-width: 215px;
+  max-width: 283px;
   background-color: #8f8f8f;
   opacity: 0.6;
   font-family: sans-serif;
@@ -27,10 +40,10 @@
 }
 
 .editor-color {
-  margin: 2px;
+  margin: 2px 1px;
   width: 25px;
   height: 25px;
-  border-radius: 10px;
+  border-radius: 5px;
   border-width: 0;
   border: 1px solid #333;
 }
@@ -94,4 +107,40 @@
   display: flex;
   align-items: center;
   margin: -2px 0px;
+}
+
+#editor-frame-timing {
+  height: 200%;
+  border-radius: inherit;
+  overflow-y: auto;
+  background: inherit;
+  position: absolute;
+  top: 0px;
+  left: 102%;
+}
+
+#editor-frame-timing-inner {
+  height: auto;
+  width: 340px;
+  padding: 15px;
+}
+
+.editor-frame-timing-row {
+  width: 305px;
+  font-size: 13px;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 3px 15px;
+}
+
+.editor-frame-timing-item,
+.editor-frame-timing-itemlabel {
+  width: 100px;
+  height: 20px;
+  margin: 0 1px;
+  box-sizing: border-box;
+}
+
+.editor-frame-timing-itemlabel {
+  padding-left: 5px; 
 }

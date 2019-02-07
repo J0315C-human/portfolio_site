@@ -9,6 +9,7 @@ export default class Elements {
   scrollContainer: HTMLDivElement;
   outerEditor: HTMLDivElement;
   outerColors: HTMLDivElement;
+  frameTiming: HTMLDivElement;
   inputWait: HTMLInputElement;
   inputFade: HTMLInputElement;
   inputSpeed: HTMLInputElement;
@@ -23,6 +24,7 @@ export default class Elements {
   btnLoad: HTMLButtonElement;
   btnAddAnimation: HTMLButtonElement;
   btnLoadGrid: HTMLButtonElement;
+  btnShowFrameTiming: HTMLButtonElement;
   btnSaveGrid: HTMLButtonElement;
   btnRecolor: HTMLButtonElement;
   btnRandom: HTMLButtonElement;
@@ -34,6 +36,7 @@ export default class Elements {
     this.outer = document.getElementById("outer");
     this.svgOuter = document.getElementById("svg");
     this.rootSvgGroup = document.getElementById("rootGroup");
+    this.frameTiming = document.getElementById("editor-frame-timing") as HTMLDivElement;
     this.scrollContainer = document.getElementById('scrollOuter') as HTMLDivElement;
     this.outerEditor = document.getElementById('editor-outer') as HTMLDivElement;
     this.outerColors = document.getElementById('editor-colors') as HTMLDivElement;
@@ -55,7 +58,8 @@ export default class Elements {
     this.btnRandom = document.getElementById('editor-option-random') as HTMLButtonElement;
     this.btnSaveGrid = document.getElementById('editor-option-save-grid') as HTMLButtonElement;
     this.btnLoadGrid = document.getElementById('editor-option-load-grid') as HTMLButtonElement;
-
+    this.btnShowFrameTiming = document.getElementById('editor-toggle-frame-timing') as HTMLButtonElement;
+    
     this.divCurrentTime = document.getElementById('editor-current-time') as HTMLDivElement;
     this.colorButtons = [
       document.getElementById('btnColor_0') as HTMLButtonElement,
@@ -64,7 +68,10 @@ export default class Elements {
       document.getElementById('btnColor_3') as HTMLButtonElement,
       document.getElementById('btnColor_4') as HTMLButtonElement,
       document.getElementById('btnColor_5') as HTMLButtonElement,
-      document.getElementById('btnColor_6') as HTMLButtonElement
+      document.getElementById('btnColor_6') as HTMLButtonElement,
+      document.getElementById('btnColor_7') as HTMLButtonElement,
+      document.getElementById('btnColor_8') as HTMLButtonElement,
+      document.getElementById('btnColor_9') as HTMLButtonElement
     ]
     this.inputs = [
       this.inputWait,

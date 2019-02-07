@@ -34,17 +34,26 @@ export default class Patterns {
     })
   }
 
-  private initializePatternAnimations = (payload: { patterns: PatternData[] }) => {
+  private initializePatternAnimations = (payload: { patterns: PatternData[], setFrameTimingCaret?: boolean }) => {
     this.g.tl.clear();
     let elapsed = 0;
+    const setFrameTimingCaret = (frameIdx: number) => {
+      this.eventChannel.dispatch({ type: 'set_frame_caret', payload: { frameIdx } });
+    }
+
     payload.patterns.forEach(({ getColor, wait, fade, getOffset }, n) => {
       let didAddTween = false;
+
+      if (payload.setFrameTimingCaret) {
+        this.g.tl.add(() => setFrameTimingCaret(n), elapsed + wait);
+      }
       for (let j = 0; j < this.g.nRows; j++) {
         for (let i = 0; i < this.g.nCols; i++) {
           const color = getColor(i, j);
           if (color) {
             didAddTween = true;
             const startPos = elapsed + wait + getOffset(j, i);
+
             this.eventChannel.dispatch({
               type: 'triangle_call',
               payload: {
@@ -63,7 +72,9 @@ export default class Patterns {
       }
       elapsed += wait + fade;
     });
-
+    if (payload.setFrameTimingCaret) {
+      this.g.tl.add(() => setFrameTimingCaret(-1), elapsed + 0.5);
+    }
     this.updateTimelineGlobals();
     this.addOverlayAnimatons();
   }

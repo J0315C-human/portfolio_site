@@ -1,12 +1,15 @@
 
 const colors = [
   "#101615",
-  "#2F6876",
+  "#1b5588",
   "#96B27D",
   "#7D6336",
   "#EBCE89",
   "#CB6A2E",
   "#662717",
+  "#8a2060",
+  "#571da3",
+  "#2d501e",
 ]
 
 const overlayTransitions = [

@@ -2,7 +2,7 @@ import EventChannel from './EventChannel';
 import '../assets/editor.css';
 import Elements from './elements';
 import Globals from '../globals';
-import { TimingFunctionName } from './typings';
+import { TimingFunctionName, FrameWithGrid } from './typings';
 import constants from '../constants';
 
 export interface UIState {
@@ -19,6 +19,25 @@ export interface UIState {
   gridName: string;
   cursorMode: string;
 }
+
+const getTimingSelectHTML = (val: string) => `<select 
+class="editor-frame-timing-item">
+<option value="none" ${val === 'none' ? 'selected' : ''}>none</option>
+<option value="swipe_right_slow" ${val === 'swipe_right_slow' ? 'selected' : ''}>swipe right slow</option>
+<option value="swipe_right" ${val === 'swipe_right' ? 'selected' : ''}>swipe right</option>
+<option value="swipe_right_fast" ${val === 'swipe_right_fast' ? 'selected' : ''}>swipe right fast</option>
+<option value="swipe_left_slow" ${val === 'swipe_left_slow' ? 'selected' : ''}>swipe left slow</option>
+<option value="swipe_left" ${val === 'swipe_left' ? 'selected' : ''}>swipe left</option>
+<option value="swipe_left_fast" ${val === 'swipe_left_fast' ? 'selected' : ''} selected>swipe left fast</option>
+<option value="diag_1" ${val === 'diag_1' ? 'selected' : ''}>diag 1</option>
+<option value="diag_2" ${val === 'diag_2' ? 'selected' : ''}>diag 2</option>
+<option value="diag_3" ${val === 'diag_3' ? 'selected' : ''}>diag 3</option>
+<option value="diag_4" ${val === 'diag_4' ? 'selected' : ''}>diag 4</option>
+<option value="rand" ${val === 'rand' ? 'selected' : ''}>rand</option>
+<option value="rand_swipe" ${val === 'rand_swipe' ? 'selected' : ''}>rand swipe</option>
+<option value="center" ${val === 'center' ? 'selected' : ''}>center</option>
+<option value="thing" ${val === 'thing' ? 'selected' : ''}>thing</option>
+</select>`;
 
 const cursorModes = [
   'normal',
@@ -58,6 +77,7 @@ class UIControls {
   state: UIState;
   toolboxLocation: 'left' | 'right' | 'bottomLeft' | 'bottomRight';
   toolboxVisible: boolean;
+  frameTimingVisible: boolean;
   eventChannel: EventChannel;
   elements: Elements;
   colors: string[];
@@ -81,6 +101,7 @@ class UIControls {
       cursorMode: elements.inputCursor.value,
     }
     this.toolboxVisible = true;
+    this.frameTimingVisible = false;
     (window as any).logyou = () => console.log(this);
     this.eventChannel = eventChannel;
     this.colors = constants.colors;
@@ -94,6 +115,7 @@ class UIControls {
     this.addInputEventSources();
     this.addFieldHandlers();
     this.setKeyHandlers();
+    this.subscribeToEvents();
   }
 
   addColorPalette = () => {
@@ -120,6 +142,7 @@ class UIControls {
     ec.addButtonEventSource('btnRandom', el.btnRandom);
     ec.addButtonEventSource('btnSaveGrid', el.btnSaveGrid);
     ec.addButtonEventSource('btnLoadGrid', el.btnLoadGrid);
+    ec.addButtonEventSource('btnShowFrameTiming', el.btnShowFrameTiming);
     ec.addButtonEventSource('btnAddAnimation', el.btnAddAnimation);
   }
 
@@ -135,6 +158,11 @@ class UIControls {
     ec.addInputEventSource('inputCursor', el.inputCursor);
   }
 
+  subscribeToEvents = () => {
+    const ec = this.eventChannel;
+    // const el = this.elements;
+    ec.subscribe('set_frame_caret', (payload: { frameIdx: number }) => this.setFrameTimingCaret(payload.frameIdx));
+  }
   colorClickHandler = (n: number) => () => {
     if (this.state.inputFocused) return;
     if (this.state.shiftDown) {
@@ -204,14 +232,9 @@ class UIControls {
 
     ec.subscribe('keypress_a', this.switchToolboxVisibility);
     ec.subscribe('keypress_t', this.switchToolboxLocation);
-    ec.subscribe('keypress_0', this.colorClickHandler(0));
-    ec.subscribe('keypress_1', this.colorClickHandler(1));
-    ec.subscribe('keypress_2', this.colorClickHandler(2));
-    ec.subscribe('keypress_3', this.colorClickHandler(3));
-    ec.subscribe('keypress_4', this.colorClickHandler(4));
-    ec.subscribe('keypress_5', this.colorClickHandler(5));
-    ec.subscribe('keypress_6', this.colorClickHandler(6));
-    ec.subscribe('keypress_7', this.colorClickHandler(7));
+    for (let i = 0; i <= 9; i++) {
+      ec.subscribe(`keypress_${i}`, this.colorClickHandler(i));
+    }
 
     ec.subscribe('keydown_shift', () => this.state.shiftDown = true);
     ec.subscribe('keyup_shift', () => this.state.shiftDown = false);
@@ -267,6 +290,49 @@ class UIControls {
     } else {
       this.elements.outerEditor.style.display = 'block';
       this.toolboxVisible = true;
+    }
+  }
+
+  switchFrameTimingVisibility = () => {
+    if (this.frameTimingVisible) {
+      this.elements.frameTiming.style.display = 'none';
+      this.frameTimingVisible = false;
+    } else {
+      this.elements.frameTiming.style.display = 'block';
+      this.frameTimingVisible = true;
+    }
+  }
+
+
+  getSingleFrameTimingRow = (frame: FrameWithGrid, idx: number) => {
+    return `<div class="editor-frame-timing-row" id="frame-timing-row-${idx}">
+      <input class="editor-frame-timing-item" type="text" value="${frame.wait}"/>
+      <input class="editor-frame-timing-item" type="text" value="${frame.fade}"/>
+      ${getTimingSelectHTML(frame.timingFunc)}
+    </div>`;
+  }
+  createFrameTimingTable = (frames: FrameWithGrid[]) => {
+    const el = document.getElementById('editor-frame-timing-inner');
+    if (el) {
+      el.innerHTML = `<div class="editor-frame-timing-row">
+      <div class="editor-frame-timing-itemlabel">wait</div>
+      <div class="editor-frame-timing-itemlabel">fade</div>
+      <div class="editor-frame-timing-itemlabel">timingfunc</div>
+    </div>` + frames.map(this.getSingleFrameTimingRow).join('');
+    }
+  }
+
+  setFrameTimingCaret = (frameIdx: number) => {
+    if (frameIdx === -1) { // clear all frame carets
+      const rows = document.getElementsByClassName('editor-frame-timing-row');
+      for (let i = 0; i < rows.length; i++) {
+        (rows.item(i) as HTMLDivElement).style.backgroundColor = 'inherit';
+      }
+    } else {
+      const row = document.getElementById('frame-timing-row-' + frameIdx);
+      if (row) {
+        row.style.backgroundColor = '#333';
+      }
     }
   }
 }
