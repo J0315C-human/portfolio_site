@@ -1,4 +1,4 @@
-import { FrameWithGrid, TweenBlockWithCoords } from './typings';
+import { FrameWithGrid, TweenBlockWithCoords, TimingFunctionName } from './typings';
 import UIControls from './uiControls';
 import EventChannel from './EventChannel';
 import { gridCopy } from '../utils';
@@ -17,7 +17,23 @@ import constants from '../constants';
   -timing
   -draw state
 */
-
+const timingFuncNames = [
+  "none",
+  "swipe_right_slow",
+  "swipe_right",
+  "swipe_right_fast",
+  "swipe_left_slow",
+  "swipe_left",
+  "swipe_left_fast",
+  "diag_1",
+  "diag_2",
+  "diag_3",
+  "diag_4",
+  "rand",
+  "rand_swipe",
+  "center",
+  "thing",
+]
 class Editor {
   // for storing previous frames
   frames: FrameWithGrid[];
@@ -136,6 +152,7 @@ class Editor {
       this.setElapsedDisplay(this.elapsed);
       this.isPlaying = false;
     });
+    this.eventChannel.subscribe('frame_timing_val_changed', this.handleTimingValChanged);
   }
 
   private recreateCanvas = () => {
@@ -155,6 +172,42 @@ class Editor {
       })
     })
     this.tweenBlocks.clear();
+  }
+
+  private handleTimingValChanged = (payload: { idx: number, siblingIndexes: number[], name: string, val: string }) => {
+    let key = "";
+    let value: string | number = "";
+    switch (payload.name) {
+      case "wait":
+        key = 'wait';
+        value = parseFloat(payload.val);
+        this.frames[payload.idx].wait = parseFloat(payload.val);
+        break;
+      case "fade":
+        key = 'fade';
+        value = parseFloat(payload.val);
+        this.frames[payload.idx].fade = parseFloat(payload.val);
+        break;
+      case "timingFunc":
+        key = 'timingFunc';
+        value = payload.val;
+        this.frames[payload.idx].timingFunc = payload.val as TimingFunctionName;
+        break;
+    }
+    this.frames[payload.idx][key] = value;
+
+    if (this.uiControls.state.useTGroups) {
+
+      payload.siblingIndexes.forEach(siblingIdx => {
+        this.frames[siblingIdx][key] = value;
+        if (key === 'timingFunc') {
+          (document.getElementById('timingFunc-' + siblingIdx) as HTMLSelectElement)
+            .selectedIndex = timingFuncNames.findIndex(v => v === payload.val);
+        } else {
+          (document.getElementById(key + '-' + siblingIdx) as HTMLInputElement).value = payload.val;
+        }
+      });
+    }
   }
 
   private updateCurrentFrameTiming = () => {

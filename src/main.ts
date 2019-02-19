@@ -27,6 +27,7 @@ if (g.mode === 'normal') {
   // handler.setScrollAndResizeHandlers();
   handler.setResizeHandler();
   g.tl.eventCallback('onComplete', () => g.tl.restart());
+  g.tl.timeScale(0.7);
   g.tl.play();
 } else {
   const editor = new Editor(ec, el, g);

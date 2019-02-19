@@ -32,6 +32,11 @@ export interface FrameWithGrid {
   timingFunc: TimingFunctionName;
 }
 
+export interface FrameTimingRowObject extends FrameWithGrid {
+  isFirstOfTimingType: boolean;
+  timingTypeSiblingIndexes: number[];
+}
+
 export interface FrameWithDeltas {
   type: 'deltas',
   deltas: TriangleDelta[];

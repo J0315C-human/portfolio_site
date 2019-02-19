@@ -2,8 +2,10 @@ import EventChannel from './EventChannel';
 import '../assets/editor.css';
 import Elements from './elements';
 import Globals from '../globals';
-import { TimingFunctionName, FrameWithGrid } from './typings';
+import { TimingFunctionName, FrameWithGrid, FrameTimingRowObject } from './typings';
 import constants from '../constants';
+
+
 
 export interface UIState {
   inputFocused: boolean;
@@ -18,26 +20,33 @@ export interface UIState {
   timingFunction: TimingFunctionName;
   gridName: string;
   cursorMode: string;
+  useTGroups: boolean;
 }
 
-const getTimingSelectHTML = (val: string) => `<select 
-class="editor-frame-timing-item">
-<option value="none" ${val === 'none' ? 'selected' : ''}>none</option>
-<option value="swipe_right_slow" ${val === 'swipe_right_slow' ? 'selected' : ''}>swipe right slow</option>
-<option value="swipe_right" ${val === 'swipe_right' ? 'selected' : ''}>swipe right</option>
-<option value="swipe_right_fast" ${val === 'swipe_right_fast' ? 'selected' : ''}>swipe right fast</option>
-<option value="swipe_left_slow" ${val === 'swipe_left_slow' ? 'selected' : ''}>swipe left slow</option>
-<option value="swipe_left" ${val === 'swipe_left' ? 'selected' : ''}>swipe left</option>
-<option value="swipe_left_fast" ${val === 'swipe_left_fast' ? 'selected' : ''} selected>swipe left fast</option>
-<option value="diag_1" ${val === 'diag_1' ? 'selected' : ''}>diag 1</option>
-<option value="diag_2" ${val === 'diag_2' ? 'selected' : ''}>diag 2</option>
-<option value="diag_3" ${val === 'diag_3' ? 'selected' : ''}>diag 3</option>
-<option value="diag_4" ${val === 'diag_4' ? 'selected' : ''}>diag 4</option>
-<option value="rand" ${val === 'rand' ? 'selected' : ''}>rand</option>
-<option value="rand_swipe" ${val === 'rand_swipe' ? 'selected' : ''}>rand swipe</option>
-<option value="center" ${val === 'center' ? 'selected' : ''}>center</option>
-<option value="thing" ${val === 'thing' ? 'selected' : ''}>thing</option>
-</select>`;
+const getTimingSelectHTML = (idx: number, tro: FrameTimingRowObject) => {
+  const val = tro.timingFunc;
+  return `<select 
+  id="timingFunc-${idx}"
+  class="editor-frame-timing-item"
+  onchange="if (window.setFrameTimingVal) window.setFrameTimingVal(${idx}, [${tro.timingTypeSiblingIndexes}], 'timingFunc', this.value);"
+  >
+  <option value="none" ${val === 'none' ? 'selected' : ''}>none</option>
+  <option value="swipe_right_slow" ${val === 'swipe_right_slow' ? 'selected' : ''}>swipe right slow</option>
+  <option value="swipe_right" ${val === 'swipe_right' ? 'selected' : ''}>swipe right</option>
+  <option value="swipe_right_fast" ${val === 'swipe_right_fast' ? 'selected' : ''}>swipe right fast</option>
+  <option value="swipe_left_slow" ${val === 'swipe_left_slow' ? 'selected' : ''}>swipe left slow</option>
+  <option value="swipe_left" ${val === 'swipe_left' ? 'selected' : ''}>swipe left</option>
+  <option value="swipe_left_fast" ${val === 'swipe_left_fast' ? 'selected' : ''} selected>swipe left fast</option>
+  <option value="diag_1" ${val === 'diag_1' ? 'selected' : ''}>diag 1</option>
+  <option value="diag_2" ${val === 'diag_2' ? 'selected' : ''}>diag 2</option>
+  <option value="diag_3" ${val === 'diag_3' ? 'selected' : ''}>diag 3</option>
+  <option value="diag_4" ${val === 'diag_4' ? 'selected' : ''}>diag 4</option>
+  <option value="rand" ${val === 'rand' ? 'selected' : ''}>rand</option>
+  <option value="rand_swipe" ${val === 'rand_swipe' ? 'selected' : ''}>rand swipe</option>
+  <option value="center" ${val === 'center' ? 'selected' : ''}>center</option>
+  <option value="thing" ${val === 'thing' ? 'selected' : ''}>thing</option>
+  </select>`;
+}
 
 const cursorModes = [
   'normal',
@@ -99,12 +108,14 @@ class UIControls {
       animationName: elements.inputAnimationName.value,
       gridName: elements.inputGridName.value,
       cursorMode: elements.inputCursor.value,
+      useTGroups: true,
     }
     this.toolboxVisible = true;
     this.frameTimingVisible = false;
-    (window as any).logyou = () => console.log(this);
+    (window as any).logUiControls = () => console.log(this);
     this.eventChannel = eventChannel;
     this.colors = constants.colors;
+    (window as any).setFrameTimingVal = this.timingValChanged;
   }
 
   initialize = () => {
@@ -156,6 +167,7 @@ class UIControls {
     ec.addInputEventSource('inputGridName', el.inputGridName);
     ec.addInputEventSource('inputTiming', el.inputTiming);
     ec.addInputEventSource('inputCursor', el.inputCursor);
+    ec.addInputEventSource('useTGroups', el.useTGroups);
   }
 
   subscribeToEvents = () => {
@@ -225,6 +237,11 @@ class UIControls {
     ec.subscribe('inputGridName', (payload) => this.state.gridName = payload.value);
     ec.subscribe('inputTiming', (payload) => this.state.timingFunction = payload.value);
     ec.subscribe('inputCursor', (payload) => this.state.cursorMode = payload.value);
+    ec.subscribe('useTGroups', this.toggleUseTGroups);
+  }
+
+  toggleUseTGroups = () => {
+    this.state.useTGroups = !this.state.useTGroups;
   }
 
   setKeyHandlers = () => {
@@ -304,36 +321,101 @@ class UIControls {
   }
 
 
-  getSingleFrameTimingRow = (frame: FrameWithGrid, idx: number) => {
+  getSingleFrameTimingRow = (tro: FrameTimingRowObject, idx: number) => {
     return `<div class="editor-frame-timing-row" id="frame-timing-row-${idx}">
-      <input class="editor-frame-timing-item" type="text" value="${frame.wait}"/>
-      <input class="editor-frame-timing-item" type="text" value="${frame.fade}"/>
-      ${getTimingSelectHTML(frame.timingFunc)}
+      <input class="editor-frame-timing-item" type="text" value="${tro.wait}" 
+        id="wait-${idx}"
+        onchange="if (window.setFrameTimingVal) 
+        window.setFrameTimingVal(${idx}, [${tro.timingTypeSiblingIndexes}], 'wait', this.value);"/>
+      <input class="editor-frame-timing-item" type="text" value="${tro.fade}"
+        id="fade-${idx}"
+        onchange="if (window.setFrameTimingVal) 
+        window.setFrameTimingVal(${idx}, [${tro.timingTypeSiblingIndexes}], 'fade', this.value);"/>
+      ${getTimingSelectHTML(idx, tro)}
     </div>`;
   }
+
+  getFrameTimingRowObjects = (frames: FrameWithGrid[]) => {
+    const tros = [] as FrameTimingRowObject[];
+    let firstOfTypeIdx = 0;
+    frames.forEach((f, i) => {
+      if (i === 0) {
+        // first frame
+        tros.push({
+          ...f,
+          isFirstOfTimingType: true,
+          timingTypeSiblingIndexes: [],
+        });
+      } else {
+        const prev = tros[i - 1];
+        if (f.fade === prev.fade && f.wait === prev.wait && f.timingFunc === prev.timingFunc) {
+          // it's a repeat
+          tros.push({
+            ...f,
+            isFirstOfTimingType: false,
+            timingTypeSiblingIndexes: [],
+          });
+          tros[firstOfTypeIdx].timingTypeSiblingIndexes.push(i);
+        } else { // it's first of type
+          tros.push({
+            ...f,
+            isFirstOfTimingType: true,
+            timingTypeSiblingIndexes: [],
+          });
+          firstOfTypeIdx = i;
+        }
+      }
+    })
+    return tros;
+  }
   createFrameTimingTable = (frames: FrameWithGrid[]) => {
-    const el = document.getElementById('editor-frame-timing-inner');
-    if (el) {
-      el.innerHTML = `<div class="editor-frame-timing-row">
+    const inner = document.getElementById('editor-frame-timing-inner');
+    const minimap = document.getElementById('editor-frame-timing-minimap');
+    const frameTimingObjects = this.getFrameTimingRowObjects(frames);
+    if (inner) {
+      inner.innerHTML = `<div class="editor-frame-timing-row">
       <div class="editor-frame-timing-itemlabel">wait</div>
       <div class="editor-frame-timing-itemlabel">fade</div>
       <div class="editor-frame-timing-itemlabel">timingfunc</div>
-    </div>` + frames.map(this.getSingleFrameTimingRow).join('');
+    </div>` + frameTimingObjects.map(this.getSingleFrameTimingRow).join('');
+    }
+    if (minimap) {
+      const percentEach = ((1 / frames.length) * 100).toFixed(4);
+      minimap.innerHTML = frames.map((_, n) => {
+        return `<div 
+        class="editor-frame-timing-minimap-part" 
+        id="frame-timing-minimap-part-${n}" style="width: ${percentEach}%"></div>`;
+      }).join('');
     }
   }
 
   setFrameTimingCaret = (frameIdx: number) => {
     if (frameIdx === -1) { // clear all frame carets
       const rows = document.getElementsByClassName('editor-frame-timing-row');
+      const parts = document.getElementsByClassName('editor-frame-timing-minimap-part');
       for (let i = 0; i < rows.length; i++) {
         (rows.item(i) as HTMLDivElement).style.backgroundColor = 'inherit';
       }
+      for (let i = 0; i < parts.length; i++) {
+        (parts.item(i) as HTMLDivElement).style.backgroundColor = 'inherit';
+      }
     } else {
       const row = document.getElementById('frame-timing-row-' + frameIdx);
+      const part = document.getElementById('frame-timing-minimap-part-' + frameIdx);
       if (row) {
         row.style.backgroundColor = '#333';
       }
+      if (part) {
+        part.style.backgroundColor = '#333';
+      }
     }
+  }
+
+  timingValChanged = (idx: number, siblingIndexes: number[], name: string, val: any) => {
+    this.eventChannel.dispatch({
+      type: 'frame_timing_val_changed',
+      payload: { idx, siblingIndexes, name, val }
+    })
   }
 }
 

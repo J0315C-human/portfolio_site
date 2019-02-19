@@ -55,9 +55,11 @@
 				<btn class="editor-option" id="editor-option-play">play</btn>
 				<btn class="editor-option" id="editor-option-save">save</btn>
 				<btn class="editor-option" id="editor-option-load">load</btn>
-				<label class="editor-label">rate:<input class="editor-option-input" id="editor-option-speed" value="1" /></label>
+				<label class="editor-label">rate:<input class="editor-option-input" id="editor-option-speed"
+						value="1" /></label>
 				<btn class="editor-option" id="editor-option-recolor">recolor</btn>
-				<label class="editor-label">name:<input class="editor-option-input-wide" id="editor-option-name" value="animation" /></label>
+				<label class="editor-label">name:<input class="editor-option-input-wide" id="editor-option-name"
+						value="animation" /></label>
 				<btn class="editor-option" id="editor-option-add-animation">add</btn>
 				<label class="editor-label">timing:
 					<select class="editor-option-input-xwide" id="editor-option-timing">
@@ -78,7 +80,8 @@
 						<option value="thing">thing</option>
 					</select>
 				</label>
-				<label class="editor-label">gridname:<input class="editor-option-input-wide" id="editor-option-grid-name" value="a" /></label>
+				<label class="editor-label">gridname:<input class="editor-option-input-wide" id="editor-option-grid-name"
+						value="a" /></label>
 				<btn class="editor-option" id="editor-option-save-grid">save grid</btn>
 				<btn class="editor-option" id="editor-option-load-grid">load grid</btn>
 				<label class="editor-label">t: <div id="editor-current-time"></div></label>
@@ -103,6 +106,11 @@
 				<btn class="editor-option" id="editor-toggle-frame-timing">timing</btn>
 			</div>
 			<div id="editor-frame-timing" style="display:none">
+				<div id="editor-frame-timing-minimap"></div>
+				<label id="editor-use-tgroups-outer">
+					<input type="checkbox" id="editor-use-tgroups" checked /> 
+					use tgroups
+				</label>
 				<div id="editor-frame-timing-inner"></div>
 			</div>
 		</div>

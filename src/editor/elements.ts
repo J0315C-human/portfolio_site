@@ -30,6 +30,7 @@ export default class Elements {
   btnRandom: HTMLButtonElement;
   divCurrentTime: HTMLDivElement;
   colorButtons: HTMLButtonElement[];
+  useTGroups: HTMLInputElement;
   inputs: HTMLInputElement[];
   constructor() {
     this.body = document.body;
@@ -47,6 +48,7 @@ export default class Elements {
     this.inputGridName = document.getElementById('editor-option-grid-name') as HTMLInputElement;
     this.inputTiming = document.getElementById('editor-option-timing') as HTMLSelectElement;
     this.inputCursor = document.getElementById('editor-option-cursor-mode') as HTMLSelectElement;
+    this.useTGroups = document.getElementById('editor-use-tgroups') as HTMLInputElement;
 
     this.btnUndo = document.getElementById('editor-option-undo') as HTMLButtonElement;
     this.btnFrame = document.getElementById('editor-option-frame') as HTMLButtonElement;
