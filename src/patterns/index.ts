@@ -1,9 +1,11 @@
-import { TweenLite, Linear, Power2 } from 'gsap';
+import { TweenLite, Linear } from 'gsap';
+import { CSSRulePlugin } from 'gsap/CSSRulePlugin';
 import { PatternData } from "../typings";
 import Globals from "../globals";
 import EventChannel from '../editor/EventChannel';
 import constants from '../constants';
 
+const cssRule = CSSRulePlugin.getRule('.content');
 
 export default class Patterns {
   g: Globals;
@@ -23,14 +25,27 @@ export default class Patterns {
   private addOverlayAnimatons = () => {
     const transitions = constants.overlayTransitions;
     const overlay = document.getElementById('svg_overlay');
-    const totalDur = this.g.tl.totalDuration();
-    let elapsed = 0;
     this.g.tl.add(TweenLite.set(overlay, { fill: '#000' }), 0);
     transitions.forEach(trans => {
-      const startPos = (elapsed + trans.wait) * totalDur;
-      const dur = trans.fade * totalDur;
-      this.g.tl.add(TweenLite.to(overlay, dur, { fill: trans.color, ease: Power2.easeInOut }), startPos);
-      elapsed += trans.fade + trans.wait;
+      const startPos = trans.start;
+      const dur = trans.end - trans.start
+      this.g.tl.add(TweenLite.to(overlay, dur, { fill: trans.color, ease: Linear.easeNone }), startPos);
+    })
+  }
+
+  private addContentAnimations = () => {
+    const transitions = constants.contentTransitions;
+    transitions.forEach(trans => {
+      const startPos = trans.start;
+      const dur = trans.end - trans.start
+      this.g.tl.add(TweenLite.to(cssRule, dur, {
+        cssRule: { backgroundColor: trans.color },
+        ease: Linear.easeNone
+      }), startPos);
+      this.g.tl.add(TweenLite.to(cssRule, dur, {
+        cssRule: { boxShadow: `0px 0px 74px 45px ${trans.color}` },
+        ease: Linear.easeNone
+      }), startPos);
     })
   }
 
@@ -77,5 +92,6 @@ export default class Patterns {
     }
     this.updateTimelineGlobals();
     this.addOverlayAnimatons();
+    this.addContentAnimations();
   }
 }

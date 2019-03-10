@@ -61,7 +61,7 @@ export default class Globals {
     tl.pause();
 
     this.tl = tl;
-
+    (window as any).tl = tl;
     this.nRows = nRows;
     this.nCols = nCols;
     this.scrollPos = 0;
