@@ -36,7 +36,7 @@ const getTimingSelectHTML = (idx: number, tro: FrameTimingRowObject) => {
   <option value="swipe_right_fast" ${val === 'swipe_right_fast' ? 'selected' : ''}>swipe right fast</option>
   <option value="swipe_left_slow" ${val === 'swipe_left_slow' ? 'selected' : ''}>swipe left slow</option>
   <option value="swipe_left" ${val === 'swipe_left' ? 'selected' : ''}>swipe left</option>
-  <option value="swipe_left_fast" ${val === 'swipe_left_fast' ? 'selected' : ''} selected>swipe left fast</option>
+  <option value="swipe_left_fast" ${val === 'swipe_left_fast' ? 'selected' : ''}>swipe left fast</option>
   <option value="diag_1" ${val === 'diag_1' ? 'selected' : ''}>diag 1</option>
   <option value="diag_2" ${val === 'diag_2' ? 'selected' : ''}>diag 2</option>
   <option value="diag_3" ${val === 'diag_3' ? 'selected' : ''}>diag 3</option>
