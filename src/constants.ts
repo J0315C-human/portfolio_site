@@ -47,7 +47,7 @@ const contentTransitions = [
   { color: "rgba(24, 48, 70, 0.9)", start: 116, end: 120 }
 ]
 
-const throttleScrollUpdatesMS = 23;
+const throttleScrollUpdatesMS = 16;
 const tlMargin = 0;
 const tlActiveArea = 1 - 2 * tlMargin;
 const maxCols = 30;

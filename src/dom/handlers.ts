@@ -21,7 +21,6 @@ export default class WindowHandler {
   // set scroll handler
   private scrollHandler = () => {
     const { tl, scrollPos } = this.g;
-    tl.time(0);
     tl.time((constants.tlMargin + scrollPos * constants.tlActiveArea) * tl.duration());
   };
 
