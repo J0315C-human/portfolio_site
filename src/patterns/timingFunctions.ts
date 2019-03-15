@@ -16,7 +16,7 @@ const swipeLeftFast = getSwipeLeft(0.2);
 
 const scaleAll = 3;
 const diag1 = (row: number, col: number) =>
-  ((((maxRows - row) + col) / (maxRows + maxCols)) * 0.5) * scaleAll;
+  ((((maxRows - row) + col) / (maxRows + maxCols)) * 2) * scaleAll;
 
 const diag2 = (row: number, col: number) => (((row + col) % 2)
   ? (((maxRows - row) + col) / (maxRows + maxCols)) * 0.3
@@ -53,7 +53,9 @@ const thingRows = [
   [14, 23, 22, 13],
   [15, 16, 11, 12],
 ]
-const thing = (row: number, col: number) => thingRows[row % 12][col % 4] * 0.05
+
+// a hexagon-shape-thing transition
+const thing = (row: number, col: number) => thingRows[row % 12][col % 4] * 0.25
 export const getTimingFunction = (name: TimingFunctionName) => {
   switch (name) {
     case 'swipe_left_slow':
@@ -93,6 +95,8 @@ export const getTimingFunction = (name: TimingFunctionName) => {
 
 export const getTimingFunctionNameFromCode = (code: string): TimingFunctionName => {
   switch (code) {
+    case '':
+      return 'none';
     case '1':
       return 'swipe_right_slow';
     case '2':

@@ -27,7 +27,7 @@ if (g.mode === 'normal') {
   const handler = new WindowHandler(g);
   handler.setScrollAndResizeHandlers();
   // handler.setResizeHandler();
-  g.tl.eventCallback('onComplete', () => g.tl.restart());
+  // g.tl.eventCallback('onComplete', () => g.tl.restart());
   g.tl.timeScale(playbackRate);
   // g.tl.play();
 } else {

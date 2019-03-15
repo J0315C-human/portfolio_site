@@ -46,7 +46,6 @@ class EventChannel {
 
   dispatch = (action: Action) => {
     if (!this.eventsSubscribed.includes(action.type)) return;
-    if (!action.type.includes('triangle_')) console.log(action.type)
     this.subscribers.forEach(subscriber => {
       if (action.type === subscriber.type) {
         subscriber.handler(action.payload);
