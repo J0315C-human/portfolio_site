@@ -8,7 +8,6 @@ import Editor from './editor';
 import Elements from './editor/elements';
 import Deserializer from './editor/deserializer';
 
-// const playbackRate = 0.3;
 // other classes should only depend on these:
 const el = new Elements();
 const ec = new EventChannel();
@@ -25,11 +24,17 @@ if (g.mode === 'normal') {
 
   ec.dispatch({ type: 'load_animation_file_to_timeline', payload: { name: 'animation' } });
   const handler = new WindowHandler(g);
-  handler.setScrollAndResizeHandlers();
-  // handler.setResizeHandler();
-  // g.tl.eventCallback('onComplete', () => g.tl.restart());
-  // g.tl.timeScale(playbackRate);
-  // g.tl.play();
+
+  if (g.isMobile){
+    const playbackRate = 0.7;
+    handler.setResizeHandler();
+    g.tl.eventCallback('onComplete', () => g.tl.restart());
+    g.tl.timeScale(playbackRate);
+    g.tl.play();
+  } else {
+    handler.setScrollAndResizeHandlers();
+  }
+
 } else {
   const editor = new Editor(ec, el, g);
 

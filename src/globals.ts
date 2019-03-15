@@ -16,6 +16,7 @@ export default class Globals {
   scrollPos: number;
   lastUpdate: number;
   scaleAll: number;
+  isMobile: boolean;
   triWidth: number;
   triHeight: number;
   config: {
@@ -36,7 +37,7 @@ export default class Globals {
     this.pageWidth = pageWidth;
     this.pageHeight = pageHeight;
     this.IDEAL_NUM_TRIANGLES = ((500 * 0.4) + ((pageWidth * pageHeight) / 3000) * 0.6);
-
+    this.isMobile = pageHeight > pageWidth;
     // start everything at maximums
     const initialFit = {
       cols: constants.maxCols,
