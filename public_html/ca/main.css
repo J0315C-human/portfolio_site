@@ -1,0 +1,100 @@
+#contact {
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+#palette {
+  align-self: center;
+  order: 1;
+  margin-bottom: 10px;
+  visibility: visible;
+  display:flex;
+  flex-direction:column   ;
+}
+#paletteBalance {
+  order: 3;
+  width: 30px;
+}
+
+
+
+
+.paletteButton {
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+  border: 2px solid black;
+  border-radius: 5px;
+  align-self:center;
+}
+
+.paletteButton:hover, .selectedPaletteButton {
+  border: 3px solid #666;
+}
+.paletteButton:active {
+  border: 3px solid #ccc;
+}
+
+#messages {
+  height: 34px;
+  text-align: center;
+  font-size: 30px;
+  font-family: Monospace;
+  color: #6d94bf;
+  margin-bottom: 15px;
+  margin-top: -10px;
+  word-wrap: break-word;
+}
+
+#container {
+	padding: 30px;
+}
+
+#innerContainer {
+    position:relative;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#innerContainer:active {
+  cursor: default;
+}
+
+#otherContainer {
+  display:flex;
+  flex-direction: row;
+}
+#JoelCA {
+	background-color: #000;
+	border-radius: 4px;
+  padding: 5px;
+  margin: auto;
+  display: block;
+  order: 2;
+}
+
+body {
+	background-color: #151515;
+}
+
+.btnrow {
+	text-align: center;
+}
+
+.hiddenrow {
+  display: none;
+}
+
+.btn {
+  min-width: 90px;
+  max-width: 100px;
+	margin-top: 5px;
+}
+  
+.instr {
+  font-size:15px;
+}
+/*For the assertion results*/
+#results li.pass {color: green;}
+#results li.fail {color: red;}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Bleep, Bloop</title>
+	<link href="https://fonts.googleapis.com/css?family=Bungee+Shade" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quantico:700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quantico:400" rel="stylesheet">
+<link href="style.css?2eb97c740f5ab5b04129" rel="stylesheet"></head>
+
+<body>
+	<div id="container">
+		<div id="game" style="visibility:hidden;">
+			<div id="controls">
+				<div class="gameBtn" id="play" class="playHidden">pause</div>
+				<div class="gameBtn secretBtn" id="prev">prev</div>
+				<div class="gameBtn secretBtn" id="next">next</div>
+				<div class="gameBtn secretBtn" id="log">log</div>
+			</div>
+			<div tabindex="0" id="board">
+				<div id="interface">
+					<div id="interface-title">bleep bloop</div>
+					<div id="interface-msg">shapes, colors, sounds!</div>
+					<div id="interface-btns">
+					</div>
+				</div>
+			</div>
+			<div class="scoreLabel">SCORE:&nbsp
+				<span id="scoreCount">0</span>
+			</div>
+		</div>
+		<!-- HEX EDITOR FOR BUILD MODE -->
+		<div id="hexedit">
+			<div class="hexedititem">
+				<div class="hexeditlabel">type:</div>
+				<select class="hexeditinput" id="hexeditinput-type">
+					<option value="normal">Normal</option>
+					<option value="buffer">Buffer</option>
+					<option value="pattern">Pattern</option>
+				</select>
+			</div>
+			<div class="hexedititem" id="hexedititem-dots">
+				<div class="hexeditlabel">dots:&nbsp
+					<span id="hexeditlabel-dots">3</span>
+				</div>
+				<input id="hexeditinput-dots" type="range" min="1" max="7" step="1" class="hexeditinput">
+				</input>
+			</div>
+			<div class="hexedititem" id="hexedititem-delay">
+				<div class="hexeditlabel">delay:&nbsp
+					<span id="hexeditlabel-delay">3</span>
+				</div>
+				<input id="hexeditinput-delay" type="range" min="0" max="6" step="1" class="hexeditinput">
+				</input>
+			</div>
+			<div class="hexedititem" id="hexedititem-directions">
+				<div class="hexeditlabel">directions:</div>
+				<div class="hexeditinput">
+					<input type="checkbox" id="hexeditinput-dir0"></input>
+					<input type="checkbox" id="hexeditinput-dir1"></input>
+					<input type="checkbox" id="hexeditinput-dir2"></input>
+					<input type="checkbox" id="hexeditinput-dir3"></input>
+					<input type="checkbox" id="hexeditinput-dir4"></input>
+					<input type="checkbox" id="hexeditinput-dir5"></input>
+				</div>
+			</div>
+			<div class="hexedititem">
+				<div class="hexeditlabel">frozen:</div>
+				<div class="hexeditinput">
+					<input type="checkbox" id="hexeditinput-frozen"></input>
+				</div>
+			</div>
+			<div class="hexedititem" id="hexedititem-pattern">
+				<div class="hexeditlabel">pattern:</div>
+				<input type="text" class="hexeditinput" id="hexeditinput-pattern"></input>
+			</div>
+			<div class="hexedititem">
+				<div class="hexeditlabel">note:</div>
+				<input type="text" class="hexeditinput" id="hexeditinput-note"></input>
+			</div>
+			<div class="hexedititem">
+				<button id="hexedit-ok" style="width: 100px; margin-left: 25%;">OK</button>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="index.js?2eb97c740f5ab5b04129"></script></body>
+
+</html>
