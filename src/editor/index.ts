@@ -70,6 +70,7 @@ class Editor {
     this.setKeyHandlers();
     this.setTriangleHandlers();
     this.setOtherEventHandlers();
+    this.clearScrollContents();
   }
 
   public setElapsed = (elapsed: number) => {
@@ -83,6 +84,12 @@ class Editor {
     if (curText !== newText) {
       this.elements.divCurrentTime.textContent = newText;
     }
+  }
+
+  private clearScrollContents = () => {
+    const el = document.getElementById('scrollOuter');
+    if (el)
+      el.innerHTML = "";
   }
 
   private setBtnHandlers = () => {
