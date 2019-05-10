@@ -36,7 +36,7 @@ const randomSwipeUp2 = (row: number, col: number) => ((maxRows - row) / maxRows)
 const center = (row: number, col: number) => {
 
   const dist = Math.sqrt(Math.pow(getCenterX() - col, 2) + Math.pow(getCenterY() - row, 2) * 0.33);
-  return dist / 80;
+  return dist / 20;
 }
 
 const thingRows = [
