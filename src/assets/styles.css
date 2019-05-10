@@ -64,7 +64,7 @@ body {
 
 #svg_overlay {
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0;
 }
 
 .title-big {

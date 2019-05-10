@@ -40,3 +40,5 @@ if (g.mode === 'normal') {
 
   editor.initialize();
 }
+
+document.getElementById('svg_overlay').style.opacity = '0.35';
