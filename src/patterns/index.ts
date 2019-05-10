@@ -22,17 +22,6 @@ export default class Patterns {
     this.g.tl.time(constants.tlMargin * totalDur);
   }
 
-  private addOverlayAnimatons = () => {
-    const transitions = constants.overlayTransitions;
-    const overlay = document.getElementById('svg_overlay');
-    this.g.tl.add(TweenLite.set(overlay, { fill: '#000' }), 0);
-    transitions.forEach(trans => {
-      const startPos = trans.start;
-      const dur = trans.end - trans.start
-      this.g.tl.add(TweenLite.to(overlay, dur, { fill: trans.color, ease: Linear.easeNone }), startPos);
-    })
-  }
-
   private addContentAnimations = () => {
     const transitions = constants.contentTransitions;
     transitions.forEach(trans => {
@@ -43,7 +32,7 @@ export default class Patterns {
         ease: Linear.easeNone
       }), startPos);
       this.g.tl.add(TweenLite.to(cssRule, dur, {
-        cssRule: { boxShadow: `0px 0px 74px 45px ${trans.color}` },
+        cssRule: { boxShadow: `0px 0px 15px 15px ${trans.color}` },
         ease: Linear.easeNone
       }), startPos);
     })
@@ -91,7 +80,6 @@ export default class Patterns {
       this.g.tl.add(() => setFrameTimingCaret(-1), elapsed + 0.5);
     }
     this.updateTimelineGlobals();
-    this.addOverlayAnimatons();
     this.addContentAnimations();
   }
 }

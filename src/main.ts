@@ -26,7 +26,7 @@ if (g.mode === 'normal') {
   const handler = new WindowHandler(g);
 
   if (g.isMobile){
-    const playbackRate = 0.7;
+    const playbackRate = 0.8;
     handler.setResizeHandler();
     g.tl.eventCallback('onComplete', () => g.tl.restart());
     g.tl.timeScale(playbackRate);
