@@ -18,6 +18,7 @@ new Triangles(g, ec);
 new Patterns(g, ec);
 new Deserializer(ec, g);
 
+const autoplayOnMobile = false;
 if (g.mode === 'normal') {
   g.getGlobalSizingFromWindow();
   ec.dispatch({ type: 'triangles_init' });
@@ -25,7 +26,7 @@ if (g.mode === 'normal') {
   ec.dispatch({ type: 'load_animation_file_to_timeline', payload: { name: 'animation' } });
   const handler = new WindowHandler(g);
 
-  if (g.isMobile){
+  if (g.isMobile && autoplayOnMobile){
     const playbackRate = 0.8;
     handler.setResizeHandler();
     g.tl.eventCallback('onComplete', () => g.tl.restart());
@@ -36,9 +37,12 @@ if (g.mode === 'normal') {
   }
 
 } else {
+  g.renderType = 'svg';
   const editor = new Editor(ec, el, g);
 
   editor.initialize();
 }
 
-document.getElementById('svg_overlay').style.opacity = '0.35';
+if (g.renderType === 'svg'){
+  document.getElementById('svg_overlay').style.opacity = '0.35';
+}

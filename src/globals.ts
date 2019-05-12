@@ -13,6 +13,7 @@ export default class Globals {
   pageHeight: number;
   nRows: number;
   nCols: number;
+  renderType: 'svg' | 'canvas';
   scrollPos: number;
   lastUpdate: number;
   scaleAll: number;
@@ -64,6 +65,7 @@ export default class Globals {
     this.tl = tl;
     (window as any).tl = tl;
     this.nRows = nRows;
+    this.renderType = 'canvas';
     this.nCols = nCols;
     this.scrollPos = 0;
     this.lastUpdate = 0;

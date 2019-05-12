@@ -154,7 +154,7 @@ class Editor {
     this.eventChannel.subscribe('editor_add_frames', this.loadFrames(false));
     this.eventChannel.subscribe('animation_finished', () => {
       this.g.tl.clear();
-      this.recreateCanvas();
+      this.recreateSvgTriangles();
       this.redrawCurrentFrame();
       this.setElapsedDisplay(this.elapsed);
       this.isPlaying = false;
@@ -162,7 +162,7 @@ class Editor {
     this.eventChannel.subscribe('frame_timing_val_changed', this.handleTimingValChanged);
   }
 
-  private recreateCanvas = () => {
+  private recreateSvgTriangles = () => {
     this.eventChannel.dispatch({ type: 'triangles_init' })
     this.setTriangleHandlers();
     document.getElementById('svg_overlay').style.fill = '#000';

@@ -1,9 +1,11 @@
 import { TweenLite, Linear } from 'gsap';
 import { CSSRulePlugin } from 'gsap/CSSRulePlugin';
+import 'gsap/ColorPropsPlugin';
 import { PatternData } from "../typings";
 import Globals from "../globals";
 import EventChannel from '../editor/EventChannel';
 import constants from '../constants';
+import { CanvasTriangle } from 'dom/triangles';
 
 const cssRule = CSSRulePlugin.getRule('.content');
 
@@ -63,7 +65,9 @@ export default class Patterns {
               payload: {
                 j, i,
                 // function to add the next tween
-                call: (tri: SVGElement) => this.g.tl.add(TweenLite.to(tri, fade, { fill: color, ease: Linear.easeNone }), startPos)
+                call: this.g.renderType === 'svg' ?
+                  (tri: SVGElement) => this.g.tl.add(TweenLite.to(tri, fade, { fill: color, ease: Linear.easeNone }), startPos)
+                  : (tri: CanvasTriangle) => this.g.tl.add(TweenLite.to(tri, fade, { colorProps: { color: color }, ease: Linear.easeNone }), startPos)
               }
             });
           }
