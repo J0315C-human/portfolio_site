@@ -3,6 +3,7 @@ import constants from "../constants";
 
 const outer = document.getElementById("outer");
 const svgRootGroup = document.getElementById("rootGroup");
+const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
 export default class WindowHandler {
   g: Globals;
@@ -16,6 +17,7 @@ export default class WindowHandler {
     const hRatio = newWidth / this.g.pageWidth;
     const vRatio = newHeight / this.g.pageHeight;
     svgRootGroup.style.transform = `scale(${hRatio}, ${vRatio})`;
+    canvas.style.transform = `scale(${hRatio}, ${vRatio})`;
   };
 
   // set scroll handler

@@ -57,9 +57,10 @@ export default class Triangles {
 
   initialize = () => {
     if (this.g.renderType === 'svg') {
-      this.setInitialSizing();
+      this.setSvgSizing();
       this.createTriangles();
     } else {
+      this.setSvgSizing(); // size svg because its overlay is used
       this.initCanvasSizing();
       this.setInitialCanvasSizing();
       this.createCanvasTriangles();
@@ -67,7 +68,7 @@ export default class Triangles {
     }
   }
 
-  setInitialSizing = () => {
+  setSvgSizing = () => {
     const { pageHeight, pageWidth } = this.g;
     const rootGroup = this.rootGroup;
     rootGroup.style.width = `${pageWidth}px`;

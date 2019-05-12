@@ -8,6 +8,7 @@ body {
 #outer {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 #svg,
@@ -21,6 +22,11 @@ body {
 #svg {
   width: 100%;
   height: 100%;
+}
+
+#canvas {
+  -webkit-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
 }
 
 #title {
@@ -63,11 +69,6 @@ body {
 }
 
 #svg_overlay {
-  pointer-events: none;
-  opacity: 0;
-}
-
-#canvasOverlay {
   pointer-events: none;
   opacity: 0;
 }

@@ -3,12 +3,12 @@
 
 <head>
 	<link href="https://fonts.googleapis.com/css?family=Rubik:400,600" rel="stylesheet">
-<link href="ce175acc3464121f05ca.css" rel="stylesheet"></head>
+	<link href="c5f8c16582f977031101.css" rel="stylesheet">
+</head>
 
 <body>
 	<div id="outer">
 		<canvas id="canvas"></canvas>
-		<div id="canvasOverlay" class="blend" ></div>
 		<svg id="svg" transform-origin="0 0" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
 			<defs>
 				<linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -17,9 +17,9 @@
 					<stop offset="60%" style="stop-color:rgba(0, 0, 0, 0);" />
 					<stop offset="100%" style="stop-color:rgb(14, 253, 161)" />
 				</linearGradient>
-		</defs>
+			</defs>
 			<g id="rootGroup"></g>
-			<rect fill="url(#grad1)"  id="svg_overlay" class="blend" height="100%" width="100%" y="0" x="0" />
+			<rect fill="url(#grad1)" id="svg_overlay" class="blend" height="100%" width="100%" y="0" x="0" />
 		</svg>
 		<div id="scrollOuter">
 			<h1 id="scrollInner">
@@ -31,7 +31,11 @@
 				<div class="content">
 					<h2 class="content-title title-medium">Game: Bleep Bloop</h2>
 					<div class="content-inner">
-						<p class="content-text text-normal">A clear-the-blocks style puzzle game based around matching and synchronizing rhythms. As the puzzle levels progress, the background chords and scale choices evolve, making the whole thing into a sort of interactive music piece. No game framework was used, just plain javascript - I pulled in a library called Tone.js to generate the synthesizer sounds in the browser, and the GreenSock animation library for all the animation and 'tweening. I am currently working on re-creating this in Unity for mobile. </p>
+						<p class="content-text text-normal">A clear-the-blocks style puzzle game based around matching and synchronizing rhythms. As the puzzle levels progress,
+							the background chords and scale choices evolve, making the whole thing into a sort of interactive music piece. No
+							game framework was used, just plain javascript - I pulled in a library called Tone.js to generate the synthesizer
+							sounds in the browser, and the GreenSock animation library for all the animation and 'tweening. I am currently working
+							on re-creating this in Unity for mobile. </p>
 						<a class="img-link" href="./bleepbloop">
 							<img class="content-img" src="images/bleepbloop.png">
 						</a>
@@ -40,8 +44,11 @@
 				<div class="content">
 					<h2 class="content-title title-medium">Experiment: Multi-State Cellular Automata</h2>
 					<div class="content-inner">
-						<p class="content-text text-normal">Cellular automata are a way to model natural processes (among other things) by defining discrete "cells", in this case a grid, and setting up simple sets of rules that affect the states of each cell over time.
-							 The well-known example is John Conway's Game of Life, which involves only 2 cell states (alive or dead) and a few transition rules. This was my attempt to extend that into something with more cell states (colors) and more interesting ways of setting up rules. </p>
+						<p class="content-text text-normal">Cellular automata are a way to model natural processes (among other things) by defining discrete "cells", in this case
+							a grid, and setting up simple sets of rules that affect the states of each cell over time. The well-known example
+							is John Conway's Game of Life, which involves only 2 cell states (alive or dead) and a few transition rules. This
+							was my attempt to extend that into something with more cell states (colors) and more interesting ways of setting up
+							rules. </p>
 						<a class="img-link" href="./ca">
 							<img class="content-img" src="images/ca.png">
 						</a>
@@ -50,7 +57,10 @@
 				<div class="content">
 					<h2 class="content-title title-medium">Algorithm: Gale-Shapley Matching</h2>
 					<div class="content-inner">
-						<p class="content-text text-normal">An implementation of a <a style="color: white;" href="https://www.geeksforgeeks.org/stable-marriage-problem/">well known solution</a> to the Stable Marriage Problem, in which one group of elements is matched to a second group of elements by some criteria of preference, and must end up in a "stable" configuration of pairs such that there are no two elements that would prefer each other over their current match.</p>
+						<p class="content-text text-normal">An implementation of a
+							<a style="color: white;" href="https://www.geeksforgeeks.org/stable-marriage-problem/">well known solution</a> to the Stable Marriage Problem, in which one group of elements is matched to a second group
+							of elements by some criteria of preference, and must end up in a "stable" configuration of pairs such that there are
+							no two elements that would prefer each other over their current match.</p>
 						<a class="img-link" href="./galeshapley">
 							<img class="content-img" src="images/GaleShapley.png">
 						</a>
@@ -59,8 +69,9 @@
 				<div class="content">
 					<h2 class="content-title title-medium">Generative Art: 10 Print</h2>
 					<div class="content-inner">
-						<p class="content-text text-normal">The famous line of BASIC code <code style="background-color: rgba(0, 0, 0, 0.6); padding: 0 10px; margin-right: 15px;"> 10 PRINT CHR$(205.5+RND(1)); : GOTO 10</code> produces a random mazelike pattern by printing slashes and backslashes.
-							It's so famous, someone wrote <a style="color: white;" href="https://10print.org/">a book about it.</a > This is my version of it.</p>
+						<p class="content-text text-normal">The famous line of BASIC code
+							<code style="background-color: rgba(0, 0, 0, 0.6); padding: 0 10px; margin-right: 15px;"> 10 PRINT CHR$(205.5+RND(1)); : GOTO 10</code> produces a random mazelike pattern by printing slashes and backslashes. It's so famous, someone wrote
+							<a style="color: white;" href="https://10print.org/">a book about it.</a> This is my version of it.</p>
 						<a class="img-link" href="./tenprint">
 							<img class="content-img" src="images/10print.png">
 						</a>
@@ -69,8 +80,9 @@
 				<div class="content">
 					<h2 class="content-title title-medium">Experiment: Black and White Shader Patterns</h2>
 					<div class="content-inner">
-						<p class="content-text text-normal">Each "channel" features a different set of computations carried out for each "pixel" to decide how light or dark it is. It's essentially a set of simple, black-and-white custom shaders.
-							 </p>
+						<p class="content-text text-normal">Each "channel" features a different set of computations carried out for each "pixel" to decide how light or dark it
+							is. It's essentially a set of simple, black-and-white custom shaders.
+						</p>
 						<a class="img-link" href="./bwshaders">
 							<img class="content-img" src="images/joeltv.png">
 						</a>
@@ -79,23 +91,29 @@
 				<div class="content">
 					<h2 class="content-title title-medium">Animation: Game Boy Music Video</h2>
 					<div class="content-inner">
-						<p class="content-text text-normal">A music video for a group I used to be in called Lowlands (check them out <a style="color: white;" href="https://www.wearelowlands.com/home">here</a>). I did all the drawing in the style of a gameboy game, and painstakingly animated every frame by hand, a questionable decision indeed. My commitment to the genre homage led to replacing the actual song with a (also painstakingly hand-finagled) 16-bit version, which in retrospect seems a bit absurd as well. Nonetheless, it was fun to make and remains a relic of a simpler, more creative time in my life.</p>
+						<p class="content-text text-normal">A music video for a group I used to be in called Lowlands (check them out
+							<a style="color: white;" href="https://www.wearelowlands.com/home">here</a>). I did all the drawing in the style of a gameboy game, and painstakingly animated every frame by hand, a
+							questionable decision indeed. My commitment to the genre homage led to replacing the actual song with a (also painstakingly
+							hand-finagled) 16-bit version, which in retrospect seems a bit absurd as well. Nonetheless, it was fun to make and
+							remains a relic of a simpler, more creative time in my life.</p>
 						<a class="img-link" href="https://www.youtube.com/watch?v=QqPixoeYoCs">
 							<img class="content-img" src="images/lowlands.png">
 						</a>
 					</div>
 				</div>
 				<div class="content">
-						<h2 class="content-title title-medium">My Music</h2>
-						<div class="content-inner">
-							<p class="content-text text-normal">A couple albums of weird music I made a long time ago. They're cheekily called "I Live in my Parents' Basement" and "I Live in my Parents' Basement Vol. 2: I Live out of a Suitcase". </p>
-							<a class="img-link" href="https://joelschuman.bandcamp.com/">
-								<img class="content-img" src="images/albums.png">
-							</a>
-						</div>
+					<h2 class="content-title title-medium">My Music</h2>
+					<div class="content-inner">
+						<p class="content-text text-normal">A couple albums of weird music I made a long time ago. They're cheekily called "I Live in my Parents' Basement" and
+							"I Live in my Parents' Basement Vol. 2: I Live out of a Suitcase". </p>
+						<a class="img-link" href="https://joelschuman.bandcamp.com/">
+							<img class="content-img" src="images/albums.png">
+						</a>
 					</div>
+				</div>
 
-		</h1></div>
+			</h1>
+		</div>
 		<div id="editor-outer" style="display:none">
 			<div id="editor-colors">
 				<button class="editor-color" id="btnColor_0"></button>
@@ -113,14 +131,22 @@
 				<btn class="editor-option" id="editor-option-undo">undo</btn>
 				<btn class="editor-option" id="editor-option-frame">frame</btn>
 				<btn class="editor-option" id="editor-option-random">rand</btn>
-				<label class="editor-label">w:<input class="editor-option-input" id="editor-option-wait" value="0"></label>
-				<label class="editor-label">f:<input class="editor-option-input" id="editor-option-fade" value="0.25"></label>
+				<label class="editor-label">w:
+					<input class="editor-option-input" id="editor-option-wait" value="0">
+				</label>
+				<label class="editor-label">f:
+					<input class="editor-option-input" id="editor-option-fade" value="0.25">
+				</label>
 				<btn class="editor-option" id="editor-option-play">play</btn>
 				<btn class="editor-option" id="editor-option-save">save</btn>
 				<btn class="editor-option" id="editor-option-load">load</btn>
-				<label class="editor-label">rate:<input class="editor-option-input" id="editor-option-speed" value="1"></label>
+				<label class="editor-label">rate:
+					<input class="editor-option-input" id="editor-option-speed" value="1">
+				</label>
 				<btn class="editor-option" id="editor-option-recolor">recolor</btn>
-				<label class="editor-label">name:<input class="editor-option-input-wide" id="editor-option-name" value="animation"></label>
+				<label class="editor-label">name:
+					<input class="editor-option-input-wide" id="editor-option-name" value="animation">
+				</label>
 				<btn class="editor-option" id="editor-option-add-animation">add</btn>
 				<label class="editor-label">timing:
 					<select class="editor-option-input-xwide" id="editor-option-timing">
@@ -141,10 +167,14 @@
 						<option value="thing">thing</option>
 					</select>
 				</label>
-				<label class="editor-label">gridname:<input class="editor-option-input-wide" id="editor-option-grid-name" value="a"></label>
+				<label class="editor-label">gridname:
+					<input class="editor-option-input-wide" id="editor-option-grid-name" value="a">
+				</label>
 				<btn class="editor-option" id="editor-option-save-grid">save grid</btn>
 				<btn class="editor-option" id="editor-option-load-grid">load grid</btn>
-				<label class="editor-label">t: <div id="editor-current-time"></div></label>
+				<label class="editor-label">t:
+					<div id="editor-current-time"></div>
+				</label>
 				<label class="editor-label">cursormode:
 					<select class="editor-option-input-wide" id="editor-option-cursor-mode" value="normal">
 						<option value="normal">normal</option>
@@ -168,13 +198,13 @@
 			<div id="editor-frame-timing" style="display:none">
 				<div id="editor-frame-timing-minimap"></div>
 				<label id="editor-use-tgroups-outer">
-					<input type="checkbox" id="editor-use-tgroups" checked="">
-					use tgroups
+					<input type="checkbox" id="editor-use-tgroups" checked=""> use tgroups
 				</label>
 				<div id="editor-frame-timing-inner"></div>
 			</div>
 		</div>
 	</div>
-<script src="bundle.js"></script></body>
+	<script src="bundle.js"></script>
+</body>
 
 </html>

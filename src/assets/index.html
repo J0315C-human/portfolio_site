@@ -8,7 +8,6 @@
 <body>
 	<div id="outer">
 		<canvas id="canvas"></canvas>
-		<div id="canvasOverlay" class="blend" ></div>
 		<svg id="svg" transform-origin="0 0" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
 			<defs>
 				<linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -17,9 +16,9 @@
 					<stop offset="60%" style="stop-color:rgba(0, 0, 0, 0);" />
 					<stop offset="100%" style="stop-color:rgb(14, 253, 161)" />
 				</linearGradient>
-		</defs>
+			</defs>
 			<g id="rootGroup"></g>
-			<rect fill="url(#grad1)"  id="svg_overlay" class="blend" height="100%" width="100%" y="0" x="0" />
+			<rect fill="url(#grad1)" id="svg_overlay" class="blend" height="100%" width="100%" y="0" x="0" />
 		</svg>
 		<div id="scrollOuter">
 			<h1 id="scrollInner">
@@ -57,16 +56,22 @@
 				<btn class="editor-option" id="editor-option-undo">undo</btn>
 				<btn class="editor-option" id="editor-option-frame">frame</btn>
 				<btn class="editor-option" id="editor-option-random">rand</btn>
-				<label class="editor-label">w:<input class="editor-option-input" id="editor-option-wait" value="0" /></label>
-				<label class="editor-label">f:<input class="editor-option-input" id="editor-option-fade" value="0.25" /></label>
+				<label class="editor-label">w:
+					<input class="editor-option-input" id="editor-option-wait" value="0" />
+				</label>
+				<label class="editor-label">f:
+					<input class="editor-option-input" id="editor-option-fade" value="0.25" />
+				</label>
 				<btn class="editor-option" id="editor-option-play">play</btn>
 				<btn class="editor-option" id="editor-option-save">save</btn>
 				<btn class="editor-option" id="editor-option-load">load</btn>
-				<label class="editor-label">rate:<input class="editor-option-input" id="editor-option-speed"
-						value="1" /></label>
+				<label class="editor-label">rate:
+					<input class="editor-option-input" id="editor-option-speed" value="1" />
+				</label>
 				<btn class="editor-option" id="editor-option-recolor">recolor</btn>
-				<label class="editor-label">name:<input class="editor-option-input-wide" id="editor-option-name"
-						value="animation" /></label>
+				<label class="editor-label">name:
+					<input class="editor-option-input-wide" id="editor-option-name" value="animation" />
+				</label>
 				<btn class="editor-option" id="editor-option-add-animation">add</btn>
 				<label class="editor-label">timing:
 					<select class="editor-option-input-xwide" id="editor-option-timing">
@@ -87,11 +92,14 @@
 						<option value="thing">thing</option>
 					</select>
 				</label>
-				<label class="editor-label">gridname:<input class="editor-option-input-wide" id="editor-option-grid-name"
-						value="a" /></label>
+				<label class="editor-label">gridname:
+					<input class="editor-option-input-wide" id="editor-option-grid-name" value="a" />
+				</label>
 				<btn class="editor-option" id="editor-option-save-grid">save grid</btn>
 				<btn class="editor-option" id="editor-option-load-grid">load grid</btn>
-				<label class="editor-label">t: <div id="editor-current-time"></div></label>
+				<label class="editor-label">t:
+					<div id="editor-current-time"></div>
+				</label>
 				<label class="editor-label">cursormode:
 					<select class="editor-option-input-wide" id="editor-option-cursor-mode" value="normal">
 						<option value="normal">normal</option>
@@ -115,8 +123,7 @@
 			<div id="editor-frame-timing" style="display:none">
 				<div id="editor-frame-timing-minimap"></div>
 				<label id="editor-use-tgroups-outer">
-					<input type="checkbox" id="editor-use-tgroups" checked />
-					use tgroups
+					<input type="checkbox" id="editor-use-tgroups" checked /> use tgroups
 				</label>
 				<div id="editor-frame-timing-inner"></div>
 			</div>
