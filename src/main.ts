@@ -26,7 +26,7 @@ if (g.mode === 'normal') {
   ec.dispatch({ type: 'load_animation_file_to_timeline', payload: { name: 'animation' } });
   const handler = new WindowHandler(g);
 
-  if (g.isMobile && autoplayOnMobile){
+  if (g.isMobile && autoplayOnMobile) {
     const playbackRate = 0.8;
     handler.setResizeHandler();
     g.tl.eventCallback('onComplete', () => g.tl.restart());
@@ -44,6 +44,6 @@ if (g.mode === 'normal') {
 }
 
 document.getElementById('svg_overlay').style.opacity = '0.5';
-if (g.renderType === 'canvas'){
+if (g.renderType === 'canvas') {
   document.getElementById('svg').classList.add('blend');
 }
