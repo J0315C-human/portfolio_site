@@ -18,7 +18,7 @@ new Triangles(g, ec);
 new Patterns(g, ec);
 new Deserializer(ec, g);
 
-const autoplayOnMobile = false;
+const autoplayOnMobile = true;
 if (g.mode === 'normal') {
   g.getGlobalSizingFromWindow();
   ec.dispatch({ type: 'triangles_init' });
