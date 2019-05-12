@@ -43,6 +43,7 @@ if (g.mode === 'normal') {
   editor.initialize();
 }
 
-if (g.renderType === 'svg'){
-  document.getElementById('svg_overlay').style.opacity = '0.35';
+document.getElementById('svg_overlay').style.opacity = '0.5';
+if (g.renderType === 'canvas'){
+  document.getElementById('svg').classList.add('blend');
 }

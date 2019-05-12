@@ -67,6 +67,11 @@ body {
   opacity: 0;
 }
 
+#canvasOverlay {
+  pointer-events: none;
+  opacity: 0;
+}
+
 .title-big {
   width: 100%;
   font-weight: 600;
