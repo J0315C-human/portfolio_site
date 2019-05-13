@@ -37,7 +37,7 @@ export default class Globals {
 
     this.pageWidth = pageWidth;
     this.pageHeight = pageHeight;
-    this.IDEAL_NUM_TRIANGLES = ((500 * 0.4) + ((pageWidth * pageHeight) / 3000) * 0.6);
+    this.IDEAL_NUM_TRIANGLES = 350 + (pageWidth * pageHeight) / 10000;
     this.isMobile = pageHeight > pageWidth;
     // start everything at maximums
     const initialFit = {

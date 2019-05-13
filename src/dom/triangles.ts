@@ -40,7 +40,7 @@ export default class Triangles {
   private initCanvasSizing = () => {
 
     const _widthRatio = Math.sqrt(3);
-    this.rowHeightCanvas = this.g.triHeight * constants.canvasScaleBase;
+    this.rowHeightCanvas = this.g.triHeight;
     this.colWidthCanvas = _widthRatio * this.rowHeightCanvas;
     this.rightTrianglePath = [
       { x: 0, y: this.rowHeightCanvas },
@@ -80,9 +80,8 @@ export default class Triangles {
   setInitialCanvasSizing = () => {
     const { pageHeight, pageWidth } = this.g;
     const canvas = this.canvas;
-    canvas.width = Math.round((pageWidth * constants.canvasScaleBase));
-    canvas.height = Math.round((pageHeight * constants.canvasScaleBase));
-    this.canvas.style.transform = `scale(${constants.canvasScaleBaseInverse.toFixed(3)})`
+    canvas.width = Math.floor(pageWidth);
+    canvas.height = Math.floor(pageHeight);
   }
 
   private getLeftTriangle = (x, y) => { return this.getTriangle(lPath, this.g.config.lTriConfig)(x, y); }
@@ -192,29 +191,30 @@ export default class Triangles {
         const startY = (j - 1) * this.rowHeightCanvas;
         const diff = (now - tri.lastDraw);
         if (tri.color === tri.drawnColor && diff < redrawTime) return;
-        ctx.lineWidth = 0;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = tri.color;
         ctx.fillStyle = tri.color;
         if (tri.isLeft) {
           ctx.moveTo(
-            Math.round(startX + this.leftTrianglePath[0].x), 
-            Math.round(startY + this.leftTrianglePath[0].y));
+            Math.floor(startX + this.leftTrianglePath[0].x), 
+            Math.floor(startY + this.leftTrianglePath[0].y));
           ctx.beginPath();
           this.leftTrianglePath.forEach((point, n) => {
             if (n === 0) return;
             ctx.lineTo(
-              Math.round(startX + point.x),
-              Math.round(startY + point.y))
+              Math.floor(startX + point.x),
+              Math.floor(startY + point.y))
           });
         } else {
           ctx.moveTo(
-            Math.round(startX + this.rightTrianglePath[0].x),
-            Math.round(startY + this.rightTrianglePath[0].y));
+            Math.floor(startX + this.rightTrianglePath[0].x),
+            Math.floor(startY + this.rightTrianglePath[0].y));
           ctx.beginPath();
           this.rightTrianglePath.forEach((point, n) => {
             if (n === 0) return;
             ctx.lineTo(
-              Math.round(startX + point.x), 
-              Math.round(startY + point.y))
+              Math.floor(startX + point.x), 
+              Math.floor(startY + point.y))
           });
         }
         ctx.closePath();

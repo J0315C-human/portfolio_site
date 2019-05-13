@@ -25,7 +25,7 @@ const contentTransitions = [
   { color: "rgba(16, 22, 21, 0)", start: 32, end: 35 },
 ]
 
-const throttleScrollUpdatesMS = 16;
+const throttleScrollUpdatesMS = 32;
 const tlMargin = 0;
 const tlActiveArea = 1 - 2 * tlMargin;
 const maxCols = 30;
@@ -33,7 +33,6 @@ const maxRows = 50;
 const centerX = maxCols / 2;
 const centerY = maxRows / 2;
 // scale the canvas down for performance
-const canvasScaleBase = 0.7;
 const constants = {
   throttleScrollUpdatesMS,
   colors,
@@ -48,8 +47,6 @@ const constants = {
   centerX,
   centerY,
   maxUndoChanges: 1500,
-  canvasScaleBase,
-  canvasScaleBaseInverse: 1 / canvasScaleBase
 }
 
 export const getCenterX = () => constants.centerX;

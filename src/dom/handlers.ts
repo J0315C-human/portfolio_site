@@ -17,7 +17,7 @@ export default class WindowHandler {
     const hRatio = newWidth / this.g.pageWidth;
     const vRatio = newHeight / this.g.pageHeight;
     svgRootGroup.style.transform = `scale(${hRatio}, ${vRatio})`;
-    canvas.style.transform = `scale(${(hRatio * constants.canvasScaleBaseInverse).toFixed(3)}, ${(vRatio * constants.canvasScaleBaseInverse).toFixed(3)})`;
+    canvas.style.transform = `scale(${hRatio}, ${vRatio})`;
   };
 
   // set scroll handler
