@@ -141,6 +141,7 @@ const color6 = [
   '#292339', 
   '#2c233a', 
 ]
+console.log('colors loaded');
 const _nVariations = 19;
 const colorMatrix = [color1, color2, color3, color4, color5, color6];
 
