@@ -43,7 +43,7 @@ export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals): Patt
         if (!frame.grid[row]) { return colors[0]; }
         const colorIdx = frame.grid[row][col];
         if (lastGrid && lastGrid[row][col] === colorIdx) { return undefined; }
-        else { return colors[colorIdx]; }
+        else { return constants.getColorVariation(colorIdx, row, g); }
       },
       fade: frame.fade,
       getOffset: getTimingFunction(frame.timingFunc),

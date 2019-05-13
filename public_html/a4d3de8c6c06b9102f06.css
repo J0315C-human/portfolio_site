@@ -9,6 +9,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 #svg,
@@ -172,6 +173,15 @@ body {
   }
 }
 
+#canvasOverlay {
+  background: linear-gradient(to bottom, rgb(255, 0, 119), rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 60%, rgb(14, 253, 161) 100%);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}	
 
 .triangle:hover {
   opacity: 0.9;
