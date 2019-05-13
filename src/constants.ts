@@ -32,7 +32,8 @@ const maxCols = 30;
 const maxRows = 50;
 const centerX = maxCols / 2;
 const centerY = maxRows / 2;
-
+// scale the canvas down for performance
+const canvasScaleBase = 0.7;
 const constants = {
   throttleScrollUpdatesMS,
   colors,
@@ -47,6 +48,8 @@ const constants = {
   centerX,
   centerY,
   maxUndoChanges: 1500,
+  canvasScaleBase,
+  canvasScaleBaseInverse: 1 / canvasScaleBase
 }
 
 export const getCenterX = () => constants.centerX;

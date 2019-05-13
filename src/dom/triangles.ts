@@ -8,6 +8,8 @@ const rPath = "M121.361 10.228l102.434 59.166-102.494 58.89.06-118.056z";
 
 export interface CanvasTriangle {
   color: string;
+  drawnColor: string;
+  lastDraw: number;
   isLeft: boolean;
 }
 
@@ -27,7 +29,7 @@ export default class Triangles {
     this.g = globals;
     this.rootGroup = document.getElementById("rootGroup");
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    this.canvasCtx = this.canvas.getContext('2d');
+    this.canvasCtx = this.canvas.getContext('2d', { alpha: false });
     this.triangles = [];
     this.canvasTriangles = [];
     this.eventChannel = eventChannel;
@@ -38,7 +40,7 @@ export default class Triangles {
   private initCanvasSizing = () => {
 
     const _widthRatio = Math.sqrt(3);
-    this.rowHeightCanvas = this.g.triHeight;
+    this.rowHeightCanvas = this.g.triHeight * constants.canvasScaleBase;
     this.colWidthCanvas = _widthRatio * this.rowHeightCanvas;
     this.rightTrianglePath = [
       { x: 0, y: this.rowHeightCanvas },
@@ -78,8 +80,9 @@ export default class Triangles {
   setInitialCanvasSizing = () => {
     const { pageHeight, pageWidth } = this.g;
     const canvas = this.canvas;
-    canvas.width = pageWidth;
-    canvas.height = pageHeight;
+    canvas.width = Math.round((pageWidth * constants.canvasScaleBase));
+    canvas.height = Math.round((pageHeight * constants.canvasScaleBase));
+    this.canvas.style.transform = `scale(${constants.canvasScaleBaseInverse.toFixed(3)})`
   }
 
   private getLeftTriangle = (x, y) => { return this.getTriangle(lPath, this.g.config.lTriConfig)(x, y); }
@@ -129,7 +132,7 @@ export default class Triangles {
         const evenCol = i % 2 === 0;
         const isLeft = evenRow ? evenCol : !evenCol;
         const canvasTriangle: CanvasTriangle = {
-          isLeft, color: constants.colors[0]
+          isLeft, color: constants.colors[0], drawnColor: '', lastDraw: 0 
         }
         row.push(canvasTriangle);
       }
@@ -181,29 +184,43 @@ export default class Triangles {
 
   private drawCanvasTriangles = () => {
     const ctx = this.canvasCtx;
+    const now = Date.now();
+    const redrawTime = 200;
     this.canvasTriangles.forEach((row, j) => {
       row.forEach((tri, i) => {
         const startX = i * this.colWidthCanvas;
         const startY = (j - 1) * this.rowHeightCanvas;
+        const diff = (now - tri.lastDraw);
+        if (tri.color === tri.drawnColor && diff < redrawTime) return;
+        ctx.lineWidth = 0;
         ctx.fillStyle = tri.color;
         if (tri.isLeft) {
-
-          ctx.moveTo(startX + this.leftTrianglePath[0].x, startY + this.leftTrianglePath[0].y);
+          ctx.moveTo(
+            Math.round(startX + this.leftTrianglePath[0].x), 
+            Math.round(startY + this.leftTrianglePath[0].y));
           ctx.beginPath();
           this.leftTrianglePath.forEach((point, n) => {
             if (n === 0) return;
-            ctx.lineTo(startX + point.x, startY + point.y)
+            ctx.lineTo(
+              Math.round(startX + point.x),
+              Math.round(startY + point.y))
           });
         } else {
-          ctx.moveTo(startX + this.rightTrianglePath[0].x, startY + this.rightTrianglePath[0].y);
+          ctx.moveTo(
+            Math.round(startX + this.rightTrianglePath[0].x),
+            Math.round(startY + this.rightTrianglePath[0].y));
           ctx.beginPath();
           this.rightTrianglePath.forEach((point, n) => {
             if (n === 0) return;
-            ctx.lineTo(startX + point.x, startY + point.y)
+            ctx.lineTo(
+              Math.round(startX + point.x), 
+              Math.round(startY + point.y))
           });
         }
         ctx.closePath();
         ctx.fill();
+        tri.drawnColor = tri.color;
+        tri.lastDraw = now;
       })
     })
   }
