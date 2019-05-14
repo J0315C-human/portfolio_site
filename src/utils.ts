@@ -3,6 +3,7 @@ import Globals from "./globals";
 import { PatternData } from "./typings";
 import { getTimingFunction } from './patterns/timingFunctions';
 import constants from "./constants";
+import Random from "./prng";
 
 export const retileGrid = (grid: any[][], rows: number, cols: number) => {
   const newGrid = [];
@@ -52,4 +53,16 @@ export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals): Patt
     patterns.push(pattern);
   })
   return patterns;
+}
+
+
+const _offsetMultiplier = 0.07;
+export const offsetPositionRandomly = (x: number, y: number, triangleWidth: number) => {
+  const rand = new Random(Math.floor(x * y))
+  const xOffset = (rand.nextFloat() - 0.5) * triangleWidth * _offsetMultiplier;
+  const yOffset = (rand.nextFloat() - 0.5) * triangleWidth * _offsetMultiplier;
+  return {
+    x: x + xOffset,
+    y: y + yOffset
+  }
 }
