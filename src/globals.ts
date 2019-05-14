@@ -24,6 +24,7 @@ export default class Globals {
     lTriConfig: TriangleConfig;
     rTriConfig: TriangleConfig;
   }
+  distortType: 'center' | 'squirm' | 'rotate';
 
   private IDEAL_NUM_TRIANGLES: number;
 
@@ -76,6 +77,7 @@ export default class Globals {
       lTriConfig,
       rTriConfig,
     }
+    this.distortType = 'rotate';
   }
 
   getScaleForXCols = (cols: number) => this.pageWidth / (constants.triangleRelWidth * cols);

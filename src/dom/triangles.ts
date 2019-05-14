@@ -1,7 +1,7 @@
 import Globals from '../globals';
 import EventChannel from '../editor/EventChannel';
 import constants from '../constants';
-import { offsetPositionRandomly } from '../utils';
+import { addPositionDistortion } from '../utils';
 
 const svgNS = "http://www.w3.org/2000/svg";
 const lPath = "M119.486 125.534L17.052 66.368l102.495-58.89-.06 118.056z";
@@ -196,23 +196,23 @@ export default class Triangles {
         ctx.strokeStyle = tri.color;
         ctx.fillStyle = tri.color;
         if (tri.isLeft) {
-          const { x: x0, y: y0 } = offsetPositionRandomly(startX + this.leftTrianglePath[0].x, startY + this.leftTrianglePath[0].y, this.colWidthCanvas);
+          const { x: x0, y: y0 } = addPositionDistortion(startX + this.leftTrianglePath[0].x, startY + this.leftTrianglePath[0].y, this.colWidthCanvas, this.g);
           ctx.moveTo(Math.floor(x0), Math.floor(y0));
           ctx.beginPath();
           this.leftTrianglePath.forEach((point, n) => {
             if (n === 0) return;
-            const { x, y } = offsetPositionRandomly(startX + point.x, startY + point.y, this.colWidthCanvas);
+            const { x, y } = addPositionDistortion(startX + point.x, startY + point.y, this.colWidthCanvas, this.g);
             ctx.lineTo(
               Math.floor(x), 
               Math.floor(y))
           });
         } else {
-          const { x: x0, y: y0 } = offsetPositionRandomly(startX + this.rightTrianglePath[0].x, startY + this.rightTrianglePath[0].y, this.colWidthCanvas);
+          const { x: x0, y: y0 } = addPositionDistortion(startX + this.rightTrianglePath[0].x, startY + this.rightTrianglePath[0].y, this.colWidthCanvas, this.g);
           ctx.moveTo(Math.floor(x0), Math.floor(y0));
           ctx.beginPath();
           this.rightTrianglePath.forEach((point, n) => {
             if (n === 0) return;
-            const { x, y } = offsetPositionRandomly(startX + point.x, startY + point.y, this.colWidthCanvas);
+            const { x, y } = addPositionDistortion(startX + point.x, startY + point.y, this.colWidthCanvas, this.g);
             ctx.lineTo(
               Math.floor(x), 
               Math.floor(y))

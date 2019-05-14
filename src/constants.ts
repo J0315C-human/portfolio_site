@@ -141,7 +141,7 @@ const color6 = [
   '#292339', 
   '#2c233a', 
 ]
-console.log('colors loaded');
+
 const _nVariations = 19;
 const colorMatrix = [color1, color2, color3, color4, color5, color6];
 
@@ -162,8 +162,8 @@ rgba(109, 87, 135, 0.9)
 rgba(74, 53, 70, 0.9)
 */
 const contentTransitions = [
-  { color: "rgba(41, 80, 109, 0.9)", start: 1, end: 6 },
-  { color: "rgba(109, 87, 135, 0.9)", start: 21, end: 25.9 },
+  { color: "rgba(41, 80, 109, 0.65)", start: 3.5, end: 9 },
+  { color: "rgba(109, 87, 135, 0.65)", start: 21, end: 25.9 },
   { color: "rgba(16, 22, 21, 0)", start: 32, end: 35 },
 ]
 
