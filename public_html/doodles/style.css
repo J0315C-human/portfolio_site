@@ -15,6 +15,7 @@ body {
   -webkit-box-shadow: 0px 0px 5px 13px #FFF;
   -moz-box-shadow: 0px 0px 5px 13px #FFF;
   box-shadow: 0px 0px 5px 13px #FFF;
+  min-height:400px;
 }
 img {
   width: calc(200px + 25vw);

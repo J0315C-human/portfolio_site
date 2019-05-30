@@ -103,8 +103,9 @@ window.onload = ()=> {
 	document.getElementById("showPalette").addEventListener("click", (e) => showPalette(e.target));
 	document.getElementById("JoelCA").addEventListener("mouseleave", clearDrawVars);
 	document.getElementById("JoelCA").addEventListener("touchend", clearDrawVars);
-	document.getElementById("JoelCA").addEventListener("mousemove", (e) => drawAtMouse(e));
-	document.getElementById("JoelCA").addEventListener("touchmove", (e) => drawAtMouse(e));
+	
+	document.getElementById("JoelCA").addEventListener("mousemove", drawAtMouse);
+	document.getElementById("JoelCA").addEventListener("touchmove", (e) => drawAtMouse(e, true));
 	document.getElementById("pause").addEventListener("click", (e) => PauseCA(e.target));
 	document.getElementById("reseed").addEventListener("click", () => myCA.randomFill());
 	document.getElementById("capture").addEventListener("click", () => myCA.save());
@@ -121,7 +122,7 @@ window.onload = ()=> {
 		main.isDrawing = true;
 	});
 	document.getElementById("JoelCA").addEventListener("touchstart", (e) => {
-		drawAtMouse(e);
+		drawAtMouse(e, true);
 		main.isDrawing = true;
 	});
 	document.getElementById("switch").addEventListener("click", function(e) {
@@ -239,12 +240,28 @@ const _draw = (x, y) => {
 	}
 }
 
-function drawAtMouse(event) {
+function getMousePosition(event) {
+	var rect = main.canvas.getBoundingClientRect();
+	return {
+		x: event.clientX - rect.left - 5,
+		y: event.clientY - rect.left - 5,
+	};
+}
+
+function getTouchPosition(event) {
+	var rect = main.canvas.getBoundingClientRect();
+  return {
+    x: event.touches[0].clientX - rect.left - 5,
+    y: event.touches[0].clientY - rect.top - 5,
+  };
+}
+
+function drawAtMouse(event, isTouchEvent = false) {
 	if (!main.isDrawing) return;
 
-	var rect = main.canvas.getBoundingClientRect();
-	var x = Math.floor((event.clientX - rect.left - 5) / main.pixelSize);
-	var y = Math.floor((event.clientY - rect.top - 5) / main.pixelSize);
+	var pos = isTouchEvent ? getTouchPosition(event) : getMousePosition(event);
+	var x = Math.floor(pos.x / main.pixelSize);
+	var y = Math.floor(pos.y / main.pixelSize);
 	_draw(x, y)
 	
 	//really ad-hoc line drawing algorithm... replace with bresenham's

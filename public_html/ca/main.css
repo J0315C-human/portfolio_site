@@ -13,7 +13,7 @@
 }
 #paletteBalance {
   order: 3;
-  width: 30px;
+  width: 56px;
 }
 
 
@@ -22,17 +22,21 @@
 .paletteButton {
   width: 36px;
   height: 36px;
-  margin: 2px;
-  border: 2px solid black;
-  border-radius: 10px;
+  margin: 5px;
+  border: 1px solid rgb(116, 116, 116);
   align-self:center;
+  margin-left: 12px;
 }
 
 .paletteButton:hover, .selectedPaletteButton {
-  border: 3px solid #666;
+  border: 1px solid rgb(211, 211, 211);
+  border-left-width: 12px;
+  margin-left: 0;
 }
 .paletteButton:active {
-  border: 3px solid #ccc;
+  border: 1px solid rgb(156, 156, 156);
+  border-left-width: 12px;
+  margin-left: 0;
 }
 
 #messages {
