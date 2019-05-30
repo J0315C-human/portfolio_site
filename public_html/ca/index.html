@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta property="og:title" content="Joel Schuman (dot com)">
-		<meta property="og:description" content="An experiment involving cellular automata.">
-		<meta property="og:image" content="http://www.joelschuman.com/thumbnail.jpg">
-		<meta property="og:url" content="http://www.joelschuman.com/">
-		<meta name="twitter:card" content="summary">
-		<meta name="twitter:url" content="http://www.joelschuman.com/">
-		<link rel="stylesheet" type="text/css" href="bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="main.css">
 		<script src="assertions.js"></script>
 	</head>
@@ -18,40 +11,38 @@
 				<div id="otherContainer">
 					<div id="palette">
 					</div>
-					<canvas id="JoelCA" width="525" height="378" >A rendered canvas should be here!!</canvas>
+					<canvas id="JoelCA" width="800" height="500" >A rendered canvas should be here!!</canvas>
 					<div id="paletteBalance">
 					</div>
 				</div>
 			</div>
 			<div class="btnrow">
-				<div class="btn btn-primary btn-xs" id="pause">GO</div>
-				<div class="btn btn-primary btn-xs" id="switch">switch rule</div>
-				<div class="btn btn-primary btn-xs" id="reseed">reseed</div>
-				<div class="btn btn-primary btn-xs" id="faster">faster</div>
-				<div class="btn btn-primary btn-xs" id="slower">slower</div>
-				
+				<button id="pause">GO</button>
+				<button id="switch">switch rule</button>
+				<button id="reseed">reseed</button>
+				<button id="faster">faster</button>
+				<button id="slower">slower</button>
 			</div>
 			<div class="btnrow">
-				<div class="btn btn-default btn-xs" id="clear">clear</div>
-				<div class="btn btn-default btn-xs" id="colorScheme">new colors</div>
-				<div class="btn btn-default btn-xs" id="capture">snap pic</div>
-				<div class="btn btn-default btn-xs" id="restore">load pic</div>
+				<button id="clear">clear</button>
+				<button id="colorScheme">new colors</button>
+				<button id="capture">snap pic</button>
+				<button id="restore">load pic</button>
 			</div>
 			<div class="btnrow">
-				
 			</div>
 			<div class="btnrow">
-				<div class="btn btn-primary btn-xs" id="showPalette">hide palette</div>
-				<div class="btn btn-primary btn-xs" id="aboutThis">about this</div>
-				<div class="btn btn-primary btn-xs" id="aboutMe">about me</div>
+				<button id="showPalette">hide palette</button>
+				<button id="aboutThis">about this</button>
+				<button id="aboutMe">about me</button>
 			</div>
 			<div class="hiddenrow">
-				<div class="btn btn-primary btn-xs" id="random"></div>
-				<div class="btn btn-primary btn-xs" id="saveRule"></div>
+				<button id="random"></button>
+				<button id="saveRule"></button>
 			</div>
 		</div>
 		<a href="mailto:joel@joelschuman.com?Subject=Hello" target="_top">
-			<div id="contact" class="text-center text-primary">joel@joelschuman.com</div></a>
+			<div id="contact" class="text-center">joel@joelschuman.com</div></a>
 			<script type="text/javascript" src="CAtext.js"></script>
 			<script type="text/javascript" src="resources.js"></script>
 			<script type="text/javascript" src="ca.js"></script>

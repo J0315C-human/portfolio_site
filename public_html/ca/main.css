@@ -20,11 +20,11 @@
 
 
 .paletteButton {
-  width: 20px;
-  height: 20px;
+  width: 36px;
+  height: 36px;
   margin: 2px;
   border: 2px solid black;
-  border-radius: 5px;
+  border-radius: 10px;
   align-self:center;
 }
 
@@ -79,7 +79,9 @@ body {
 }
 
 .btnrow {
-	text-align: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
 }
 
 .hiddenrow {
@@ -98,3 +100,47 @@ body {
 /*For the assertion results*/
 #results li.pass {color: green;}
 #results li.fail {color: red;}
+
+button {
+  padding: 7px 10px;
+  font-size: 35px;
+  font-family: Monospace;
+  margin: 6px;
+  border-radius: 5px;
+  background-color: #2c4661;
+  color: #90b4db;
+  border: 1px solid #6d94bf;
+}
+
+button:active {
+  color: #2c4661;
+  background-color: #6d94bf;
+}
+
+button:focus {
+  outline:none;
+}
+
+.text-center {
+  color: #6d94bf;
+  width: 100%;
+  text-align: center;
+  font-family: Monospace;
+  font-size: 20px;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
+}

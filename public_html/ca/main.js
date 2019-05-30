@@ -270,6 +270,7 @@ function drawAtMouse(event) {
 
 	myCA.draw();
 	main.drawCount = 0;
+	event.preventDefault();
 }
 
 function refreshPalette() {
