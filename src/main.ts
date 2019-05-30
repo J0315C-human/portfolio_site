@@ -45,8 +45,4 @@ if (g.mode === 'normal') {
 
 if (g.renderType === 'canvas') {
   document.getElementById('svg').style.display = 'none';
-  // document.getElementById('svg').classList.add('blend');
-  document.getElementById('canvasOverlay').style.opacity = '0.5';
-} else {
-  // document.getElementById('svg_overlay').style.opacity = '0.5';
 }

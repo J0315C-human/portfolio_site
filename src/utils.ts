@@ -56,8 +56,8 @@ export const getPatternsFromFrames = (frames: FrameWithGrid[], g: Globals): Patt
 }
 
 const _offsetMultipliers = {
-  center: 0.3,
-  centerCorrect: -0.32,
+  center: -0.35,
+  centerCorrect: 0.2,
   squirm: 0.4,
   squirmXCorrect: 1.01,
 };

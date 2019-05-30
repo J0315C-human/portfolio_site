@@ -120,11 +120,13 @@ body {
 
 .content-text {
   text-align: justify;
+  width: 50%;
   max-width: 420px;
 }
 
 .img-link {
-  width: 300px;
+  width: 50%;
+  max-width: 420px;
   height: 250px;
   flex-shrink: 0;
 }
@@ -150,15 +152,22 @@ body {
   }
   .content-text {
     max-width: 1200px;
+    width: auto;
   }
   .text-normal {
     font-size: 32px;
     line-height: 47px;
   }
   .img-link {
+    height: auto;
     width: auto;
+    max-width: initial;
   }
   
+  .content-img {
+    max-width: initial;
+  }
+
   .title-big {
     font-size: 39px;
   }
