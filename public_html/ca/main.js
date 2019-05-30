@@ -102,7 +102,9 @@ window.onload = ()=> {
 	document.getElementById("JoelCA").addEventListener("mouseup", clearDrawVars);
 	document.getElementById("showPalette").addEventListener("click", (e) => showPalette(e.target));
 	document.getElementById("JoelCA").addEventListener("mouseleave", clearDrawVars);
+	document.getElementById("JoelCA").addEventListener("touchend", clearDrawVars);
 	document.getElementById("JoelCA").addEventListener("mousemove", (e) => drawAtMouse(e));
+	document.getElementById("JoelCA").addEventListener("touchmove", (e) => drawAtMouse(e));
 	document.getElementById("pause").addEventListener("click", (e) => PauseCA(e.target));
 	document.getElementById("reseed").addEventListener("click", () => myCA.randomFill());
 	document.getElementById("capture").addEventListener("click", () => myCA.save());
@@ -118,7 +120,10 @@ window.onload = ()=> {
 		drawAtMouse(e);
 		main.isDrawing = true;
 	});
-
+	document.getElementById("JoelCA").addEventListener("touchstart", (e) => {
+		drawAtMouse(e);
+		main.isDrawing = true;
+	});
 	document.getElementById("switch").addEventListener("click", function(e) {
 		main.ruleIndex = (main.ruleIndex + 1) % ruleSets.length;
 		myCA.setRule(ruleSets[main.ruleIndex]);
