@@ -1,6 +1,6 @@
 const introTxt = "Click in here to draw, Select rule-sets with [A-Z] keys, Navigate with arrow keys, Hold [Shift] to see key mappings.";
-const aboutThisTxt = "This is a 2-D Cellular Automaton grid with a variable number of 'alive' states and rules, which define transition.";
-const aboutMeTxt = "I'm a developer and musician from Kansas City. __Thanks for__ stopping by! _______ ________ _______ -Joel";
+const aboutThisTxt = "This is a 2-D Cellular Automata grid with a variable number of 'alive' states and rules, which define what the new state will be for each generation. Interesting rule sets were discovered by generating many random rule sets.";
+const aboutMeTxt = "I'm a developer and musician from Kansas City. Thanks for stopping by! _______ ________ _______ -Joel";
 
 // prepare a i by j pixel map for the CA to read in with patternFill,
 // with a tiny font on it and a buncha words etc.
