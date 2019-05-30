@@ -160,12 +160,13 @@ body {
   }
   .img-link {
     height: auto;
-    width: auto;
+    width: 100%;
     max-width: initial;
   }
   
   .content-img {
     max-width: initial;
+    max-height: 500px;
   }
 
   .title-big {

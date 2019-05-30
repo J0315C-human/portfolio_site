@@ -162,7 +162,7 @@ body {
   }
   .img-link {
     height: auto;
-    width: auto;
+    width: 100%;
     max-width: none;
     max-width: initial;
   }
@@ -170,6 +170,7 @@ body {
   .content-img {
     max-width: none;
     max-width: initial;
+    max-height: 500px;
   }
 
   .title-big {
