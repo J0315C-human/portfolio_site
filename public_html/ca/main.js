@@ -47,7 +47,7 @@ main.keyMap = {
 //toggle 'paused' and change button text
 const PauseCA = (el) => {
 	if (el.textContent === "pause") {
-		main.keyMap['Enter'][1] = "resume";
+		main.keyMap['Enter'][1] = "play";
 		main.paused = true;
 		document.getElementById('messages').textContent = "[paused]";
 	} else {
@@ -100,7 +100,7 @@ window.onload = ()=> {
 
 	var animRequestID = window.requestAnimationFrame(frame);
 	displayRuleUI();
-	
+
 	document.getElementById("JoelCA").addEventListener("mouseup", clearDrawVars);
 	document.getElementById("showPalette").addEventListener("click", (e) => showPalette(e.target));
 	document.getElementById("JoelCA").addEventListener("mouseleave", clearDrawVars);
