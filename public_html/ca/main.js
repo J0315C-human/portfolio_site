@@ -6,6 +6,7 @@ var main = {
 	pixelSize: 6,
 	paused: true,
 	ruleIndex: 0,
+	randomRule: false,
 	//--- for when the user draws on the canvas ----
 	drawType: 1,
 	isdrawing: false,
@@ -52,7 +53,7 @@ const PauseCA = (el) => {
 	} else {
 		main.keyMap['Enter'][1] = "pause";
 		main.paused = false;
-		displayRuleLetter();
+		displayRuleUI();
 	}
 	refreshBtnText();
 }
@@ -64,7 +65,7 @@ const showPalette = (el) => {
 	} else {
 		main.keyMap['4'][1] = "show palette";
 		document.getElementById("palette").style.visibility = 'hidden';
-		displayRuleLetter();
+		displayRuleUI();
 	}
 	refreshBtnText();
 }
@@ -98,7 +99,8 @@ window.onload = ()=> {
 	// }); 						// log cells for test
 
 	var animRequestID = window.requestAnimationFrame(frame);
-
+	displayRuleUI();
+	
 	document.getElementById("JoelCA").addEventListener("mouseup", clearDrawVars);
 	document.getElementById("showPalette").addEventListener("click", (e) => showPalette(e.target));
 	document.getElementById("JoelCA").addEventListener("mouseleave", clearDrawVars);
@@ -128,8 +130,10 @@ window.onload = ()=> {
 	document.getElementById("switch").addEventListener("click", function(e) {
 		main.ruleIndex = (main.ruleIndex + 1) % ruleSets.length;
 		myCA.setRule(ruleSets[main.ruleIndex]);
-		displayRuleLetter();
+		main.randomRule = false;
+		displayRuleUI();
 		refreshPalette();
+		setSaveButtonText();
 	});
 
 	document.getElementById("aboutThis").addEventListener("click", () => {
@@ -149,6 +153,7 @@ window.onload = ()=> {
 		myCA.colors = colorSchemes[0];
 		myCA.draw();
 		refreshPalette();
+		displayRuleUI();
 	});
 	
 	const changeFPG = (multiplier) => {
@@ -163,19 +168,39 @@ window.onload = ()=> {
 		// generate random rule with same number of species
 		let n = randInt(1, 7);
 		myCA.setRule(generateRule(n));
-		document.getElementById('messages').textContent = "randomly generated rule";
 		refreshPalette();
+		main.randomRule = true;
+		displayRuleUI();
 	});
 	document.getElementById("saveRule").addEventListener("click", function(e) {
 		// Overwrite the current ruleSet with CA's current rule
 		ruleSets[main.ruleIndex] = myCA.rule;
-		displayRuleLetter("Overwritten:");
-		logRule(myCA.rule);
+		main.randomRule = false;
+		displayRuleExplanation(myCA.rule, myCA, main.ruleIndex, false);
+		document.getElementById('messages').textContent = "Saved to Rule " + String.fromCharCode(65 + main.ruleIndex);
 	});
 };
 
-function displayRuleLetter(extraText = "") {
-	let disp = "Rule " + String.fromCharCode(65 + main.ruleIndex);
+function displayRuleUI(extraText = "") {
+	displayRuleExplanation(myCA.rule, myCA, main.ruleIndex, main.randomRule);
+	if (main.randomRule){
+		document.getElementById("saveRule").style.opacity = '1';
+		document.getElementById("saveRule").style.width = 'auto';
+		document.getElementById("saveRule").style.height = 'auto';
+		document.getElementById("saveRule").style.pointerEvents = 'auto';
+	} else {
+		document.getElementById("saveRule").style.opacity = '0';
+		document.getElementById("saveRule").style.width = '0px';
+		document.getElementById("saveRule").style.height = '0px';
+		document.getElementById("saveRule").style.pointerEvents = 'none';
+	}
+
+	let disp;
+	if (main.randomRule){
+		disp = 'randomly generated rule';
+	} else {
+		disp = "Rule " + String.fromCharCode(65 + main.ruleIndex);
+	}
 	document.getElementById('messages').textContent = extraText + " " + disp;
 }
 
@@ -227,11 +252,18 @@ function checkKeyUp(e) { //  use char code conversions to index into ruleSets. n
 		let idx = k.charCodeAt(0) - 65;
 		if (idx >= 0 && idx < ruleSets.length) {
 			main.ruleIndex = idx;
+			main.saveIndex = main.ruleIndex;
 			myCA.setRule(ruleSets[idx]);
-			displayRuleLetter();
+			main.randomRule = false;
+			displayRuleUI();
+			setSaveButtonText();
 		}
 		refreshPalette();
 	}
+}
+
+function setSaveButtonText (){
+	document.getElementById("saveRule").textContent =  "save as rule " + String.fromCharCode(65 + main.ruleIndex);
 }
 
 const _draw = (x, y) => {

@@ -148,3 +148,70 @@ a:hover {
 a:active {
   text-decoration: underline;
 }
+
+#ruleDisplay {
+  color: #6d94bf;
+  width: 679px;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  font-size: 28px;
+  font-family: Monospace;
+  line-height: 45px;
+}
+
+.speciesSquare, .speciesSquareSmall {
+  width: 40px;
+  height: 40px;
+  margin: 5px 10px;
+  border: 1px solid rgb(116, 116, 116);
+}
+.speciesSquareSmall {
+  width: 28px;
+  height: 28px;
+  margin: 6px 5px;
+}
+
+.speciesRule {
+  width:  700px;  
+  flex-shrink: 0;
+  padding: 15px;
+  border: 1px solid #888;
+  position: relative;
+  margin-top: 10px;
+}
+
+.speciesTitle {
+  display: flex;
+  padding: 3px;
+  width: 80px;    
+  position: absolute;
+  left: -95px;
+}
+
+.speciesNeighborhood, .speciesTitle, .speciesRuleType {
+  height: 50px;
+}
+
+.speciesRuleType {
+  display: flex;
+  flex-flow: column;
+}
+.speciesRuleFriends {
+  display: flex;
+}
+.speciesRuleTransitions {
+  display: flex;
+  padding: 10px;
+  border: 1px solid rgb(82, 82, 82);
+  flex-flow: row wrap;
+}
+
+.speciesRuleTransition {
+  display: flex;
+  width: 90px;
+}
+
+.speciesRulesTitle {
+  font-size: 32px;
+}

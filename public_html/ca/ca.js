@@ -303,7 +303,7 @@ function generateRule(nSpecies) {
 
 		// generate affinity list (friends) if needed.
 		neighborTypes = [t1, t2];
-		if (t2 == "affinity") {
+		if (t2 == "a") {
 			friends = new Set();
 			nFriends = randInt(0, nSpecies - 1);
 
