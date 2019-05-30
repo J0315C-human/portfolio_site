@@ -152,7 +152,8 @@ body {
     max-width: 1200px;
   }
   .text-normal {
-    font-size: 22px;
+    font-size: 32px;
+    line-height: 47px;
   }
   .img-link {
     width: auto;
@@ -163,11 +164,11 @@ body {
   }
 
   .title-medium {
-    font-size: 27px;
+    font-size: 34px;
   }
 
   .title-small {
-  font-size: 25px;
+  font-size: 29px;
   }
 }
 
