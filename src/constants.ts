@@ -163,8 +163,9 @@ rgba(74, 53, 70, 0.9)
 */
 const contentTransitions = [
   { color: "rgba(41, 80, 109, 0.65)", start: 3.5, end: 9 },
-  { color: "rgba(109, 87, 135, 0.65)", start: 21, end: 25.9 },
-  { color: "rgba(16, 22, 21, 0)", start: 32, end: 35 },
+  { color: "rgba(109, 87, 135, 0.65)", start: 21, end: 24.9 },
+  { color: "rgba(41, 80, 109, 0)", start: 28, end: 31 },
+  { color: "rgba(41, 80, 109, 0)", start: 31, end: 33 },
 ]
 
 const throttleScrollUpdatesMS = 80;

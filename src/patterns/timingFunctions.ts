@@ -55,7 +55,11 @@ const thingRows = [
 ]
 
 // a hexagon-shape-thing transition
-const thing = (row: number, col: number) => thingRows[row % 12][col % 4] * 0.25
+const thing = (row: number, col: number) => {
+  const a = thingRows[row % 12][col % 4] * 0.08;
+  const b = diag1(row, col) * 0.5;
+  return a + b;
+}
 export const getTimingFunction = (name: TimingFunctionName) => {
   switch (name) {
     case 'swipe_left_slow':
