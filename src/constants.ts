@@ -169,6 +169,7 @@ const contentTransitions = [
 ]
 
 const throttleScrollUpdatesMS = 80;
+const timeoutScrollUpdatesMS = 80;
 const tlMargin = 0;
 const tlActiveArea = 1 - 2 * tlMargin;
 const maxCols = 30;
@@ -178,6 +179,7 @@ const centerY = maxRows / 2;
 // scale the canvas down for performance
 const constants = {
   throttleScrollUpdatesMS,
+  timeoutScrollUpdatesMS,
   colors,
   getColorVariation,
   contentTransitions,

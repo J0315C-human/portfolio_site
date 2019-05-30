@@ -7,8 +7,10 @@ const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
 export default class WindowHandler {
   g: Globals;
+  tid: number;
   constructor(globals: Globals) {
     this.g = globals;
+    this.tid = 0;
   }
   // stretch background to fit resized screen
   private resizeHandler = () => {
@@ -28,13 +30,19 @@ export default class WindowHandler {
 
   private scrollHandlerThrottled = (e: any) => {
     const { lastUpdate } = this.g;
+    window.clearTimeout(this.tid);
     const now = Date.now();
-    if (now - lastUpdate < constants.throttleScrollUpdatesMS) {
+    const sinceLastUpdate = now - lastUpdate;
+    if (sinceLastUpdate < constants.throttleScrollUpdatesMS) {
+      this.tid = window.setTimeout(() => {
+        this.scrollHandlerThrottled(e);
+      }, constants.timeoutScrollUpdatesMS);
       return;
     }
     this.g.lastUpdate = now;
-    this.g.scrollPos =
+    const newScrollPos = 
       e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight);
+    this.g.scrollPos = newScrollPos;
     // kick off all the expensive rendering in a RAF
     window.requestAnimationFrame(this.scrollHandler);
   };
