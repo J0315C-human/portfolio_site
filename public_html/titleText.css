@@ -10,6 +10,12 @@
   padding-right: 0.12em;
   padding-left: 0.12em;
 }
+.expandoText:focus, 
+.expandoLink:focus, 
+.expandoClicked:focus,
+.expandoNewLink:focus {
+  outline: none;
+}
 
 .expandoLink:hover, .expandoNewLink:hover {
   cursor: pointer;
