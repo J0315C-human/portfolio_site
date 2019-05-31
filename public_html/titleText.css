@@ -1,0 +1,42 @@
+
+#expando {
+  text-align: left;
+}
+.expandoLink, .expandoNewLink {
+  color: rgb(231, 164, 77);
+}
+
+.expandoText, .expandoLink, .expandoClicked, .expandoNewLink  {
+  padding-right: 0.12em;
+  padding-left: 0.12em;
+}
+
+.expandoLink:hover, .expandoNewLink:hover {
+  cursor: pointer;
+}
+
+.expandoClicked {
+  animation-name: clickedFade;
+  animation-duration: .5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-fill-mode: forwards;
+}
+
+.expandoNewLink {
+  animation-name: clickedFadeIn;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in;
+  animation-delay: 0;
+  animation-fill-mode: forwards;
+}
+
+@keyframes clickedFade {
+  0%   {color: rgb(231, 164, 77);}
+  100% {color: #e0e0e0;}
+}
+
+@keyframes clickedFadeIn {
+  0% {color: #e0e0e0;}
+  100%   {color: rgb(231, 164, 77);}
+}
