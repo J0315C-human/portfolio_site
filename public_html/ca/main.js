@@ -276,7 +276,7 @@ function getMousePosition(event) {
 	var rect = main.canvas.getBoundingClientRect();
 	return {
 		x: event.clientX - rect.left - 5,
-		y: event.clientY - rect.left - 5,
+		y: event.clientY - rect.top - 5,
 	};
 }
 
