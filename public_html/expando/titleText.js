@@ -2,7 +2,7 @@ var _titleText = {
   a: [
     'Developer and musician making',
     '<b>web apps,',
-    'games, experiments, and sounds',
+    'games, experiments, and sounds.',
     '<c>Hey there!',
   ], 
   b: [
