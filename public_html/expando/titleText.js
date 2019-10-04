@@ -2,44 +2,9 @@ var _titleText = {
   a: [
     'Developer and musician making',
     '<b>web apps,',
-    'games, experiments, and',
-    '<a2>sounds.',
+    'games, experiments, and sounds',
     '<c>Hey there!',
   ], 
-  a2: [
-    '<a3>music.',
-  ],
-  a3: [
-    '<a4>sounds that sound like music.',
-  ],
-  a4: [
-    '<a5>sounds that sound like music, not "The Sound of Music".',
-  ],
-  a5: [
-    'sounds that sound like music, not "The Sound of Music",',
-    '<a6>just to be clear.'
-  ],
-  a6: [
-    'just to',
-    '<a7>be clear,',
-    'I didn\'t write the play "The Sound of Music".',
-  ],
-  a7: [
-    'be clear, because I know I have a habit of typing',
-    '<a8>long sentences,',
-  ],
-  a8: [
-    'long needlessly complex',
-    '<a9>sentences,',
-  ],
-  a9: [
-    'sentences, and I swear it\'s not because I\'m trying to show off or ',
-    '<a10>anything like that,',
-  ],
-  a10: [
-    'anything like that - what I mean is I really do consider a lack of brevity to be a tragedy -',
-    'anyway the point is that even though I am a musician who makes sounds,',
-  ],
   b: [
     'web apps and digital products',
     '<b2>for work,'
@@ -72,7 +37,7 @@ var _titleText = {
     'odds and ends, bits and bobs, wanderings'
   ],
   e: [
-    'both past and present, a collection of examples for your',
+    'a collection of examples for your',
     '<f>perusal and entertainment.'
   ],
   f: [
