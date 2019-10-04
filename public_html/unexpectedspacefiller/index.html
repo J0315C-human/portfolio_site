@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+      <meta name="theme-color" content="#000000">
+      <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i,900,900i" rel="stylesheet">
+      <link rel="manifest" href="/manifest.json">
+      <link rel="shortcut icon" href="/favicon.ico">
+      <title>Unexpected Space Filler, LLC. Semi-Weekly Shareholders Summit</title>
+      <style>body{background:#eee}#btns{padding:10px 100px 100px 10px;position:fixed;top:32px;left:30px;transform:scale(1.3);opacity:.5;z-index:100;display:flex;flex-flow:column nowrap;align-items:flex-start;justify-content:flex-start}#wallSetup{z-index:100;display:flex;flex-flow:column nowrap;align-items:flex-start;justify-content:flex-start;visibility:hidden;padding-left:20px;background-color:rgba(57,143,217,.9);color:#fff;border:2px solid #fff;border-radius:6px;font-family:sans-serif}.wallSetupInstance{position:fixed;top:18px;left:500px;height:560px;width:1100px}.wallSetupController{position:relative;height:815px;width:497px;max-height:0}#btns:hover{opacity:1}.controlLabel{font-family:'Source Sans Pro',sans-serif;font-weight:600;color:#555;font-size:11px;padding:2px 5px;height:13px}#speedGrp{display:flex}.imgparam{height:18px;width:90px;margin:4px}.imgparamfull{width:187px}label{font-size:15px;display:flex;flex-flow:row nowrap;width:203px;justify-content:space-between}#selectPresentation,#selectVertical{height:18px;width:200px;margin-top:4px}#speedRange{width:120px;transform:translate(-52px,53px) rotate(90deg)}#playbtn,#restartbtn,#uploadbtn{margin-bottom:3px;border:none;font-family:'Source Sans Pro',sans-serif;color:#fff;background:#a1a1a1;padding:2px 5px}#playbtn:hover,#restartbtn:hover,#uploadbtn:hover{background:#dadada}#playbtn:active,#restartbtn:active,#uploadbtn:active{background:#d8d8d8}#playbtn:focus,#restartbtn:focus,#uploadbtn:focus{outline:0}.crosshairsInstance{position:absolute;top:100px;left:300px}.crosshairsController{position:absolute;top:480px;left:10px;transform:scale(.7)}.crosshairPart{position:absolute;width:50px;height:50px;border-color:#424242;border-style:solid;z-index:105;opacity:.6}#chTopLeft{top:-5px;left:-5px;border-width:10px 0 0 10px}#chTopRight{top:-5px;left:646px;border-width:10px 10px 0 0}#chBottomLeft{top:314px;left:-5px;border-width:0 0 10px 10px}#chBottomRight{top:314px;left:646px;border-width:0 10px 10px 0}#chNote{position:absolute;top:140px;left:50px;font-size:70px;transform:rotate(-30deg);opacity:.3;color:#555;white-space:nowrap;font-weight:600}#imgPreview{position:absolute;width:700px;z-index:100;pointer-events:none}#setupSaveBtn{position:absolute;bottom:30px;left:25px;height:30px;width:150px}.controlBtn{height:70px;margin:10px;width:220px;font-size:30px;background-color:#fff}.controlBtn:focus{outline:0}.controlsOuter{z-index:1000;display:flex;width:800px;flex-flow:column nowrap}#controlDisplaySpeed{margin:13px;width:400px;color:#333;font-weight:500;font-size:24px;font-family:sans-serif}.paramReference{margin:5px;width:400px;color:#777;font-weight:400;font-family:sans-serif;font-size:17px}#setupNotes{position:absolute;bottom:10px;left:222px;font-size:15px;color:#fff;width:260px}.setupGrp{background-color:#69ace8;padding:12px;margin:5px;width:200px}.setupTitle{font-size:18px;margin:8px 0 0 0}</style>
+      <link href="./static/css/main.7bf3e02d.css" rel="stylesheet">
+   </head>
+   <body>
+      <noscript>You need to enable JavaScript to run this app.</noscript>
+      <div id="btns">
+         <button id="playbtn">PLAY</button> <button id="restartbtn">RESTART</button> <button id="uploadbtn" style="display:none">SETUP</button>
+         <div id="speedGrp">
+            <div class="controlLabel">SPEED:</div>
+            <div id="speedOutput" class="controlLabel">1</div>
+         </div>
+         <input id="speedRange" name="speedInput" type="range" value="1" min="0.2" max="12" step="0.2"/>
+         <div id="nodeOutput" class="controlLabel" style="margin-left:20px"></div>
+         <div id="nodePosOutput" class="controlLabel" style="margin-left:20px"></div>
+      </div>
+      <div id="wallSetup" class="wallSetupInstance">
+         <h2>Setup</h2>
+         <div class="setupGrp">
+            <h3 class="setupTitle">Select Presentation</h3>
+            <select id="selectPresentation">
+               <option value="ransomware">Ransomware - full presentation</option>
+               <option value="lateral">Lateral Mvmt. - full presentation</option>
+               <option value="phishing">Phishing - full presentation</option>
+               <option value="threatactors">Threat Actors Intro</option>
+               <option value="usecases">Use Cases Intro</option>
+               <option value="ransomware-alone">Ransomware - isolated</option>
+               <option value="lateral-alone">Lateral Mvmt. - isolated</option>
+               <option value="phishing-alone">Phishing - isolated</option>
+               <option value="test">Test</option>
+               <option value="disco">Disco!!</option>
+            </select>
+            <h3 class="setupTitle">Client Vertical</h3>
+            <select id="selectVertical"></select>
+            <h3 class="setupTitle">Client Domain</h3>
+            <input id="inputClientDomain" class="imgparam imgparamfull" value="www.weylandyutani.biz"/>
+         </div>
+         <div class="setupGrp">
+            <h3 class="setupTitle">Client Logo</h3>
+            <input type="file" id="fileInput" style="margin-bottom:13px;margin-top:4px"/> <label>img width: <input type="number" id="imgWidthSelect" class="imgparam" value="700" step="10"/></label> <label>offset top: <input type="number" id="imgTopSelect" class="imgparam" value="0" step="10"/></label> <label>offset left: <input type="number" id="imgLeftSelect" class="imgparam" value="0" step="10"/></label>
+         </div>
+         <button id="setupSaveBtn">Save and Hide</button>
+         <div id="setupNotes">Note: SVG and PNG files work best. Avoid using anything without a transparent background.</div>
+         <div id="crosshairs" class="crosshairsInstance">
+            <div id="chTopLeft" class="crosshairPart"></div>
+            <div id="chTopRight" class="crosshairPart"></div>
+            <div id="chBottomLeft" class="crosshairPart"></div>
+            <div id="chBottomRight" class="crosshairPart"></div>
+            <div id="chNote">center image here</div>
+            <img id="imgPreview">
+         </div>
+      </div>
+      <div id="root"></div>
+      <script type="text/javascript" src="./static/js/main.be2e0577.js"></script>
+   </body>
+</html>
