@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <meta name="theme-color" content="#Ab2299">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i,900,900i" rel="stylesheet">
+  <title>Amaze!</title>
+	<link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <button id="go">AMAZE</button>
+    <canvas id="canvas"></canvas>
+    <div id="output" style="font-size: 30px; color: white;"></div>
+    <p class="explain">This is a maze generator using something fancy called a
+      Union-Find algorithm. To see it run, just press the "AMAZE" button, sit back, and wait for... a maze. 
+      The individual cells are joined into a 'forest' of larger 
+      and larger trees, until they're all one giant tree which means every 
+      cell can be reached by every other cell. When a cell changes color, that means it's been joined up with 
+      another tree of cells. Note: the tree structure of a Union-Find algorithm doesn't mean that
+      the physical cells of this maze are connected in a tree structure; it's just how the bookkeeping of
+      "what's connected to what" takes place in the background. A good application of this algorithm could be to determine
+      who is connected to who through different friends on a social media site.
+    </p>
+    <script src="index.js"></script>
+</body>
+
+</html>

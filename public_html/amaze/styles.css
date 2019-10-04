@@ -1,0 +1,26 @@
+body {
+  background: #333;
+  font-family: 'Source Sans Pro', sans-serif;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+ }
+
+canvas {
+  background-color: #999;
+}
+
+.explain {
+  color: white;
+  font-size: 18px;
+  margin: 20px;    
+  line-height: 26px;
+  max-width: 874px;
+}
+
+button {
+  width: 200px;
+  height: 40px;
+  margin: 20px;
+  font-size: 20px;
+}
