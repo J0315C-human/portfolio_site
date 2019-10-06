@@ -3,7 +3,9 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   display: flex;
   flex-flow: column nowrap;
+  justify-content: center;
   align-items: center;
+  min-width: 700px;
  }
 
 canvas {
@@ -15,7 +17,7 @@ canvas {
   font-size: 18px;
   margin: 20px;    
   line-height: 26px;
-  max-width: 874px;
+  width: 90%;
 }
 
 button {

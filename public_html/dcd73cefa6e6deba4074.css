@@ -129,15 +129,32 @@ body {
   justify-content: center;
 }
 
+.content-text-outer {
+  height: 270px;
+  display: flex;
+  align-items: center;
+  width: 50%;
+  margin: 12px;
+}
+
 .content-text {
   text-align: justify;
-  width: 50%;
 }
 
 .img-link {
   width: 47.5%;
   height: 270px;
   flex-shrink: 0;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  transition: -webkit-transform .2s ease-in-out 0s;
+  transition: transform .2s ease-in-out 0s;
+  transition: transform .2s ease-in-out 0s, -webkit-transform .2s ease-in-out 0s;
+}
+
+.img-link:hover {
+  -webkit-transform: scale(1.025);
+          transform: scale(1.025);
 }
 
 .content-img {
@@ -159,9 +176,10 @@ body {
     flex-flow: column nowrap;
     align-items: center;
   }
-  .content-text {
+  .content-text-outer {
     max-width: 1200px;
     width: auto;
+    display: contents;
   }
   .text-normal {
     font-size: 32px;
