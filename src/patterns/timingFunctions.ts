@@ -11,7 +11,7 @@ const swipeRightSlow = getSwipeRight(1);
 const swipeRight = getSwipeRight(0.5);
 const swipeRightFast = getSwipeRight(0.2);
 const swipeLeftSlow = getSwipeLeft(1);
-const swipeLeft = getSwipeLeft(0.5);  
+const swipeLeft = getSwipeLeft(0.5);
 const swipeLeftFast = getSwipeLeft(0.2);
 
 const scaleAll = 3;
