@@ -1,0 +1,60 @@
+body {
+  background-color: rgb(215, 220, 230);
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+#max-width-outer {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+#max-width-inner {
+  width: 1145px;
+}
+
+#c {
+  border: 1px solid rgb(131, 131, 131);
+}
+
+.hidden {
+  display: none;
+}
+
+.controls {
+  margin: 20px;
+  display: flex;
+  flex-flow: row wrap;
+  width: 650px;
+  justify-content: left;
+  height: 120px;
+  align-content: space-around;
+}
+
+button {
+  width: 70px;
+}
+
+.wide-input {
+  width: 600px;
+}
+
+.horizontal {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+#thumbs {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: center;
+  width: 300px;
+  padding-left: 20px;
+}
+
+.preset {
+  width: 100px;
+  height: 100px;
+}
