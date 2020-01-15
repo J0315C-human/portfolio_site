@@ -8,11 +8,18 @@ body {
 #max-width-outer {
   width: 100vw;
   display: flex;
+  flex-flow: row wrap;
   justify-content: center;
 }
 
 #max-width-inner {
-  width: 1145px;
+  width: 821px;
+  max-width: 100vw;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 100px;
 }
 
 #c {
@@ -29,32 +36,33 @@ body {
   flex-flow: row wrap;
   width: 650px;
   justify-content: left;
-  height: 120px;
+  height: 160px;
   align-content: space-around;
 }
 
 button {
-  width: 70px;
+  width: 90px;
+  height: 40px;
+  font-size: 1rem;
 }
 
 .wide-input {
   width: 600px;
 }
 
-.horizontal {
-  display: flex;
-  flex-flow: row nowrap;
-}
-
 #thumbs {
   display: flex;
   flex-flow: row wrap;
   align-content: center;
-  width: 300px;
+  width: 100%;
   padding-left: 20px;
 }
 
 .preset {
   width: 100px;
   height: 100px;
+}
+
+.preset:hover {
+  cursor: pointer;
 }

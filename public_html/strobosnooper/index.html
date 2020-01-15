@@ -4,32 +4,31 @@
 <head>
   <meta charset="utf-8">
   <title>StroboSnooper</title>
-  <link href="./c7c055f159bfc6e57385.css" rel="stylesheet">
+  <link href="./7c4616cd40c52551873d.css" rel="stylesheet">
 </head>
 
 <body>
   <div id="max-width-outer">
     <div id="max-width-inner">
-      <h1 style="text-align: center;">StroboSnooper</h1>
-      <div class="horizontal" style="margin: 10px"><canvas id="c"></canvas>
-        <article id="thumbs"><input type="file" id="file-input" name="file-input" accept="image/png, image/jpeg"
-            style="padding-bottom: 10px;"> <img src="./538c3a55e344f306041d8303c016d048.png" class="preset" id="preset0">
-          <img src="./695374b4e0e29821b4bdd13a1e929dfc.png" class="preset" id="preset1"> <img
-            src="./4e78164d57d1bbd3c05ff6de0c55d927.png" class="preset" id="preset2"> <img
-            src="./306c8804dc032276b05520814a324113.png" class="preset" id="preset3"> <img
-            src="./7b0410b29cc5067c6b413dc96a8f976c.png" class="preset" id="preset4"> <img
-            src="./cff2e7dde485534319543a48d737b32c.png" class="preset" id="preset5"> <img
-            src="./7593c4dcc9fb9beace19fd0b4b5a403b.png" class="preset" id="preset6"></article>
-      </div><img src="./538c3a55e344f306041d8303c016d048.png" id="image" height="200" width="200" class="hidden">
+      <h1 style="text-align: center;">StroboSnooper</h1><canvas id="c"></canvas><img
+        src="./538c3a55e344f306041d8303c016d048.png" id="image" height="200" width="200" class="hidden">
       <section class="controls"><button id="rotate">ROTATE</button>
         <div style="padding-left: 50px;">RPM: <span id="rpm"></span></div><label>
           <div>strobe: <span id="speed"></span> ms</div><input class="wide-input" type="range" min="10" max="200"
-            step="0.05" id="rotation-speed" value="105.5">
+            step="0.05" id="rotation-speed" value="30">
         </label> <label>
           <div>angle: <span id="angle"></span>°</div><input class="wide-input" type="range" min="-50" max="50"
-            id="rotation-angle" step="0.05" value="21.1">
+            id="rotation-angle" step="0.05" value="21.8">
         </label>
       </section>
+      <article id="thumbs"><input type="file" id="file-input" name="file-input" accept="image/png, image/jpeg"
+          style="padding: 10px; width: 100%; font-size: 1rem;"> <img src="./538c3a55e344f306041d8303c016d048.png"
+          class="preset" id="preset0"> <img src="./695374b4e0e29821b4bdd13a1e929dfc.png" class="preset" id="preset1">
+        <img src="./4e78164d57d1bbd3c05ff6de0c55d927.png" class="preset" id="preset2"> <img
+          src="./306c8804dc032276b05520814a324113.png" class="preset" id="preset3"> <img
+          src="./7b0410b29cc5067c6b413dc96a8f976c.png" class="preset" id="preset4"> <img
+          src="./cff2e7dde485534319543a48d737b32c.png" class="preset" id="preset5"> <img
+          src="./7593c4dcc9fb9beace19fd0b4b5a403b.png" class="preset" id="preset6"></article>
     </div>
   </div>
   <script src="./bundle.js"></script>
