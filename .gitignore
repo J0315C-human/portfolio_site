@@ -9,3 +9,4 @@ node_modules
 build
 dist
 public_html/with
+public_html/where
