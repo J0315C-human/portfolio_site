@@ -1,8 +1,11 @@
 .vscode
 .idea
+./settings.json
 .DS_STORE
-node_modules
 .module-cache
 *.log*
+.htaccess
+node_modules
 build
 dist
+public_html/with
