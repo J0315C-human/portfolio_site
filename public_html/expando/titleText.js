@@ -1,90 +1,62 @@
 var _titleText = {
   a: [
-    'Developer and musician making',
-    '<b>web apps,',
-    'games, experiments, and sounds.',
-    '<c>Hey there!',
-  ], 
+    'is a',
+    '<b>developer and musician',
+    'working on',
+    '<d>apps, games, experiments, and sounds.',
+  ],
   b: [
-    'web apps and digital products',
-    '<b2>for work,'
-  ],
-  b2: [
-    '<b3>by day,',
-    'and by night making'
-  ],
-  b3: [
-    'at a product agency called',
-    '<b4>Crema,'
-  ],
-  b4: [
-    'Crema, which is',
-    '<b5>in Kansas City,'
-  ],
-  b5: [
-    'nestled in the thriving heart of the Crossroads district of Kansas City,'
-  ],
-  c: [
-    'Hey there! Below are a few of my',
-    '<d>projects,',
-    '<e>both past and present.'
-  ],
-  d: [
-    '<d2>pipe-dreams',
-    'and whimsies,'
-  ],
-  d2: [
-    'odds and ends, bits and bobs, wanderings'
-  ],
-  e: [
-    'a collection of examples for your',
-    '<f>perusal and entertainment.'
-  ],
-  f: [
-    'perusal for professional',
-    '<f2>purposes,',
-    'or simply for',
-    '<g>entertainment purposes.'
-  ],
-  f2: [
-    'purposes ( for example, maybe you\'d like to hire me to do some',
-    '<f3>work?',
-    ')'
-  ],
-  f3: [
-    'work, or maybe you\'re checking out the',
-    '<f4>competition?'
-  ],
-  f4: [
-    'competition, or maybe you just stumbled across it ',
-    '<f5>somehow?'
-  ],
-  f5: [
-    'somehow, or maybe you\'re going to keep clicking these words',
-    '<f6>forever?'
-  ],
-  f6: [
-    'forever and',
-    '<f7>ever...',
-  ],
-  f7: [
-    'ever and',
-    '<f7>ever...',
-  ],
-  g: [
-    '<g2>the LOLs.'
-  ],
-  g2: [
-    'something to',
-    '<g3>do while you put off your own work.'
-  ],
-  g3: [
-    'pass the long hours and keep you from',
-    '<g4>listlessness and mental dissipation.'
-  ],
-  g4: [
-    'opening Netflix again.',
-  ]
+    '<b1>full-stack engineer'],
+  b1: ['<b2>"creative coder"'],
+  b2: ["<b3>web-dev-turned-game-dev"],
+  b3: ["<b4>digital dabbler and doodler"],
+  b4: ["<b5>amateur game designer"],
+  b5: ["<b6>professional monospace typist"],
+  b6: ["<b7>professional bug-hunter"],
+  b7: ["<b7a>professional bug-maker"],
+  b7a: ["developer", "and", "<b8>musician"],
+  b8: ["<b9>jazz pianist"], 
+  b9: ["<b10>jazz-pianist-turned-synthesizer-geek"],
+  b10: ["<b11>unique creative snowflake"],
+  b11: ["<b12>recovering bluegrass mandolinist"],
+  b12: ["<b12a>lover of weird noises"],
+  b12a: ["<b12b>recent Steely Dan convert"],
+  b12b: ["musician", "with", "<b13>a passion for games,", "who is"],
+  b13: ["<b13a>a passion for interactive experiences,"],
+  b13a: ["<b13b>a love of refactoring code architecture,"],
+  b13b: ["<b17>a stack of CS textbooks (which he refuses to sell) as a monitor stand,"],
+  b17: ["a passion for games", "and", "<bb>a wandering mind,"],
+  bb: ['<bb1>a head in the clouds,'],
+  bb1: ['<bb2>a tendency to think divergently,'],
+  bb2: ['<bb3>an unlikely Luddite streak,'],
+  bb3: ['<bb4>a healthy skepticism of tech-bro culture,'],
+  bb4: ["<bb5>a tendency to mumble to himself,"],
+  bb5: ["a wandering mind,"],
+  d: ['<d1>a web app for crypto trading @Poloniex.'],
+  d1: ["<d2>his first indie game release."],
+  d2: ["<d3>using his powers for good."],
+  d3: ["<d4>finding reasons to be optimistic about technology."],
+  d4: ['<d5>refining his career goals further than "getting someone to pay me to write code".'],
+  d5: ['<d6>refining his career goals further than "solving interesting problems".'],
+  d6: ['<d7>planning a wedding!!!'],
+  d7: ["apps, games, experiments, and sounds. He enjoys", '<d9>board games and sci-fi novels.'],
+  d9: ["<d10>long Minneapolis bike rides."],
+  d10: ["<d11>drawing schematic diagrams."],
+  d11: ["<d12>finding the unusual in the commonplace."],
+  d12: ["<d13>really well-done documentation."],
+  d13: ["<d14>trying new things he has no experience with."],
+  d14: ["<d15>thought experiments."],
+  d15: ["board games and sci-fi novels, and prefers", "<d16>rainy days."],
+  d16: ["<d17>making things to consuming things."],
+  d17: ["<d18>Kansas City barbecue to any other kind (fight me)."],
+  d18: ["<d19>paper books to audiobooks."],
+  d18: ["<d19>a cozy nook to an open seating plan."],
+  d19: ["<d20>a Pilsner or Kolsch over an IPA any day."],
+  d20: ["<d21>a good question to a really good answer."],
+  d21: ["to be contacted at his personal email: Foibles@gmail.com. That's right - you made it to the end, and you WON THE GRAND PRIZE! Did you really think you could sit here clicking these words",
+    "<d22>forever?"],
+  d22: ["forever and", "<d23>ever?"],
+  d23: ["ever and", "<d23>ever?"]
 }
 
 // initialize the expanding text madness

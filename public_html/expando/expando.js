@@ -76,7 +76,7 @@ function Expando(targetId, textObject) {
   function expandText(target, from, to, onComplete) {
     var txt = from;
     var time = 0;
-    const timeIncr = 35 ;
+    const timeIncr = 17;
     setTimeout(() => {
       target.classList.add('expandoClicked');
     }, 10)
