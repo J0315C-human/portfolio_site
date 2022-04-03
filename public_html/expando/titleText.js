@@ -32,7 +32,7 @@ var _titleText = {
   bb3: ['<bb4>a healthy skepticism of tech-bro culture,'],
   bb4: ["<bb5>a tendency to mumble to himself,"],
   bb5: ["a wandering mind,"],
-  d: ['<d1>a web app for crypto trading @Poloniex.'],
+  d: ['<d1>frontend web dev.'],
   d1: ["<d2>his first indie game release."],
   d2: ["<d3>using his powers for good."],
   d3: ["<d4>finding reasons to be optimistic about technology."],
