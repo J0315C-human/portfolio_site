@@ -36,7 +36,6 @@ export default class Patterns {
         ease: Linear.easeNone
       }), startPos);
       this.g.tl.add(TweenLite.to(cssRule, dur, {
-        cssRule: { boxShadow: `0px 0px 15px 15px ${trans.color}` },
         ease: Linear.easeNone
       }), startPos);
     })

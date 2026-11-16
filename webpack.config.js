@@ -110,7 +110,7 @@ module.exports = {
     }),
     new WebpackCleanupPlugin(),
     new MiniCssExtractPlugin({
-      filename: '[contenthash].css',
+      filename: 'bgAnimation.css',
       disable: !isProduction
     }),
     new HtmlWebpackPlugin({

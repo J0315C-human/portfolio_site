@@ -162,10 +162,10 @@ rgba(109, 87, 135, 0.9)
 rgba(74, 53, 70, 0.9)
 */
 const contentTransitions = [
-  { color: "rgba(41, 80, 109, 0.9)", start: 3.5, end: 9 },
-  { color: "rgba(109, 87, 135, 0.9)", start: 21, end: 24.9 },
-  { color: "rgba(41, 80, 109, 0)", start: 28, end: 31 },
-  { color: "rgba(41, 80, 109, 0)", start: 31, end: 33 },
+  { color: "rgba(189, 224, 250, 0.9)", start: 3.5, end: 9 },
+  { color: "rgba(214, 199, 232, 0.9)", start: 21, end: 24.9 },
+  { color: "rgba(239, 238, 232, 0.93)", start: 28, end: 31 },
+  { color: "rgba(239, 238, 232, 0.99)", start: 31, end: 33 },
 ]
 
 const throttleScrollUpdatesMS = 80;

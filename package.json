@@ -8,6 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development --hot --progress --color --port 3000 --open",
     "build": "webpack -p --progress --colors",
+    "build:site": "npm run build && cp dist/bundle.js dist/bundle.js.map dist/bgAnimation.css public_html/",
+    "serve-static": "cd ./public_html && python3 -m http.server 8000",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "license": "MIT",
