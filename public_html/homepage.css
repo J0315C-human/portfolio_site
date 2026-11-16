@@ -20,11 +20,39 @@ body {
   display: block;
 }
 .page-shell {
-  width: min(1120px, calc(100% - 100px));
+  --paper-gutter: 64px;
+  --section-gap: 28px;
+  width: min(1088px, calc(100% - 128px));
   margin: 36px auto 100px;
-  background: var(--paper);
   color: var(--ink);
-  padding: 0 64px;
+  padding: 0 var(--paper-gutter);
+}
+/* Separate paper surfaces leave the animation exposed between sections.
+   Only the paper is translucent; text and project images stay fully opaque. */
+.site-header,
+.page-shell main > section,
+.page-shell main > footer {
+  position: relative;
+  isolation: isolate;
+}
+.site-header::before,
+.page-shell main > section::before,
+.page-shell main > footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(-1 * var(--paper-gutter));
+  z-index: -1;
+  /* A literal color lets the original GSAP CSSRulePlugin interpolate it directly. */
+  background-color: rgba(239, 238, 232, 0.90);
+  pointer-events: none;
+}
+.page-shell main,
+.page-shell main > section {
+  display: flow-root;
+}
+.page-shell main > section + section,
+.page-shell main > footer {
+  margin-top: var(--section-gap);
 }
 .page-shell a {
   color: inherit;
@@ -485,8 +513,8 @@ footer h2 {
 }
 @media (max-width: 850px) {
   .page-shell {
-    width: calc(100% - 40px);
-    padding: 0 30px;
+    --paper-gutter: 30px;
+    width: calc(100% - 56px);
     margin-top: 20px;
   }
   .case {
@@ -504,8 +532,9 @@ footer h2 {
 }
 @media (max-width: 600px) {
   .page-shell {
+    --paper-gutter: 22px;
+    --section-gap: 20px;
     width: calc(100% - 24px);
-    padding: 0 22px;
     margin: 12px auto 60px;
   }
   .site-header {

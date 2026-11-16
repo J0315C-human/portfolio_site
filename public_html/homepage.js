@@ -1,3 +1,4 @@
+
 /* Native horizontal scrolling; the background retains its vertical scroll handler. */
 (function () {
   var track = document.getElementById('project-gallery');

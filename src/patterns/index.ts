@@ -7,7 +7,8 @@ import EventChannel from '../editor/EventChannel';
 import constants from '../constants';
 import { CanvasTriangle } from 'dom/triangles';
 
-const cssRule = CSSRulePlugin.getRule('.content');
+// The homepage paper shares one pseudo-element rule; the standalone preview uses .content.
+const cssRule = CSSRulePlugin.getRule('.site-header::before') || CSSRulePlugin.getRule('.content');
 console.log(ColorPropsPlugin);
 
 export default class Patterns {
