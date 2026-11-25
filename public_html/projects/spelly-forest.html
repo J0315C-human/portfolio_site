@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spelly Forest | Joel Schuman</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../site-theme.css">
+  <link rel="stylesheet" href="projects.css">
+</head>
+<body>
+  <header class="project-header">
+    <a class="project-wordmark" href="../">Joel Schuman<span>Software engineer</span></a>
+  </header>
+  <main>
+    <article>
+      <header class="project-intro">
+        <p class="project-category">Game / Unity</p>
+        <h1>Spelly Forest</h1>
+        <p class="project-summary">A roguelike deck-building prototype with spell combinations, magical runes, and a forest full of mushrooms.</p>
+        <div class="project-actions">
+          <a class="project-button" href="../with/a-spelly-forest/0-1-5/">Play Spelly Forest</a>
+          <a href="../with/a-spelly-forest/">Build history</a>
+        </div>
+      </header>
+      <figure class="project-cover">
+        <img src="../images/spelly.png" alt="Spelly Forest preview">
+      </figure>
+      <section class="project-detail">
+        <h2>Project overview</h2>
+        <p>The largest game project I've worked on! I did nearly everything myself: ideation, prototyping, engineering, design, and PR. I became much more experienced with Unity, and learned many lessons about game development in general.</p>
+        <p class="project-tools"><strong>Tools</strong> Unity, C#, Discord, VS Code, Git/Github, Codecks, Miro, GameTester.gg.</p>
+        <ul class="project-topics">
+          <li><a href="#theme-iteration">Iteration</a></li>
+          <li><a href="#theme-prioritization">Prioritization</a></li>
+          <li><a href="#theme-documentation">Documentation</a></li>
+          <li><a href="#theme-collaboration">Collaboration</a></li>
+          <li><a href="#theme-validation">Validation</a></li>
+        </ul>
+      </section>
+      <section class="project-detail">
+        <h2 id="theme-iteration">Iteration</h2>
+        <figure>
+          <img loading="lazy" src="media/spelly-forest/miro.png" alt="screenshot of a living game design whiteboard" />
+          <figcaption>One iteration of Character and Spell design</figcaption>
+        </figure>
+        <ul>
+          <li>I distributed new builds every two-to-four weeks. This tight feedback loop allowed for valuable experimentation and exploration. Some core game dynamics have been altered, scrapped, and tweaked so much that they don't resemble anything like their originals!</li>
+          <li>Using a live whiteboarding tool helped me track all these changes and share sketches of ideas with collaborators.</li>
+          <li>A progress log and links to play the WebGL build of the game were updated on the <a href="../with/a-spelly-forest/">landing page I created for the game.</a></li>
+          <li>All changes were version-controlled using git, allowing me to rollback to any point in the project history and separate development efforts with feature branches.</li>
+          <li>I tried to build everything with refactorability in mind. It is hard to find a good middle ground between unmaintainable throwaway code and needlessly over-engineering. Finding this balance is something I'm still getting better at! I've found that the "simplest abstraction possible" approach is helpful.</li>
+        </ul>
+      </section>
+      <section class="project-detail">
+        <h2 id="theme-prioritization">Prioritization</h2>
+        <figure>
+          <img loading="lazy" src="media/spelly-forest/codecks.png" alt="screenshot of a project management backlog" />
+          <figcaption>A screenshot of my Art "deck", with the high priority cards on top</figcaption>
+        </figure>
+        <ul>
+          <li>From my years in software agencies, I've tried loads of project management tools, but I didn't think any of them would make sense for a solo project.</li>
+          <li>For Spelly Forest, I tried out the fantastic Codecks - a tool aimed at game dev specifically. Work is organized into "decks" and "hands", and I've found the prioritizing features to be elegant and easy. Above is a screenshot of my Art "deck", with the highest priority work on top.</li>
+          <li>Most importantly, I try to cut down the scope whenever I can, because I know that human nature is to expand it until there's no hope of finishing.</li>
+        </ul>
+      </section>
+      <section class="project-detail">
+        <h2 id="theme-documentation">Documentation</h2>
+        <figure>
+          <img loading="lazy" src="media/spelly-forest/scenemap.png" alt="screenshot of documentation regarding a game scene map" />
+          <figcaption>A diagram of game scenes and transitions</figcaption>
+        </figure>
+        <ul>
+          <li>Initially all design documentation was in google spreadsheets, but I quickly found that to be restrictive.</li>
+          <li>I moved everything into Miro, where I maintained a detailed living whiteboard document. It included everything from character builds to dev details and C# class hierarchies, as well as sketches and plans for future features and additions. I treated this document as the source of truth for all things related to game design.</li>
+          <li>This was immensely helpful for collaborating, especially remotely. It was easy to leave comments and sticky notes for whatever issue or question came to mind during a conversation.</li>
+          <li>I also created an <a href="https://docs.google.com/document/d/1yj6Q_iHjOkGObTlSqMeUKo7GOJ0642KkxRtG5Snkp_Y/edit?usp=sharing">onboarding document for testers</a> to make it easy for folks to jump in.</li>
+        </ul>
+      </section>
+      <section class="project-detail">
+        <h2 id="theme-collaboration">Collaboration</h2>
+        <figure>
+          <img loading="lazy" src="media/spelly-forest/discord.png" alt="screenshot of a discord channel" />
+          <figcaption>A tester giving me a great idea for a GUI feature</figcaption>
+        </figure>
+        <ul>
+          <li>I wanted to try working out in the open as much as possible for this project, so I set up and maintained a discord server to centralize planning discussions and collect feedback. It currently has about 30 members, a mix of people I met in gaming and game dev communities, game testers who joined after testing the game on gametester.gg, and of course family and friends.</li>
+          <li>I had a recurring meeting with a close friend who is a C# wizard by way of software development (and has also done some modding). We often stayed up late working through architecture issues and improving messy code. Having to verbally explain my code to someone was incredibly educational and humbling!</li>
+          <li>Another friend, who is a more experienced game designer than me, advised frequently on game design efforts. He was indispensable when it came to seeing the game from the player's perspective, and helped me solve many problems related to balancing broken dynamics.</li>
+          <li>I don't have a strong background in public outreach and marketing, so I valued every pair of eyes on this project! For a hobby project, I feel that it was the perfect amount of interaction to keep me motivated and keep me from working in a vacuum.</li>
+        </ul>
+      </section>
+      <section class="project-detail">
+        <h2 id="theme-validation">Validation</h2>
+        <figure>
+          <img loading="lazy" src="media/spelly-forest/gametester.png" alt="game test results" />
+          <figcaption>Questionnaire results from a round of game testing on Gametester.gg</figcaption>
+        </figure>
+        <ul>
+          <li>A handful of sessions of supervised user testing were carried out, facilitated by my partner Jasmine. We had people jump into the game with zero knowledge, and took notes. Afterwards she had them answer questions identifying pain points and confusion. Usually we recorded the sessions to reference them later.</li>
+          <li>In summer and fall of 2022, I underwent paid testing using Gametester.gg: I integrated their API to track simple game events from the play sessions, and had about 15 players from around the world test the game each time. This was more than enough feedback for one person to comb through!</li>
+          <li>Both rounds of testing helped greatly in prioritizing and refocusing the direction of the game. I also got a much better feel for what a target audience would look like: casual gamers who prefer a cozy and lighthearted experience, and appreciate strategic elements.</li>
+          <li>Here's one of my favorite bits of feedback: <em>"I can't say I fell in love with this game, but I definitely have a huge crush! I am a fan of indie games, because I always find something unique in them, how the tell a story, how deceivingly simple they seem."</em></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+  <footer class="project-footer"><a href="../#gallery-title">Back to portfolio</a></footer>
+</body>
+</html>

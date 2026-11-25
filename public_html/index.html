@@ -19,6 +19,7 @@
 	<meta name="msapplication-TileColor" content="#da532c">
 	<meta name="theme-color" content="#000000">
 	<link href="bgAnimation.css" rel="stylesheet">
+	<link href="site-theme.css" rel="stylesheet">
 	<link href="homepage.css" rel="stylesheet">
 </head>
 
@@ -40,27 +41,22 @@
 		<div id="scrollOuter">
 			<div id="scrollInner">
 <div class="page-shell">
-<header class="site-header"><a class="wordmark" href="#home">Joel Schuman<span>Software engineer</span></a><nav aria-label="Main navigation"><a href="#work">Work</a><a href="#technical">Technical interests</a><a href="#contact">Contact ↗</a></nav></header>
+<header class="site-header"><a class="wordmark" href="#home">Joel Schuman<span>Software engineer</span></a><nav aria-label="Main navigation"><a href="/documents/JoelSchumanResume2026.pdf" download>Download CV</a></nav></header>
 <main>
-<section class="hero" id="home"><p class="eyebrow">Software, systems &amp; creative tools</p><h1>Behind every good experience,<br>there’s an engineering problem.</h1><p class="lede">I’m Joel, a software engineer working across web applications, real-time systems, and interactive media. I build the machinery that makes complex ideas work.</p><div class="hero-links"><a class="button" href="#work">Explore selected work <span>↓</span></a><a href="mailto:joel@joelhasa.site">Get in touch ↗</a></div><div class="expertise"><span>TypeScript &amp; React</span><span>Synchronization &amp; state</span><span>Algorithms &amp; simulation</span></div></section>
-<section class="selected" id="work"><div class="section-head"><p class="eyebrow">01 / Selected engineering work</p><p>The constraints. The decisions. The implementation.</p></div>
-<article class="case"><div class="case-intro"><p class="project-type">Client work / Presentation infrastructure</p><h2>One presentation.<br>Two computers.<br>A shared timeline.</h2><p>A configurable presentation for a wall of 30 screens. On site, the installation turned out to run on two separate computers—each driving half the wall.</p><div class="tags"><span>React</span><span>TypeScript</span><span>WebSockets</span><span>GSAP</span></div><a class="case-link" href="with/a-animated-react-presentation/brief.html">Read the engineering brief ↗</a></div><div class="case-evidence"><a class="project-picture" href="with/a-animated-react-presentation/"><img src="images/presentation.png" alt="Configurable presentation rendered across animated charts and text" width="800" height="450" loading="lazy"></a><dl><div><dt>Synchronization</dt><dd>Used WebSocket communication to align the playback position of both instances.</dd></div><div><dt>Determinism</dt><dd>Replaced independent randomness with a seeded generator so procedural motion matched across displays.</dd></div><div><dt>Rendering</dt><dd>Projected rotating graphs into 2D SVG using linear algebra, avoiding a full 3D renderer.</dd></div></dl></div></article>
-<article class="case"><div class="case-intro"><p class="project-type">Commission / Audio systems &amp; infrastructure</p><h2>An evolving audio system,<br>controlled in the browser.</h2><p>For Vancouver New Music’s Parallels 03, I translated an open-ended collaboration between musicians, writers, and visual artists into an interactive online experience.</p><div class="tags"><span>TypeScript</span><span>Tone.js</span><span>Pub/sub</span><span>AWS</span></div><a class="case-link" href="parallels/brief.html">Read the engineering brief ↗</a></div><div class="case-evidence"><a class="project-picture" href="https://vnm-parallels.joelhasa.site"><img src="images/parallels.png" alt="Parallels 03 audio controls and geometric artwork" width="800" height="450" loading="lazy"></a><dl><div><dt>Audio graph</dt><dd>Connected playback, synthesis, and effects as a network of audio processing nodes.</dd></div><div><dt>Decoupled controls</dt><dd>Wrote a custom publish/subscribe system to connect dynamically rendered controls to effect parameters.</dd></div><div><dt>Deployment</dt><dd>Hosted the static build on S3, with CloudFront distribution and Route 53 DNS routing.</dd></div></dl></div></article>
+<section class="hero" id="home"><h1>Full-stack engineer building<br>reliable software.</h1><p class="lede">I’m Joel. For more than a decade, I’ve built new applications and shipped changes to live systems, from a trading platform to a legacy game engine. I communicate clearly and enjoy mentoring other developers.</p><div class="hero-links"><a class="button" href="#work">Explore selected work <span>↓</span></a><a href="mailto:joel@joelhasa.site">Get in touch ↗</a></div><div class="expertise"><span>Full-stack development</span><span>Production systems</span><span>Mentorship</span></div></section>
+<section class="selected" id="work"><div class="section-head"><p class="eyebrow">01 / Selected engineering work</p></div>
+<article class="case"><div class="case-intro"><p class="project-type">Commission</p><h2>An evolving audio system,<br>controlled in the browser.</h2><p>For Vancouver New Music’s Parallels 03, I translated an open-ended collaboration between musicians, writers, and visual artists into an interactive online experience.</p><div class="tags"><span>TypeScript</span><span>Tone.js</span><span>Pub/sub</span><span>AWS</span></div><a class="case-link" href="projects/parallels.html">Read the engineering brief ↗</a></div><div class="case-evidence"><a class="project-picture" href="projects/parallels.html"><img src="images/parallels.png" alt="Parallels 03 audio controls and geometric artwork" width="800" height="450" loading="lazy"></a><dl><div><dt>Audio graph</dt><dd>Connected playback, synthesis, and effects as a network of audio processing nodes.</dd></div><div><dt>Decoupled controls</dt><dd>Wrote a custom publish/subscribe system to connect dynamically rendered controls to effect parameters.</dd></div><div><dt>Deployment</dt><dd>Hosted the static build on S3, with CloudFront distribution and Route 53 DNS routing.</dd></div></dl></div></article>
+<article class="case"><div class="case-intro"><p class="project-type">Client work</p><h2>One presentation.<br>Two computers.<br>A shared timeline.</h2><p>A configurable presentation for a wall of 30 screens. On site, the installation turned out to run on two separate computers—each driving half the wall.</p><div class="tags"><span>React</span><span>TypeScript</span><span>WebSockets</span><span>GSAP</span></div><a class="case-link" href="projects/animated-presentation.html">Read the engineering brief ↗</a></div><div class="case-evidence"><a class="project-picture" href="projects/animated-presentation.html"><img src="images/presentation.png" alt="Configurable presentation rendered across animated charts and text" width="800" height="450" loading="lazy"></a><dl><div><dt>Synchronization</dt><dd>Used WebSocket communication to align the playback position of both instances.</dd></div><div><dt>Determinism</dt><dd>Replaced independent randomness with a seeded generator so procedural motion matched across displays.</dd></div><div><dt>Rendering</dt><dd>Projected rotating graphs into 2D SVG using linear algebra, avoiding a full 3D renderer.</dd></div></dl></div></article>
 </section>
-<section id="technical" class="technical"><div class="section-head"><p class="eyebrow">02 / Algorithms &amp; exploration</p><p>Smaller projects. Fundamental problems.</p></div><div class="exploration-grid">
-<a class="experiment" href="with/a-matching-algorithm"><span class="experiment-index">01 / Matching</span><h3>Stable matching <span>↗</span></h3><p>An implementation of Gale–Shapley: pair two groups by preference while ensuring no pair would prefer each other to their assigned partners.</p><span class="footnote">Algorithms · Preferences · Stability</span></a>
-<a class="experiment" href="with/a-maze-generator"><span class="experiment-index">02 / Graphs</span><h3>Maze generation <span>↗</span></h3><p>Use Union–Find to join disjoint sets of cells into a connected maze. A visual exploration of connectivity and tree structures.</p><span class="footnote">Disjoint sets · Connectivity · Trees</span></a>
-<a class="experiment" href="with/multi-state-cellular-automata"><span class="experiment-index">03 / Simulation</span><h3>Cellular automata <span>↗</span></h3><p>Extend a two-state cellular model with multiple states and transition rules, exploring how local decisions produce global behavior.</p><span class="footnote">State transitions · Emergent behavior</span></a>
-</div></section>
 <section class="more" aria-labelledby="gallery-title">
   <div class="gallery-heading">
-    <div><p class="eyebrow">03 / Beyond the day job</p><h2 id="gallery-title">Room to experiment.</h2><p>Games, drawings, music, and experiments in making things.</p></div>
+    <div><p class="eyebrow">02 / Beyond the day job</p><h2 id="gallery-title">Room to experiment.</h2><p>Games, algorithms, interactive tools, and creative projects. Warning: some of this stuff is really old!</p></div>
     <div class="gallery-navigation"><span class="gallery-hint" id="gallery-hint">Scroll to explore</span><div class="gallery-buttons" hidden><button type="button" data-gallery-direction="-1" aria-label="Previous projects" aria-controls="project-gallery">←</button><button type="button" data-gallery-direction="1" aria-label="Next projects" aria-controls="project-gallery">→</button></div></div>
   </div>
   <div class="gallery-track" id="project-gallery" role="region" aria-label="Creative projects" aria-describedby="gallery-hint" tabindex="0">
     <ul class="gallery-list">
         <li class="gallery-item">
-          <a class="gallery-card" href="with/a-spelly-forest" aria-describedby="gallery-brief-0">
+          <a class="gallery-card" href="projects/spelly-forest.html" aria-describedby="gallery-brief-0">
             <div class="gallery-visual">
               <img src="images/spelly.png" alt="" width="640" height="420" loading="lazy">
               <p class="gallery-brief" id="gallery-brief-0">A roguelike deck-building prototype with spell combinations, magical runes, and a forest full of mushrooms.</p>
@@ -69,7 +65,7 @@
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="with/a-holiday-wizard-game" aria-describedby="gallery-brief-1">
+          <a class="gallery-card" href="projects/winter-wizard-battle.html" aria-describedby="gallery-brief-1">
             <div class="gallery-visual">
               <img src="images/winterwizard.png" alt="" width="640" height="420" loading="lazy">
               <p class="gallery-brief" id="gallery-brief-1">Combine runes to cast spells in the strategy prototype that led to Spelly Forest.</p>
@@ -78,7 +74,7 @@
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="with/a-game-called-bleepbloop" aria-describedby="gallery-brief-2">
+          <a class="gallery-card" href="projects/bleep-bloop.html" aria-describedby="gallery-brief-2">
             <div class="gallery-visual">
               <img src="images/bleepbloop.png" alt="" width="640" height="420" loading="lazy">
               <p class="gallery-brief" id="gallery-brief-2">A rhythm-matching puzzle game where evolving chords and scales turn each level into an interactive piece of music.</p>
@@ -87,25 +83,34 @@
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="with/a-generative-art-thing" aria-describedby="gallery-brief-3">
+          <a class="gallery-card" href="projects/stable-matching.html" aria-describedby="gallery-brief-stable-matching">
             <div class="gallery-visual">
-              <img src="images/10print.png" alt="" width="640" height="420" loading="lazy">
-              <p class="gallery-brief" id="gallery-brief-3">A take on the classic BASIC program: simple random slashes grow into an intricate, maze-like pattern.</p>
+              <img src="images/GaleShapley.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-stable-matching">An implementation of Gale–Shapley: pair two groups by preference while ensuring no pair would prefer each other to their assigned partners.</p>
             </div>
-            <div class="gallery-caption"><div><span class="gallery-category">Generative art</span><h3>10 Print</h3></div><span aria-hidden="true">↗</span></div>
+            <div class="gallery-caption"><div><span class="gallery-category">Algorithms / Matching</span><h3>Stable matching</h3></div><span aria-hidden="true">↗</span></div>
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="with/some-old-drawings" aria-describedby="gallery-brief-4">
+          <a class="gallery-card" href="projects/maze-generation.html" aria-describedby="gallery-brief-maze-generation">
             <div class="gallery-visual">
-              <img src="images/comics.png" alt="" width="640" height="420" loading="lazy">
-              <p class="gallery-brief" id="gallery-brief-4">An archive of comics and drawings from a return to a childhood ambition: becoming a cartoonist.</p>
+              <img src="images/maze.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-maze-generation">Use Union–Find to join disjoint sets of cells into a connected maze. A visual exploration of connectivity and tree structures.</p>
             </div>
-            <div class="gallery-caption"><div><span class="gallery-category">Drawing / Archive</span><h3>Webcomics</h3></div><span aria-hidden="true">↗</span></div>
+            <div class="gallery-caption"><div><span class="gallery-category">Algorithms / Graphs</span><h3>Maze generation</h3></div><span aria-hidden="true">↗</span></div>
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="with/a-3d-game-of-life" aria-describedby="gallery-brief-5">
+          <a class="gallery-card" href="projects/cellular-automata.html" aria-describedby="gallery-brief-cellular-automata">
+            <div class="gallery-visual">
+              <img src="images/ca.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-cellular-automata">Extend a two-state cellular model with multiple states and transition rules, exploring how local decisions produce global behavior.</p>
+            </div>
+            <div class="gallery-caption"><div><span class="gallery-category">Simulation / Cellular automata</span><h3>Cellular automata</h3></div><span aria-hidden="true">↗</span></div>
+          </a>
+        </li>
+        <li class="gallery-item">
+          <a class="gallery-card" href="projects/3d-game-of-life.html" aria-describedby="gallery-brief-5">
             <div class="gallery-visual">
               <img src="images/life3d.png" alt="" width="640" height="420" loading="lazy">
               <p class="gallery-brief" id="gallery-brief-5">A two-dimensional cellular simulation echoed into three dimensions and rendered on canvas with ZDog.</p>
@@ -114,7 +119,25 @@
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="with/shader-patterns" aria-describedby="gallery-brief-6">
+          <a class="gallery-card" href="#home" aria-describedby="gallery-brief-10">
+            <div class="gallery-visual">
+              <img src="images/bg.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-10">Hundreds of triangle animations sequenced on a GSAP timeline, with playback tied to vertical scroll.</p>
+            </div>
+            <div class="gallery-caption"><div><span class="gallery-category">Animation / Canvas</span><h3>This Site’s Background</h3></div><span aria-hidden="true">↗</span></div>
+          </a>
+        </li>
+        <li class="gallery-item">
+          <a class="gallery-card" href="projects/strobosnooper.html" aria-describedby="gallery-brief-7">
+            <div class="gallery-visual">
+              <img src="images/strobosnooper.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-7">A browser tool for viewing stroboscopic animations, including animated turntable slipmat discs.</p>
+            </div>
+            <div class="gallery-caption"><div><span class="gallery-category">Tool / Animation</span><h3>StroboSnooper</h3></div><span aria-hidden="true">↗</span></div>
+          </a>
+        </li>
+        <li class="gallery-item">
+          <a class="gallery-card" href="projects/shader-patterns.html" aria-describedby="gallery-brief-6">
             <div class="gallery-visual">
               <img src="images/joeltv.png" alt="" width="640" height="420" loading="lazy">
               <p class="gallery-brief" id="gallery-brief-6">A collection of black-and-white channels, each built from computations that determine the brightness of every pixel.</p>
@@ -123,12 +146,21 @@
           </a>
         </li>
         <li class="gallery-item">
-          <a class="gallery-card" href="where/you-can-view-stroboscopic-animations" aria-describedby="gallery-brief-7">
+          <a class="gallery-card" href="projects/10-print.html" aria-describedby="gallery-brief-3">
             <div class="gallery-visual">
-              <img src="images/strobosnooper.png" alt="" width="640" height="420" loading="lazy">
-              <p class="gallery-brief" id="gallery-brief-7">A browser tool for viewing stroboscopic animations, including animated turntable slipmat discs.</p>
+              <img src="images/10print.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-3">A take on the classic BASIC program: simple random slashes grow into an intricate, maze-like pattern.</p>
             </div>
-            <div class="gallery-caption"><div><span class="gallery-category">Tool / Animation</span><h3>StroboSnooper</h3></div><span aria-hidden="true">↗</span></div>
+            <div class="gallery-caption"><div><span class="gallery-category">Generative art</span><h3>10 Print</h3></div><span aria-hidden="true">↗</span></div>
+          </a>
+        </li>
+        <li class="gallery-item">
+          <a class="gallery-card" href="projects/webcomics.html" aria-describedby="gallery-brief-4">
+            <div class="gallery-visual">
+              <img src="images/comics.png" alt="" width="640" height="420" loading="lazy">
+              <p class="gallery-brief" id="gallery-brief-4">An archive of comics and drawings from a return to a childhood ambition: becoming a cartoonist.</p>
+            </div>
+            <div class="gallery-caption"><div><span class="gallery-category">Drawing / Archive</span><h3>Webcomics</h3></div><span aria-hidden="true">↗</span></div>
           </a>
         </li>
         <li class="gallery-item">
@@ -149,19 +181,10 @@
             <div class="gallery-caption"><div><span class="gallery-category">Composition / Sound</span><h3>Music &amp; recordings</h3></div><span aria-hidden="true">↗</span></div>
           </a>
         </li>
-        <li class="gallery-item">
-          <a class="gallery-card" href="#home" aria-describedby="gallery-brief-10">
-            <div class="gallery-visual">
-              <img src="images/bg.png" alt="" width="640" height="420" loading="lazy">
-              <p class="gallery-brief" id="gallery-brief-10">Hundreds of triangle animations sequenced on a GSAP timeline, with playback tied to vertical scroll.</p>
-            </div>
-            <div class="gallery-caption"><div><span class="gallery-category">Animation / Canvas</span><h3>This Site’s Background</h3></div><span aria-hidden="true">↗</span></div>
-          </a>
-        </li>
     </ul>
   </div>
 </section>
-<footer id="contact"><p class="eyebrow">04 / Contact</p><h2>Let’s talk about<br>what you’re building.</h2><a class="email" href="mailto:joel@joelhasa.site">joel@joelhasa.site ↗</a><div class="footer-bottom"><span>Joel Schuman / Software engineer</span><a href="#home">Back to top ↑</a></div></footer>
+<footer id="contact"><p class="eyebrow">03 / Contact</p><h2>Working on something fun?<br>Let's chat!</h2><a class="email" href="mailto:joel@joelhasa.site">joel@joelhasa.site ↗</a><div class="footer-bottom"><span>Joel Schuman / Software engineer</span><a href="#home">Back to top ↑</a></div></footer>
 </main></div>
 			</div>
 		</div>

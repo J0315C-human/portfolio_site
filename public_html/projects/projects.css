@@ -1,0 +1,174 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: min(100% - 2.5rem, 68rem);
+  margin: 0 auto;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1rem/1.65 Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.project-header,
+.project-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.project-footer {
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+}
+
+.project-wordmark {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.project-wordmark span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.project-intro {
+  padding: clamp(2.5rem, 8vw, 6rem) 0 2rem;
+}
+
+.project-category {
+  margin: 0 0 0.75rem;
+  color: var(--accent);
+  font: 0.875rem/1.5 Consolas, Menlo, monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  font-weight: 500;
+  line-height: 1.12;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  letter-spacing: -0.045em;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: -0.025em;
+}
+
+.project-summary {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+.project-actions,
+.project-topics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.project-button {
+  display: inline-block;
+  padding: 0.65rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.project-button:hover {
+  background: var(--accent);
+}
+
+.project-note,
+.project-tools,
+figcaption {
+  color: var(--muted);
+}
+
+.project-note {
+  margin: 0;
+}
+
+figure {
+  margin: 0 0 1.25rem;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.project-cover {
+  max-width: 50rem;
+  margin-bottom: 2.5rem;
+}
+
+.project-cover img {
+  border: 1px solid var(--line);
+}
+
+.project-detail {
+  max-width: 72ch;
+  padding: 1.75rem 0 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.project-detail li + li {
+  margin-top: 0.45rem;
+}
+
+.project-topics {
+  padding: 0;
+  list-style: none;
+}
+
+.project-topics li + li {
+  margin: 0;
+}
+
+figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.project-gallery figure {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}

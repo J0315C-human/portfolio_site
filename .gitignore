@@ -8,5 +8,12 @@
 node_modules
 build
 dist
-public_html/with
+# Legacy demo builds are deployed separately. Track only brief redirects here.
+public_html/with/*
+!public_html/with/a-animated-react-presentation/
+!public_html/with/a-game-called-bleepbloop/
+!public_html/with/a-holiday-wizard-game/
+!public_html/with/a-spelly-forest/
+public_html/with/*/*
+!public_html/with/*/brief.html
 public_html/where
