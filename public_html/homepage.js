@@ -52,12 +52,19 @@
   if (!portrait) return;
   var image = portrait.querySelector('img');
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var photo = 1;
+  var photo = 0;
   var pulse;
+  var photos = [image.src, 2, 3, 4, 5].map(function (source, index) {
+    var preload = new Image();
+    if (index > 0) preload.fetchPriority = 'low';
+    preload.src = index === 0 ? source : 'images/me/preview/' + source + '.jpg';
+    if (preload.decode) preload.decode().catch(function () {});
+    return preload;
+  });
 
   portrait.addEventListener('click', function () {
-    photo = photo % 5 + 1;
-    image.src = 'images/me/' + photo + '.jpg';
+    photo = (photo + 1) % photos.length;
+    image.src = photos[photo].src;
     if (pulse) pulse.cancel();
     if (!reducedMotion.matches && portrait.animate) {
       pulse = portrait.animate(
