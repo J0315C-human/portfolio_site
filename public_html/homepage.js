@@ -46,3 +46,28 @@
   controls.hidden = false;
   updateControls();
 })();
+
+(function () {
+  var portrait = document.querySelector('.hero-portrait');
+  if (!portrait) return;
+  var image = portrait.querySelector('img');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var photo = 1;
+  var pulse;
+
+  portrait.addEventListener('click', function () {
+    photo = photo % 5 + 1;
+    image.src = 'images/me/' + photo + '.jpg';
+    if (pulse) pulse.cancel();
+    if (!reducedMotion.matches && portrait.animate) {
+      pulse = portrait.animate(
+        [
+          { transform: 'scale(1)', easing: 'ease-out' },
+          { transform: 'scale(1.07)', offset: 0.08, easing: 'ease-out' },
+          { transform: 'scale(1)' }
+        ],
+        { duration: 420 }
+      );
+    }
+  });
+})();

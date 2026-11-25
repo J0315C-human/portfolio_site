@@ -92,6 +92,47 @@ nav a:hover,
 .hero {
   padding: 96px 0 0;
 }
+.hero-intro {
+  display: grid;
+  grid-template-columns: clamp(96px, 16vw, 190px) minmax(0, 1fr);
+  grid-template-areas:
+    "portrait title"
+    "description description"
+    "links links";
+  align-items: center;
+  gap: 20px 28px;
+  margin-bottom: 72px;
+}
+.hero-intro h1 {
+  grid-area: title;
+  margin: 0;
+}
+.hero-intro .lede {
+  grid-area: description;
+  margin: 0;
+}
+.hero-portrait {
+  grid-area: portrait;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  cursor: pointer;
+}
+.hero-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.hero-portrait:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
 .eyebrow,
 .project-type {
   font-family: Consolas, Menlo, monospace;
@@ -116,10 +157,11 @@ h1 {
   color: var(--muted);
 }
 .hero-links {
+  grid-area: links;
   display: flex;
   align-items: center;
   gap: 28px;
-  margin: 32px 0 72px;
+  margin: 12px 0 0;
   font-size: 13px;
 }
 .button {
@@ -264,7 +306,7 @@ dd {
 }
 .gallery-buttons {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 .gallery-buttons[hidden] {
   display: none;
@@ -272,18 +314,26 @@ dd {
 .gallery-buttons button {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
+  width: 26px;
+  height: 28px;
+  padding: 0;
+  border: 0;
   background: transparent;
   color: var(--ink);
-  font-size: 20px;
   cursor: pointer;
 }
+.gallery-buttons button::before {
+  content: "";
+  width: 9px;
+  height: 12px;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+.gallery-buttons button[data-gallery-direction="-1"]::before {
+  transform: scaleX(-1);
+}
 .gallery-buttons button:hover:not(:disabled) {
-  background: var(--ink);
-  color: var(--paper);
+  color: var(--accent);
 }
 .gallery-buttons button:disabled {
   opacity: 0.25;
@@ -510,9 +560,17 @@ footer h2 {
   .lede {
     font-size: 16px;
   }
+  .hero-intro {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "title" "portrait" "description" "links";
+    margin-bottom: 48px;
+  }
+  .hero-portrait {
+    justify-self: center;
+    width: 112px;
+  }
   .hero-links {
     gap: 20px;
-    margin-bottom: 48px;
     font-size: 11px;
   }
   .button {
