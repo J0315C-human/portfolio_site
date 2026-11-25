@@ -172,3 +172,25 @@ iframe {
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
+
+.collection-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  align-items: start;
+  gap: 1rem 2rem;
+}
+
+.collection-entry img {
+  width: 100%;
+  border: 1px solid var(--line);
+}
+
+.collection-entry .project-note {
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 36rem) {
+  .collection-entry {
+    grid-template-columns: 1fr;
+  }
+}

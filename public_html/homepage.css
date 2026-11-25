@@ -322,6 +322,8 @@ dd {
   margin: 0;
 }
 .gallery-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   flex: 0 0 38%;
   min-width: 0;
   scroll-snap-align: start;
@@ -439,11 +441,11 @@ dd {
 }
 footer {
   border-top: 1px solid var(--ink);
-  padding: 36px 0 24px;
+  padding: 27px 0 18px;
 }
 footer h2 {
-  font-size: 44px;
-  margin: 35px 0;
+  font-size: 33px;
+  margin: 26px 0;
 }
 .email {
   font-size: 19px;
@@ -454,8 +456,8 @@ footer h2 {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  margin-top: 80px;
-  padding-top: 20px;
+  margin-top: 60px;
+  padding-top: 15px;
   border-top: 1px solid var(--line);
   font-size: 10px;
   color: var(--muted);
@@ -538,11 +540,11 @@ footer h2 {
     font-size: 30px;
   }
   footer h2 {
-    font-size: 36px;
+    font-size: 27px;
   }
   .footer-bottom {
     flex-direction: column;
-    margin-top: 60px;
+    margin-top: 45px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
