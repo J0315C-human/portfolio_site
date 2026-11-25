@@ -27,8 +27,8 @@
       </figure>
       <section class="project-detail">
         <h2>Project overview</h2>
-        <p>I was contracted to help with this project by Vancouver New Music, an organization promoting new musical works based in Vancouver. The idea was to explore a fully-remote collaborative process and produce an interactive online experience, as well as an album.</p>
-        <p>Raven Chacon (now Pulitzer prize-winning composer) and John Dieterich (of the fantastic group Deerhoof, among many other projects) led the collaboration from a musical perspective. Also involved were various instrumentalists, writers, and visual artists. Read more about the project <a href="https://newmusic.org/parallel-03-endlings/">here.</a></p>
+        <p>Vancouver New Music commissioned me to build the web experience for Parallels 03. The remote collaboration set out to create an interactive piece and an album.</p>
+        <p>Raven Chacon (now Pulitzer prize-winning composer) and John Dieterich (of the fantastic group Deerhoof, among many other projects) led the collaboration from a musical perspective. Also involved were various instrumentalists, writers, and visual artists. Read more about the project <a href="https://www.newmusic.org/events/parallel-03-endlings">here.</a></p>
         <p class="project-tools"><strong>Tools</strong> Typescript, Tone JS, Nexus UI Elements, Amazon Web Services</p>
         <ul class="project-topics">
           <li><a href="#theme-asynccollab">Asynchronous Collaboration</a></li>
@@ -44,20 +44,18 @@
           <figcaption>Sketches of the project idea</figcaption>
         </figure>
         <ul>
-          <li>I led the group through a few sessions of brainstorming and whiteboarding, in order to get a better idea of the goals and expectations. The leaders of the project and I also met a few times to touch base and get onto the same page.</li>
-          <li>Other than that, all collaboration was asynchronous - I sent sketches and ideas out to the participants to discuss and iterate on. They sent me their writings, audio clips, and images, and we slowly reached a consensus of how all this was going to look.</li>
+          <li>I led brainstorming and whiteboarding sessions to define the experience with the artists. Between sessions, we iterated asynchronously on sketches, recordings, writing, and images.</li>
           <li>The group wanted it to be something that would encourage experimentation, and be somewhat chaotic and inscrutable, yet mesmerizing.</li>
         </ul>
       </section>
       <section class="project-detail">
         <h2 id="theme-interactiondesign">Interaction Design</h2>
         <figure>
-          <img loading="lazy" src="../parallels/images/vnm_shot.png" alt="UI Elements acting crazy" />
+          <img loading="lazy" src="../parallels/images/vnm_shot.png" alt="Changing audio controls and geometric artwork" />
           <figcaption>Creative use of UI Elements</figcaption>
         </figure>
         <ul>
-          <li>This project was a blast for me because everyone was so intensely creative - the kinds of people that I feel an affinity for, having a background in art and music. I learned that one of my core skills is straddling that line between imaginative creativity and more technical engineering concerns, and communicating between people in both camps.</li>
-          <li>Through the collaborative process, I realized that the end product was going to be quite different from most of the websites and web development I'd worked on previously.</li>
+          <li>My background in art and music helped me translate the collaborators’ creative direction into interaction and engineering decisions.</li>
           <li>Designing this experience was interesting because no one had a set idea of the end product beforehand. Instead, the group had a lot of ideas for how the experience would make someone feel, what the sensations would be, and I worked backwards from that to the final idea.</li>
           <li>I came up with the idea of a big, opaque "wall" of controls - each control actually affecting some parameter of the audio - for example, pitch, or filter frequency. The controls would pop in and out, changing over time.</li>
           <li>The geometric animal shapes were an asset we knew we wanted to be central. Each one represents a different "room" of sound - with different audio clips, effects, and different types of controls available. The user gets an impression that they're blindly navigating through a labyrinth of strange rooms.</li>
@@ -67,11 +65,10 @@
         <h2 id="theme-webaudio">Web Audio</h2>
         <figure>
           <img loading="lazy" src="../parallels/images/vnm_tonecode.png" alt="Tone JS" />
-          <figcaption>The incredible Tone JS library</figcaption>
+          <figcaption>Audio processing with Tone.js</figcaption>
         </figure>
         <ul>
-          <li>For audio processing, I used the incredible Tone JS library. It has a rich set of features for effects, synthesis, and playback.</li>
-          <li>The library allows you set up everything as a network of nodes, with audio flowing through them, effects or transformations being applied in each node.</li>
+          <li>I used Tone.js to connect playback, synthesis, and effects in a graph. Each node could transform the audio as it passed through.</li>
           <li>As a UI control first renders, it is assigned to a random parameter of an effect that's in the current space, which is handled within a React Hook by a custom pub/sub system that I wrote.</li>
         </ul>
       </section>
@@ -82,9 +79,8 @@
           <figcaption>The AWS services used on this project</figcaption>
         </figure>
         <ul>
-          <li>I opted to use Amazon Web Services for the infrastructure and hosting of the project. Admittedly there wasn't much going on on the backend, so "infrastructure" is a pompous word, but I wanted to use this project to learn more about AWS.</li>
-          <li>The static build files all live in S3, and I used CloudFront as the CDN and Route 53 to set up the dns routing.</li>
-          <li>The biggest hurdle of using AWS was understanding how permissions and roles work - I would constantly run into problems where I had unknowingly left something inaccessible, or where a service didn't have the proper permissions. I still haven't mastered this but I appreciate the idea that everything is locked down by default, and permissions must be explicitly given for a very specific context.</li>
+          <li>I deployed the static build to S3, used CloudFront for distribution, and configured DNS through Route 53.</li>
+          <li>I configured roles and permissions for the deployment, granting each service the access it needed.</li>
         </ul>
       </section>
     </article>

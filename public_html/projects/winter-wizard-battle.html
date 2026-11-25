@@ -27,13 +27,13 @@
       </figure>
       <section class="project-detail">
         <h2>Project overview</h2>
-        <p>Back in 2020 I had been turning over an inkling of a game idea in my head for a long time. That winter I decided to prototype it and create a small game for family and friends - I figured it would be a good way to get validation on the idea, and see if it had legs. I also had a goal of learning a game engine, and chose the HTML5 engine Phaser.</p>
-        <p>Prototyping gave me the confidence that the idea was a good core dynamic to expand upon, and confidence in myself as a game developer. Shortly after this project, I picked up where I'd left off learning Unity, and launched into making <a href="spelly-forest.html">Spelly Forest</a>, a much larger, ongoing project.</p>
+        <p>In winter 2020, I built a Phaser prototype to test whether discovering spells by combining runes could sustain a strategy game.</p>
+        <p>The response from friends and family encouraged me to develop the rune-combination mechanic further in <a href="spelly-forest.html">Spelly Forest</a>.</p>
         <p class="project-tools"><strong>Tools</strong> Phaser, Typescript, VS Code, Itch.io asset store</p>
         <ul class="project-topics">
           <li><a href="#theme-prototyping">Prototyping</a></li>
           <li><a href="#theme-gamedesign">Game Design</a></li>
-          <li><a href="#theme-learninggamedev">Learning Game Dev</a></li>
+          <li><a href="#theme-learninggamedev">Building with Phaser</a></li>
           <li><a href="#theme-statictyping">Static Typing</a></li>
         </ul>
       </section>
@@ -44,9 +44,9 @@
           <figcaption>Initial sketches of the game idea</figcaption>
         </figure>
         <ul>
-          <li>Sticking to a winter/holiday theme was perfect for narrowing both the thematic elements, and restricting the timeline of the project since it wouldn't make sense for me to send people a holiday game in the middle of spring. I wanted to test out a game dynamic, and challenge myself to do it quickly.</li>
-          <li>I also planned to use only off-the-shelf art and assets, and completely avoid adding any sound. This allowed me to focus most of the time on implementation and tweaking the core game dynamic.</li>
-          <li>The final timeline of the project ended up being a little over a month. The project accomplished its goals - I sent it to everyone I knew, got a lot of positive feedback and started to feel like I could actually make games!</li>
+          <li>The holiday theme gave the game a clear visual direction and a deadline: I wanted people to play it while it was still winter.</li>
+          <li>I used off-the-shelf art and left audio outside the scope so I could focus on implementing and tuning the spell system.</li>
+          <li>I shipped the prototype in just over a month and shared it with friends and family.</li>
         </ul>
       </section>
       <section class="project-detail">
@@ -66,34 +66,30 @@
         </figure>
         <ul>
           <li>I limited the number of rune types to 6, since that generates 21 two-rune combos.</li>
-          <li>A lot of design elements were ripped off of Slay the Spire, one of my favorite games at the time. As such, the game started to take a roguelike-deckbuilding direction, even though I had originally envisioned the game as more of an RPG.</li>
-          <li>The reason I wholesale-grafted certain game dynamics from Slay the Spire was the same reason I used only pre-made assets: I wanted to save my focus for the main "nugget" I was interested in exploring.</li>
-          <li>I love the format of Slay the Spire because you end up with a wildly different deck every run, and since the options and battles are randomized, you never know exactly what to expect. My Holiday game was just a sequence of battles, after each of which, you got to pick a new rune and learn a new spell combination.</li>
-          <li>The game had only a few enemies, and there wasn't even a real boss; the enemies just kept scaling up in health and damage until you died, or the game ran out of enemies and you won.</li>
+          <li>The design shifted from an RPG toward roguelike deck-building as I took inspiration from <em>Slay the Spire</em>’s progression.</li>
+          <li>After each battle, players chose a rune and learned a spell combination, shaping the options they would have in the next fight.</li>
+          <li>Enemies gained health and damage as players progressed. A run ended when the player fell or cleared the last encounter.</li>
         </ul>
       </section>
       <section class="project-detail">
-        <h2 id="theme-learninggamedev">Learning Game Dev</h2>
+        <h2 id="theme-learninggamedev">Building with Phaser</h2>
         <figure>
           <img loading="lazy" src="media/winter-wizard-battle/phaser.png" alt="Phaser Game Engine" />
           <figcaption>The Phaser HTML5 game engine</figcaption>
         </figure>
         <ul>
-          <li>At the time I was working as a web developer, but I badly wanted to start learning how to make games. The HTML5 game engine Phaser had been on my radar for a while, and this was the perfect time to start learning it!</li>
-          <li>I discovered not only was my previous coding experience and web experience applicable to game dev, but that it actually gave me a huge head-start! Getting the first scene up and running was simple and fun, since Phaser is easy to learn for beginners, yet also very feature-rich.</li>
-          <li>Also, now that I'm using Unity for gamedev, I can safely say with hindsight that my time with Phaser was a great intro to game engines. In the same way that my web experience translated easily into using Phaser, my Phaser learnings dovetailed into learning Unity. I've found this to be true in general in my development journey: no learning is wasted, because old knowledge often applies to new things in unexpected ways.</li>
+          <li>Phaser let me bring my web development experience into game development. I could get the first scene running quickly and build from there.</li>
+          <li>Working in Phaser gave me a foundation in game engines that I carried into Unity when I built Spelly Forest.</li>
         </ul>
       </section>
       <section class="project-detail">
         <h2 id="theme-statictyping">Static Typing</h2>
         <figure>
           <img loading="lazy" src="media/winter-wizard-battle/statictypes.png" alt="Static type definitions for the game" />
-          <figcaption>Some type definitions in Typescript</figcaption>
+          <figcaption>TypeScript definitions for the game</figcaption>
         </figure>
         <ul>
-          <li>I've been a huge fan of Typescript for a long time - the refactorability, readability, and just general sanity that it brings to the Javascript landscape is amazing. Thinking in types upgraded my coding chops in many ways. Plus, it's become somewhat of a lingua franca among the web dev community.</li>
-          <li>I made type definitions for almost every moving part of this prototype - including the game state, the objects passed around by the event system, and the serialization used for saving the game.</li>
-          <li>Although it was a little work up front to define all these things, it helped me avoid so many errors that could have come up had I used plain Javascript.</li>
+          <li>I defined TypeScript types for game state, event payloads, and save data so the compiler could catch mismatches as the prototype evolved.</li>
         </ul>
       </section>
     </article>

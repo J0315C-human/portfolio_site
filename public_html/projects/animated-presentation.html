@@ -27,9 +27,8 @@
       </figure>
       <section class="project-detail">
         <h2>Project overview</h2>
-        <p>A client needed a dynamic animated presentation for a big wall of screens they had near their sales room. With the help of a fantastic designer, I created a web-based experience and traveled to their headquarters to help install it.</p>
-        <p>The presentation needed to be configurable to change slightly based on what sort of client the company was selling to. Aside from that, there were also quite a few interesting engineering nuts to crack!</p>
-        <p><b>Note: all the textual content of the project has been changed to goofy random text to protect the anonymity of the client.</b></p>
+        <p>I partnered with a designer to build a web presentation for the screen wall near the client’s sales room and helped install it at their headquarters.</p>
+        <p>The demo uses placeholder copy to protect the client’s identity.</p>
         <p class="project-tools"><strong>Tools</strong> React, Typescript, WebSockets, GreenSock Animation Platform</p>
         <ul class="project-topics">
           <li><a href="#theme-uianimation">UI Animation</a></li>
@@ -45,8 +44,8 @@
         </figure>
         <ul>
           <li>I built a custom sequencing/animation framework that used React and the GreenSock Animation Platform (GSAP). It made it easier to orchestrate long sequences of animations, and schedule UI changes.</li>
-          <li>I learned a lot about tweening, animation curves and timing functions, and ways to make animations more performant in the browser. It presented so many cool challenges: procedurally generating complex animations, finding exactly the right fade curve, structuring the data for the animation timelines, etc. etc. etc.</li>
-          <li>As a bonus, I found an excuse to dig out an old Linear Algebra textbook, and used math to make the 3D graphs appear to rotate around in the background. Instead of taking the performance hit of using actually rendering them in 3D with some WebGL library, they are actually rendered as SVGs in 2D but <em>look</em> as if they're rotating in 3D! I remember a coworker remarking that it was "magic", which was a proud moment for me!</li>
+          <li>I generated animations procedurally and tuned easing curves, fade timing, and timeline data structures for browser playback.</li>
+          <li>I used linear algebra to project rotating 3D graphs into 2D SVG. A coworker called the effect “magic,” which was a proud moment for me.</li>
         </ul>
       </section>
       <section class="project-detail">
@@ -56,9 +55,9 @@
           <figcaption>A procedural tree animation</figcaption>
         </figure>
         <ul>
-          <li>At the beginning of this project, the team was unsure of how to accomplish it, because they had made static, packaged presentations for people, and they had done web apps, but nothing that was kind of a combination of the two.</li>
-          <li>I spent a few days doing some proof-of-concepts. I tried doing interesting animations in the context of React, and played with what was possible with web animation. I did a test of an animated graph diagram with the nodes wobbling around. Once I could see what was possible with the tools at hand, I was able to come back and confidently say that it could be done.</li>
-          <li>I also made a separate configuration page that allowed the clients to change the project in different ways, showing different images and different parts of the presentation depending on what would be most germane at the moment.</li>
+          <li>The team had built packaged presentations and web apps before. This project called for both in the same experience.</li>
+          <li>I built React animation prototypes, including a procedural graph, to test whether the browser could deliver the motion we needed.</li>
+          <li>I built a configuration interface so the client could tailor imagery and presentation sections to different audiences.</li>
         </ul>
       </section>
       <section class="project-detail">
@@ -68,9 +67,8 @@
           <figcaption>Another UI animation</figcaption>
         </figure>
         <ul>
-          <li>When we arrived at the client's HQ, we got thrown a curveball: the giant wall of screens was actually controlled by two <em>separate</em> computers, one for the left half and one for the right half. They wanted the presentation to continue across the entire wall, but up until that point, I had developed with the assumption that there was one, central computer that the presentation would run on!</li>
-          <li>I panicked for a bit, but finally discovered a way this could be accomplished - I added URL parameters that could be used to offset the presentation to the left or right - that way the computer on the right could only present the right half of the presentation.</li>
-          <li>The two halves also had to stay perfectly synced together, so I implemented some WebSocket communication that could run between two instances of the site, and continually adjust to each other until they were at the exact same moment in the presentation.</li>
+          <li>At installation, I discovered that two computers drove the wall, one for each half. I added URL parameters to offset the viewport so each instance rendered its half of the same presentation.</li>
+          <li>I synchronized the two instances over WebSockets so each could adjust its playback position against the other.</li>
           <li>A problem related to that was that some of the animated graph nodes were supposed to wobble around randomly - but with the presentation split into two computers, the random wobbles would be generated differently on each instance and the illusion would be broken. To remedy this, I re-implemented all randomness logic to use a <b>psuedo-random number generator</b>. This allowed you to seed each instance to generate the exact same "random" numbers, no matter how many numbers you needed.</li>
         </ul>
       </section>

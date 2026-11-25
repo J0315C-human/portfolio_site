@@ -50,6 +50,8 @@ a:focus-visible {
 }
 
 .project-intro {
+  max-width: 72ch;
+  margin-inline: auto;
   padding: clamp(2.5rem, 8vw, 6rem) 0 2rem;
 }
 
@@ -128,15 +130,18 @@ img {
 }
 
 .project-cover {
+  margin-inline: auto;
   max-width: 50rem;
   margin-bottom: 2.5rem;
 }
 
 .project-cover img {
+  margin-inline: auto;
   border: 1px solid var(--line);
 }
 
 .project-detail {
+  margin-inline: auto;
   max-width: 72ch;
   padding: 1.75rem 0 2.5rem;
   border-top: 1px solid var(--line);
