@@ -1,0 +1,90 @@
+.settings-dialog {
+  width: min(360px, calc(100% - 32px));
+  padding: 24px;
+  border: 2px solid var(--accent);
+  background: var(--card);
+  color: var(--ink);
+  color-scheme: dark;
+  box-shadow: 5px 5px 0 var(--line);
+  font: 14px 'DM Mono', monospace;
+}
+
+.settings-dialog::backdrop {
+  background: rgb(7 17 14 / 80%);
+}
+
+.settings-dialog h2 {
+  margin: 0 0 22px;
+  color: var(--accent);
+  font-size: 20px;
+}
+
+.settings-dialog select, .settings-dialog button {
+  padding: 8px 12px;
+  border: 2px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.settings-dialog select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.kana-categories {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--line);
+}
+
+.kana-categories p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.kana-categories input {
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.settings-dialog form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.settings-dialog button {
+  border-color: var(--cyan);
+}
+
+.settings-dialog button:hover {
+  background: var(--cyan);
+  color: var(--paper);
+}
+
+.settings-dialog .reset-button {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.settings-dialog .reset-button:hover {
+  background: var(--danger);
+  color: var(--paper);
+}
+
+.settings-dialog :focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.settings-dialog select + label {
+  display: block;
+  margin-top: 16px;
+}

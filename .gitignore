@@ -8,7 +8,7 @@
 node_modules
 build
 dist
-# Legacy demo builds are deployed separately. Track only brief redirects here.
+# Legacy demo builds are deployed separately. Track brief redirects and the Kana Atelier app.
 public_html/with/*
 !public_html/with/a-animated-react-presentation/
 !public_html/with/a-game-called-bleepbloop/
@@ -16,4 +16,6 @@ public_html/with/*
 !public_html/with/a-spelly-forest/
 public_html/with/*/*
 !public_html/with/*/brief.html
+!public_html/with/a-kana-tool/
+!public_html/with/a-kana-tool/*
 public_html/where

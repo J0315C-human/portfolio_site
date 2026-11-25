@@ -1,0 +1,58 @@
+:root {
+  --kana-font: 'Shippori Mincho', serif;
+  --ink: #d8ffe8;
+  --muted: #8ec7a5;
+  --line: #245c45;
+  --paper: #07110e;
+  --card: #0c1c16;
+  --accent: #5fffa1;
+  --accent-dark: #27b96d;
+  --mint: #123b2a;
+  --green: #5fffa1;
+  --yellow: #ffd166;
+  --cyan: #5ce1e6;
+  --danger: #ff6b6b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+}
+
+button, input {
+  font: inherit;
+}
+
+.shell {
+  max-width: 1040px;
+  margin: auto;
+  padding: 28px 42px 40px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  border-color: var(--line);
+  padding-top: 20px;
+  margin-top: 43px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 620px) {
+  .shell {
+    padding: 22px 20px;
+  }
+
+  footer {
+    gap: 12px;
+    flex-direction: column;
+  }
+}

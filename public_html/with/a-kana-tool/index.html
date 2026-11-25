@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Apple macOS version 5.6.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kana Atelier — Japanese reading practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Klee+One&amp;family=Noto+Sans+JP:wght@400;500;600&amp;family=Noto+Serif+JP:wght@500;600&amp;family=Shippori+Mincho:wght@500;600&amp;family=Zen+Maru+Gothic:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/settings.css">
+  <link rel="stylesheet" href="styles/quiz.css">
+  <link rel="stylesheet" href="styles/progress.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href=".">
+        <span class="brand-mark">か</span>
+        <span class="brand-copy"><h1>Kana Atelier</h1><span class="brand-tagline">Make kana feel natural.</span></span>
+      </a>
+      <div class="segmented" role="group" aria-label="Quiz script">
+        <button class="choice active" data-script="both">Both scripts</button>
+        <button class="choice" data-script="hiragana">Hiragana</button>
+        <button class="choice" data-script="katakana">Katakana</button>
+      </div>
+      <div class="header-actions">
+        <button id="fontSwitch" class="font-button" aria-label="Change kana font; current font: Shippori Mincho">Aa <span>Shippori Mincho</span> ↻</button>
+        <button id="settings-button" class="settings-button" type="button" aria-label="Settings" aria-haspopup="dialog" aria-controls="settings-dialog">⚙︎</button>
+      </div>
+    </header>
+    <section class="quiz-card is-paused" aria-live="polite">
+      <div class="quiz-meta">
+        <span id="category">Hiragana - Gojuon</span>
+        <button id="pause-button" class="pause-button" type="button">Pause</button>
+      </div>
+      <div id="quiz-content" aria-hidden="true" inert>
+        <div class="kana" id="kana">
+          あ
+        </div>
+        <div class="answer-line">
+          <label for="answer">Romaji</label><input id="answer" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type the sound…"><span id="answer-hint" class="enter-hint">auto-checks</span>
+        </div>
+        <div class="quiz-result">
+          <div id="feedback" class="feedback" role="status"></div>
+          <button id="next" class="next-button" hidden="">Next question <span>→</span></button>
+        </div>
+      </div>
+      <div id="pause-screen" class="pause-screen">
+        <p id="pause-message">Ready to practice?</p>
+        <button id="resume-button" class="resume-button" type="button">Begin</button>
+      </div>
+    </section>
+    <section class="stats">
+      <div class="section-heading">
+        <div class="section-title-controls">
+          <h2>Progress summary</h2>
+          <button id="metricToggle" class="sort-button" type="button" aria-label="Show speed; currently showing accuracy">Accuracy</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat">
+          <span id="summaryMetricLabel" class="stat-label">Overall accuracy</span><strong id="accuracy">—</strong>
+          <span class="meter-label">Symbol breakdown</span>
+          <div id="symbolBreakdown" class="meter" role="img" aria-label="Symbol breakdown">
+            <i class="strong" aria-hidden="true" hidden></i>
+            <i class="learning" aria-hidden="true" hidden></i>
+            <i class="needs-work" aria-hidden="true" hidden></i>
+            <i class="new" aria-hidden="true"></i>
+          </div>
+        </div>
+        <dl class="stat-list">
+          <div class="stat-list-row"><dt>Current streak</dt><dd id="streak">0</dd></div>
+          <div class="stat-list-row"><dt>Best streak</dt><dd id="best">0</dd></div>
+          <div class="stat-list-row"><dt>Attempts</dt><dd id="attemptsCount">0</dd></div>
+        </dl>
+      </div>
+      <div class="legend">
+        <span><i class="dot strong"></i><span id="strongLabel">Strong recall</span> <b id="strongCount">0</b></span>
+        <span><i class="dot learning"></i><span id="learningLabel">Still learning</span> <b id="learningCount">0</b></span>
+        <span><i class="dot needs-work"></i><span id="needsWorkLabel">Needs work</span> <b id="needsWorkCount">0</b></span>
+        <span><i class="dot new"></i><span id="newLabel">New</span> <b id="newCount">0</b></span>
+      </div>
+    </section>
+    <section class="detail-grid">
+      <div class="history-panel">
+        <div class="section-heading">
+          <h2>Mistake history</h2>
+          <span class="mono">LAST 12</span>
+        </div>
+        <div id="history" class="history-list">
+          <p class="empty-state">Your mistakes will appear here.</p>
+        </div>
+      </div>
+      <div class="full-stats">
+        <div class="section-heading">
+          <div class="section-title-controls">
+            <h2>Stats by symbol</h2>
+            <button id="statsSort" class="sort-button" aria-label="Sort stats by symbol: Best first; click to show Worst first">Best first ↕</button>
+          </div>
+          <span id="symbolMetricLabel" class="mono">ACCURACY</span>
+        </div>
+        <div id="symbolStats" class="symbol-list"></div>
+      </div>
+    </section>
+    <footer>
+      <span>Progress is saved privately in this browser.</span><span class="mono">v1.0 / LOCAL ONLY</span>
+    </footer>
+  </main>
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+    <h2 id="settings-title">Settings</h2>
+    <label for="quiz-mode">Mode</label>
+    <select id="quiz-mode">
+      <option value="character">Character</option>
+      <option value="word">Word</option>
+    </select>
+    <label for="answer-speed">Answer checking speed</label>
+    <select id="answer-speed" autofocus>
+      <option value="0.5">Lightning</option>
+      <option value="1" selected>Fast</option>
+      <option value="2">Normal</option>
+      <option value="4">Slow</option>
+    </select>
+    <fieldset id="kana-categories" class="kana-categories" aria-describedby="category-help">
+      <legend>Kana categories</legend>
+      <p id="category-help">Choose at least one. Words use only the selected categories.</p>
+      <label><input type="checkbox" value="gojuon" checked> Basic kana (gojuon)</label>
+      <label><input type="checkbox" value="dakuon" checked> Kana with dakuten or handakuten</label>
+      <label><input type="checkbox" value="combo" checked> Kana combinations (yōon)</label>
+      <label><input type="checkbox" value="extended" checked> Extended kana</label>
+    </fieldset>
+    <form method="dialog">
+      <button id="reset-progress" class="reset-button" type="button">Reset progress</button>
+      <button type="submit">Done</button>
+    </form>
+  </dialog>
+  <script src="scripts/kana.js"></script>
+  <script src="data/words.js"></script>
+  <script src="scripts/words.js"></script>
+  <script src="scripts/progress.js"></script>
+  <script src="scripts/settings.js"></script>
+  <script src="scripts/stats-view.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

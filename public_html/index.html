@@ -72,6 +72,22 @@
   </div>
 </section>
 <section class="selected" id="work"><div class="section-head"><p class="eyebrow">Selected engineering work</p></div>
+<article class="case">
+  <div class="case-intro">
+    <p class="project-type">Learning tool</p>
+    <h2>Kana Atelier</h2>
+    <p>Practice reading Japanese hiragana and katakana with a quiz that adapts to the sounds you find difficult.</p>
+    <div class="tags"><span>Web application</span><span>Adaptive practice</span><span>Accuracy analysis</span></div>
+    <a class="case-link" href="projects/kana-atelier.html">Explore the project ↗</a>
+  </div>
+  <div class="case-evidence">
+    <a class="project-picture" href="projects/kana-atelier.html"><img src="images/kana-atelier.jpg" alt="Kana Atelier quiz with a kana prompt and a romaji answer field" width="960" height="600" loading="lazy"></a>
+    <dl>
+      <div><dt>Practice modes</dt><dd>Switch between individual kana and Japanese words.</dd></div>
+      <div><dt>Progress tracking</dt><dd>Review accuracy and response speed by symbol. Progress stays in your browser.</dd></div>
+    </dl>
+  </div>
+</article>
 <article class="case"><div class="case-intro"><p class="project-type">Commission</p><h2>An evolving audio system,<br>controlled in the browser.</h2><p>For Vancouver New Music’s Parallels 03, I translated an open-ended collaboration between musicians, writers, and visual artists into an interactive online experience.</p><div class="tags"><span>TypeScript</span><span>Tone.js</span><span>Pub/sub</span><span>AWS</span></div><a class="case-link" href="projects/parallels.html">Read the engineering brief ↗</a></div><div class="case-evidence"><a class="project-picture" href="projects/parallels.html"><img src="images/parallels.png" alt="Parallels 03 audio controls and geometric artwork" width="800" height="450" loading="lazy"></a><dl><div><dt>Audio graph</dt><dd>Connected playback, synthesis, and effects as a network of audio processing nodes.</dd></div><div><dt>Decoupled controls</dt><dd>Wrote a custom publish/subscribe system to connect dynamically rendered controls to effect parameters.</dd></div><div><dt>Deployment</dt><dd>Hosted the static build on S3, with CloudFront distribution and Route 53 DNS routing.</dd></div></dl></div></article>
 <article class="case"><div class="case-intro"><p class="project-type">Client work</p><h2>One presentation.<br>Two computers.<br>A shared timeline.</h2><p>A configurable presentation for a wall of 30 screens. On site, the installation turned out to run on two separate computers—each driving half the wall.</p><div class="tags"><span>React</span><span>TypeScript</span><span>WebSockets</span><span>GSAP</span></div><a class="case-link" href="projects/animated-presentation.html">Read the engineering brief ↗</a></div><div class="case-evidence"><a class="project-picture" href="projects/animated-presentation.html"><img src="images/presentation.png" alt="Configurable presentation rendered across animated charts and text" width="800" height="450" loading="lazy"></a><dl><div><dt>Synchronization</dt><dd>Used WebSocket communication to align the playback position of both instances.</dd></div><div><dt>Determinism</dt><dd>Replaced independent randomness with a seeded generator so procedural motion matched across displays.</dd></div><div><dt>Rendering</dt><dd>Projected rotating graphs into 2D SVG using linear algebra, avoiding a full 3D renderer.</dd></div></dl></div></article>
 </section>
